@@ -1,5 +1,6 @@
 ### Amir_H Javadi_B - 5717292
 import room as rm
+from collections import deque
 
 list_of_rooms: list = [
     rm.police_station,
@@ -25,7 +26,7 @@ def build_room_graph() -> None:
     # set connections between rooms(1 for connected, 0 for not connected)
     for room1 in list_of_rooms:
         for room2 in list_of_rooms:
-            if room2.name in room1.connected:       # TODO 1:  check what is saved in the connected list (I assumed name)
+            if room2.name in room1.connected:       # TODO 1: check what is saved in the connected list (I assumed name)
                 room_graph[room1][room2] = 1
             else:
                 room_graph[room1][room2] = 0
@@ -42,3 +43,23 @@ def initial_room_locking() -> None:
         if room.name in rm.faculty_dinning_hall.connected:     # TODO 1
             room_graph[room][rm.faculty_dinning_hall] = -1 
             room_graph[rm.faculty_dinning_hall][room] = -1 
+
+def bfs_path_checking(origin_room: object, destination_room: object) -> bool: # TODO 2: retrurning the evidence needed when there are a locked room in the path 
+    """
+    checking whethere there is a available path between 
+    the current location of the player and the room they are willing to go 
+    Returning: False when there is no fully available path, True when there is a fully availabler path
+    """
+    queue: deque = deque()
+    visited: list = []
+    queue.append(origin_room)
+    while len(queue) > 0:
+        current_room = queue.popleft()
+        if current_room == destination_room:
+            return True
+        for room in list_of_rooms:
+            if room_graph[current_room][room] == 1 and room not in visited:
+                queue.append(room)
+        visited.append(current_room)
+    return False
+        
