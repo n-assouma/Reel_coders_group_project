@@ -62,4 +62,14 @@ def bfs_path_checking(origin_room: object, destination_room: object) -> bool: # 
                 queue.append(room)
         visited.append(current_room)
     return False
+
+def unlock_room(locked_room: object) -> None:
+    """
+    unlocking the path of a locked room by changing the -1s to 1s in the room_graph
+    """
+    for room in list_of_rooms:
+        if room_graph[locked_room][room] == -1:
+            room_graph[locked_room][room] = 1
+            room_graph[room][locked_room] = 1
+
         
