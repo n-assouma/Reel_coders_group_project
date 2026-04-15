@@ -30,7 +30,6 @@ def build_room_graph() -> None:
             else:
                 room_graph[room1][room2] = 0
     
-
 def initial_room_locking() -> None:
     """
     Locks initially inaccessible rooms in the global room_graph.
