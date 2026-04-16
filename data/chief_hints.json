@@ -1,0 +1,17 @@
+{
+    "_meta": {
+        "author": "XXXX-ID",
+        "todo": "Check with data erchitect if formats get along"
+    },
+    "object_hint": {
+        "case_file": "This is the document of the case your are working on.\nElena, married women with kids, prominent researcher\n and professor at the city university has been found dead\n in her office at XX:XX pm.",
+        "draft_email": "A draft email to a lawyer: 'Regarding financial \nirregularities in Victor Osei's department...'\n She was about to report someone.",
+        "tweed_thread": "The lamp is smashed. Wait — there's a small thread \n caught on the broken edge. Looks like tweed.",
+        "dinner_invitation": "A faculty dinner invitation for last night.\n We should check what time it actually ended."
+    },
+    "room_unlocks_hint": {
+        "victors_house": "Looks like you have unlocked Victors house!\n You can now interrogate him.",
+        "faculty_dining_hall": "Looks like you have unlocked the Faculty Dining hall!\n You might want to interrogate a waiter there.",
+        "lenas_house": "Looks like you have unlocked Lena's Apartment! You can now interrogate her."
+    }
+}

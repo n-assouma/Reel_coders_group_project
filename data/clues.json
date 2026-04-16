@@ -1,0 +1,42 @@
+{
+    "_meta": {
+        "todo": "Agree with data architect how to load this file"
+    },
+    "case_file": {
+        "display_name": "Case file",
+        "description": "TODO",
+        "is_key": false,
+        "found_in": "police_station",
+        "points_to": null,
+        "priority": "TODO",
+        "unlocks": null
+    },
+    "draft_email": {
+        "display_name": "Draft email",
+        "description": "TODO",
+        "is_key": false,
+        "found_in": "elenas_office",
+        "points_to": "victor",
+        "priority": "TODO",
+        "unlocks": null
+    },
+    "tweed_thread": {
+        "display_name": "Tweed thread",
+        "description": "TODO",
+        "is_key": true,
+        "found_in": "elenas_office",
+        "points_to": "victor",
+        "priority": "TODO",
+        "unlocks": "victors_house"
+    },
+    "dinner_invitation": {
+        "display_name": "Dinner invitation",
+        "description": "TODO",
+        "is_key": false,
+        "found_in": "elenas_office",
+        "points_to": null,
+        "priority": "TODO",
+        "unlocks": "faculty_dining_hall"
+    }
+}
+
