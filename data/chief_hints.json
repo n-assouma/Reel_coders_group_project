@@ -1,11 +1,13 @@
 {
     "_meta": {
-        "author": "XXXX-ID",
-        "todo": "Check with data erchitect if formats get along"
+        "author": "Nael Karimou 5734316",
+        "co_author": null,
+        "description": "This file contains the hints from the chief officer. SO far, it covers when an evidence is examined and when a room is unlocked.",
+        "todo": "Check with data architect if formats get along"
     },
     "object_hint": {
         "case_file": "This is the document of the case your are working on.\nElena, married women with kids, prominent researcher\n and professor at the city university has been found dead\n in her office at XX:XX pm.",
-        "draft_email": "A draft email to a lawyer: 'Regarding financial \nirregularities in Victor Osei's department...'\n She was about to report someone.",
+        "draft_email": "A draft email to a lawyer: 'Regarding financial \nirregularities in Victor Osei's department...'\n She was about to report someone.", 
         "tweed_thread": "The lamp is smashed. Wait — there's a small thread \n caught on the broken edge. Looks like tweed.",
         "dinner_invitation": "A faculty dinner invitation for last night.\n We should check what time it actually ended."
     },
