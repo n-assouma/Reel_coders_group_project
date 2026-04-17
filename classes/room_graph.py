@@ -1,75 +1,117 @@
 ### Amir_H Javadi_B - 5717292
+"""
+room_graph.py
+
+Graph data structure for The Hollow Witness. Implements an
+adjacency-list room graph with separately tracked locked edges,
+and breadth-first search for shortest-path navigation.
+"""
 import room as rm
 from collections import deque
+from typing import Optional 
 
-list_of_rooms: list = [
-    rm.police_station,
-    rm.elenas_office,
-    rm.security_booth,
-    rm.marcuss_home,
-    rm.lena_apartment,
-    rm.victors_townhouse,
-    rm.faculty_dinning_hall
-    ]
+class RoomGraphError(Exception):
+    """Raised when a graph operation receives an invalid room."""
+    pass
+class RoomGraph:
+    """Undirected room graph with lockable edges and BFS pathfinding."""
 
-# Global adjacency matrix - initialised empty, built by functions below
-room_graph: dict = dict()
+    def __init__(self, rooms: list[rm.Room]) -> None:
+        """Build the adjacency list from a list of Room objects.
+        Raises RoomGraphError if rooms is empty.
+        """
+        if not rooms:
+            raise RoomGraphError("room graph cannot be built with no rooms.")
+        self.graph: dict[rm.Room, set[rm.Room]] = {room: set(room.connections) for room in rooms}
+        self.locked_edges: set[frozenset[rm.Room]] = set()
 
-def build_room_graph() -> None:
-    """
-    Builds adjacency matrix for all rooms.
-    Modifies the global room_graph in place.
-    """
-    # Build adjacency matrix - initialise each room with empty dict
-    for room in list_of_rooms:
-        room_graph[room] = dict()
-    # set connections between rooms(1 for connected, 0 for not connected)
-    for room1 in list_of_rooms:
-        for room2 in list_of_rooms:
-            if room2.name in room1.connected:       # TODO 1: check what is saved in the connected list (I assumed name)
-                room_graph[room1][room2] = 1
-            else:
-                room_graph[room1][room2] = 0
+    def lock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
+        """Mark the edge between two rooms as locked. Idempotent."""
+        self._validate(room_a, room_b)
+        self.locked_edges.add(frozenset((room_a, room_b)))
+       
+    def unlock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
+        """Remove the lock from an edge"""
+        self._validate(room_a, room_b)
+        self.locked_edges.discard(frozenset((room_a, room_b)))
     
-def initial_room_locking() -> None:
-    """
-    Locks initially inaccessible rooms in the global room_graph.
-    Sets locked connections to -1.
-    """
-    for room in list_of_rooms:
-        if room.name in rm.victors_townhouse.connected:        # TODO 1
-            room_graph[room][rm.victors_townhouse] = -1 
-            room_graph[rm.victors_townhouse][room] = -1 
-        if room.name in rm.faculty_dinning_hall.connected:     # TODO 1
-            room_graph[room][rm.faculty_dinning_hall] = -1 
-            room_graph[rm.faculty_dinning_hall][room] = -1 
+    def is_locked(self, room_a: rm.Room, room_b: rm.Room) -> bool:
+        """returning True if the edge between two rooms is currently locked"""
+        self._validate(room_a, room_b)
+        return frozenset((room_a, room_b)) in self.locked_edges
+    
+    def _bfs(self, origin: rm.Room, destination: rm.Room, respect_locks: bool) -> Optional[list[rm.Room]]:
+        """Return the shortest path from origin to destination, or None if unreachable.
 
-def bfs_path_checking(origin_room: object, destination_room: object) -> bool: # TODO 2: retrurning the evidence needed when there are a locked room in the path 
-    """
-    checking whethere there is a available path between 
-    the current location of the player and the room they are willing to go 
-    Returning: False when there is no fully available path, True when there is a fully availabler path
-    """
-    queue: deque = deque()
-    visited: list = []
-    queue.append(origin_room)
-    while len(queue) > 0:
-        current_room = queue.popleft()
-        if current_room == destination_room:
-            return True
-        for room in list_of_rooms:
-            if room_graph[current_room][room] == 1 and room not in visited:
-                queue.append(room)
-        visited.append(current_room)
-    return False
+                If respect_locks is True, locked edges are treated as impassable.
+                If False, locked edges are traversed as if unlocked — used by
+                route_with_blocker to find the structural path before identifying
+                the first locked room along it.
 
-def unlock_room(locked_room: object) -> None:
-    """
-    unlocking the path of a locked room by changing the -1s to 1s in the room_graph
-    """
-    for room in list_of_rooms:
-        if room_graph[locked_room][room] == -1:
-            room_graph[locked_room][room] = 1
-            room_graph[room][locked_room] = 1
-
+                Time complexity: O(V + E).
+                V: the number of vertices 
+                E: the number of edges
+                """
+        is_found: bool = False
+        shortest_path: list[rm.Room] = []
+        child_parent: dict[rm.Room, Optional[rm.Room]] = {}
+        queue: deque[rm.Room] = deque()
+        queue.append(origin)
+        child_parent[origin] = None
         
+        while queue:
+            current_room: rm.Room = queue.popleft()
+            if current_room == destination:
+                is_found = True
+                break
+            for room in self.graph[current_room]:
+                if room not in child_parent and not(respect_locks and self.is_locked(current_room, room)):
+                    queue.append(room)
+                    child_parent[room] = current_room
+
+        if not is_found:
+            return None 
+        
+        path_room: rm.Room = destination 
+        while path_room is not None:
+            shortest_path.append(path_room)
+            path_room = child_parent[path_room]
+        
+        return shortest_path[::-1]
+    
+    def is_reachable(self, origin: rm.Room, destination: rm.Room) -> bool:
+        """Return True if a currently-passable route exists between the two rooms."""
+        self._validate(origin, destination)
+        return self._bfs(origin, destination, respect_locks=True) is not None
+    
+    def route_with_blocker(self, origin: rm.Room, destination: rm.Room) -> Optional[rm.Room]:
+        """
+        Find the first locked room blocking the shortest structural path.
+
+        Intended to be used together with is_reachable() to distinguish:
+            is_reachable True           -> path exists and is open
+            returns a Room              -> that room is the first lock on the route
+            returns None                -> no structural route exists at all
+
+        Returns the first locked Room on the shortest path (ignoring locks),
+        or None if the destination is unreachable even with all locks ignored.
+        """
+        self._validate(origin, destination)
+        path: Optional[list[rm.Room]] = self._bfs(origin, destination, respect_locks=False)
+        if path is None:
+            return None 
+        for i in range(len(path) - 1):
+            if self.is_locked(path[i], path[i+1]):
+                return path[i+1]
+
+    def _validate(self, *rooms: rm.Room) -> None:
+        """Raise RoomGraphError if any of the given rooms is not in the graph."""
+        for room in rooms:
+            if room not in self.graph:
+                raise RoomGraphError(f"room {room}, is not in the graph.")
+        
+    def __repr__(self) -> str:
+        """Return a concise debug string showing room count and lock count."""
+        return f"RoomGraph(rooms={len(self.graph)}, locked={len(self.locked_edges)})"
+    
+### Amir_H Javadi_B - 5717292
