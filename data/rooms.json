@@ -3,7 +3,7 @@
         "author": "Nael Karimou 5734316",
         "co_author": null,
         "description": "This file contains the data for the rooms in the game. It defines the sprites, their positions, and the walkable area for each room.",
-        "todo": "Define walkable area for background and positions for sprites. reproduce the same structure for Elena's office and the other rooms. Adjust if needed. Especially for data collision using depth sorting."
+        "todo": "For elenas_room, change 'research_paper' to the actual sprite instead of a ball. Define walkable area for background and positions for sprites. reproduce the same structure for Elena's office and the other rooms. Adjust if needed. Especially for data collision using depth sorting."
 
     },
     "police_station": {
@@ -25,5 +25,28 @@
         "decor_2": ["decor_2.png", ["position x", "position y"], "width", "height"],
         "desk":["desk.png", ["position x", "position y"], "width", "height"],
         "map_board": ["map_board.png", ["position x", "position y"], "width", "height"]
+    },
+    "elenas_office": {
+        "room_sprites": ["accusation_board", "background", "bookshelf", "broken_lamp", "chair", "computer", "desk", "dinner_invitation", "research_paper", "tweed_thread"],
+        "detective_row_spawn_position": "TODO",
+        "detective_row_spawn_sprite": "default.png",
+        "background": {
+            "path": "background.png",
+            "walkable_area": {
+                "top_right": "TODO",
+                "top_left": "TODO",
+                "bottom_right": "TODO",
+                "bottom_left": "TODO"
+            }
+        },
+        "board": ["board.png", ["position x", "position y"], "width", "height"],
+        "bookshelf": ["bookshelf.png", ["position x", "position y"], "width", "height"],
+        "broken_lamp": ["broken_lamp.png", ["position x", "position y"], "width", "height"],
+        "chair": ["chair.png", ["position x", "position y"], "width", "height"],
+        "computer": ["computer.png", ["position x", "position y"], "width", "height"],
+        "desk": ["desk.png", ["position x", "position y"], "width", "height"],
+        "dinner_invitation": ["dinner_invitation.png", ["position x", "position y"], "width", "height"],
+        "research_paper": ["research_paper.png", ["position x", "position y"], "width", "height"],
+        "tweed_thread": ["tweed_thread.png", ["position x", "position y"], "width", "height"]
     }
 }
