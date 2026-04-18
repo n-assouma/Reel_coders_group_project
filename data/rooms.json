@@ -8,9 +8,12 @@
 
     },
     "police_station": {
-        "room_sprites": ["detective_row_spawn_sprite", "accusation_board", "background", "case_file","background","case_file", "decor_1", "decor_2", "desk", "map_board"],
-        "detective_row_spawn_position": "TODO",
-        "detective_row_spawn_sprite": "default.png",
+        "room_sprites": ["detective_rowe", "accusation_board", "background", "case_file","background","case_file", "decor_1", "decor_2", "desk", "map_board"],
+        "detective_row": {
+            "sprite": "default.png",
+            "position": [0.65, 0.3],
+            "scale": 0.85
+        },
         "accusation_board": ["accusation_board.png", [0.76, 0.2], 0.8],
         "background": {
             "path": "background.png",
