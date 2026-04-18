@@ -3,28 +3,31 @@
         "author": "Nael Karimou 5734316",
         "co_author": null,
         "description": "This file contains the data for the rooms in the game. It defines the sprites, their positions, and the walkable area for each room.",
-        "todo": "For elenas_room, change 'research_paper' to the actual sprite instead of a ball. Define walkable area for background and positions for sprites. reproduce the same structure for Elena's office and the other rooms. Adjust if needed. Especially for data collision using depth sorting."
+        "todo": "For elenas_room, change 'research_paper' to the actual sprite instead of a ball. Define walkable area for background and positions for sprites. reproduce the same structure others rooms. Adjust if needed. Especially for data collision using depth sorting.",
+        "completed": "post_office only"
 
     },
     "police_station": {
         "room_sprites": ["detective_row_spawn_sprite", "accusation_board", "background", "case_file","background","case_file", "decor_1", "decor_2", "desk", "map_board"],
         "detective_row_spawn_position": "TODO",
         "detective_row_spawn_sprite": "default.png",
-        "accusation_board": ["accusation_board.png", ["position x", "position y"], "width", "height"],
+        "accusation_board": ["accusation_board.png", [0.76, 0.2], 0.8],
         "background": {
             "path": "background.png",
+            "x": 1,
+            "y": 0.75,
             "walkable_area": {
-                "top_right": "TODO",
-                "top_left": "TODO",
-                "bottom_right": "TODO",
-                "bottom_left": "TODO"
+                "top_right": [0.04, 0.29],
+                "top_left": [0.96, 0.29],
+                "bottom_right": [0.01, 0.64],
+                "bottom_left": [1, 0.65]
             }
         },
-        "case_file": ["case_file.png", ["position x", "position y"], "width", "height"],
-        "decor_1": ["decor_1.png", ["position x", "position y"], "width", "height"],
-        "decor_2": ["decor_2.png", ["position x", "position y"], "width", "height"],
-        "desk":["desk.png", ["position x", "position y"], "width", "height"],
-        "map_board": ["map_board.png", ["position x", "position y"], "width", "height"]
+        "case_file": ["case_file.png", [0.421, 0.325], 0.94],
+        "decor_1": ["decor_1.png", [0.015, 0.42], 0.94],
+        "decor_2": ["decor_2.png", [0.024, 0.086], 0.85],
+        "desk":["desk.png", [0.3, 0.2], 0.9],
+        "map_board": ["map_board.png", [0.67, 0.013], 0.72]
     },
     "elenas_office": {
         "room_sprites": ["accusation_board", "background", "bookshelf", "broken_lamp", "chair", "computer", "desk", "dinner_invitation", "research_paper", "tweed_thread"],
