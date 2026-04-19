@@ -29,40 +29,40 @@ class RoomGraph:
         """
         if not rooms:
             raise RoomGraphError("room graph cannot be built with no rooms.")
-        self.graph: dict[rm.Room, set[rm.Room]] = {}
-        self.locked_edges: set[frozenset[rm.Room]] = set()
+        self.__graph: dict[rm.Room, set[rm.Room]] = {}
+        self.__locked_edges: set[frozenset[rm.Room]] = set()
     
     def build_graph(self, rooms: list[rm.Room]) -> None:
         for room in rooms:
-            self.graph[room] = set(room.connections)
+            self.__graph[room] = set(room.connections)
     
     def show_graph(self) -> None:
         """Showing all the edges in the class."""
-        for room in self.graph.keys():
-            for adjacent in self.graph[room]:
+        for room in self.__graph.keys():
+            for adjacent in self.__graph[room]:
                 print(f"({room.name}, {adjacent.name})")
 
     def lock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
         """Mark the edge between two rooms as locked. Idempotent."""
         self._room_validate(room_a, room_b)
         self._edge_validate((room_a, room_b))
-        self.locked_edges.add(frozenset((room_a, room_b)))
+        self.__locked_edges.add(frozenset((room_a, room_b)))
        
     def unlock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
         """Remove the lock from an edge"""
         self._room_validate(room_a, room_b)
         self._edge_validate((room_a, room_b))
-        self.locked_edges.discard(frozenset((room_a, room_b)))
+        self.__locked_edges.discard(frozenset((room_a, room_b)))
     
     def is_locked(self, room_a: rm.Room, room_b: rm.Room) -> bool:
-        """returning True if the edge between two rooms is currently locked"""
+        """returning True if the edge between two rooms is currently locked."""
         self._room_validate(room_a, room_b)
         self._edge_validate((room_a, room_b))
-        return frozenset((room_a, room_b)) in self.locked_edges
+        return frozenset((room_a, room_b)) in self.__locked_edges
     
     def show_locked_edges(self) -> None:
         """Showing all the locked edges."""
-        for edge in self.locked_edges:
+        for edge in self.__locked_edges:
             print("(", end ="")
             for room in edge:
                 print(room.name, end=" ")
@@ -92,7 +92,7 @@ class RoomGraph:
             if current_room == destination:
                 is_found = True
                 break
-            for room in self.graph[current_room]:
+            for room in self.__graph[current_room]:
                 if room not in child_parent and not(respect_locks and self.is_locked(current_room, room)):
                     queue.append(room)
                     child_parent[room] = current_room
@@ -135,17 +135,17 @@ class RoomGraph:
     def _room_validate(self, *rooms: rm.Room) -> None:
         """Raise RoomGraphError if any of the given rooms is not in the graph."""
         for room in rooms:
-            if room not in self.graph:
+            if room not in self.__graph:
                 raise RoomGraphError(f"room {room.name}, is not in the graph.")
     
     def _edge_validate(self, *edges: list[rm.Room]) -> None:
         """Raise EdgeNotExistError if any given edges is not in the graph."""
         for edge in edges:
-            if edge[1] not in self.graph[edge[0]]:
+            if edge[1] not in self.__graph[edge[0]]:
                 raise EdgeNotExistError(f"the edge between the rooms {edge[0].name} and {edge[1].name} does not exist in the graph")
         
     def __repr__(self) -> str:
         """Return a concise debug string showing room count and lock count."""
-        return f"RoomGraph(rooms={len(self.graph)}, locked={len(self.locked_edges)})"
+        return f"RoomGraph(rooms={len(self.__graph)}, locked={len(self.__locked_edges)})"
 
 ### Amir_H Javadi_B - 5717292
