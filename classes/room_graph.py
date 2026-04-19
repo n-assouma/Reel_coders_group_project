@@ -6,7 +6,7 @@ Graph data structure for The Hollow Witness. Implements an
 adjacency-list room graph with separately tracked locked edges,
 and breadth-first search for shortest-path navigation.
 """
-import room as rm
+from . import room as rm
 from collections import deque
 from typing import Optional 
 

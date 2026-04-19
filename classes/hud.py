@@ -27,14 +27,14 @@ class HUD:
         # draw the hud background + 3 panels
 
         # big background box for the whole hud
-        pygame.draw.rect(surface, COLOUR_HUD_BG, (0, GAME_HEIGHT, SCREEN_WIDTH, HUD_HEIGHT))
+        pygame.draw.rect(surface, COLOUR_HUD_BG, (0, MAIN_SCREEN_HEIGHT, SCREEN_WIDTH, HUD_HEIGHT))
         # thin line between the game and the hud
-        pygame.draw.line(surface, COLOUR_HUD_BORDER, (0, GAME_HEIGHT), (SCREEN_WIDTH, GAME_HEIGHT), 2)
+        pygame.draw.line(surface, COLOUR_HUD_BORDER, (0, MAIN_SCREEN_HEIGHT), (SCREEN_WIDTH, MAIN_SCREEN_HEIGHT), 2)
 
         # figure out the size of each of the 3 panels
         pad = 12
         panel_w = (SCREEN_WIDTH - pad * 4) // 3
-        panel_y = GAME_HEIGHT + pad
+        panel_y = MAIN_SCREEN_HEIGHT + pad
         panel_h = HUD_HEIGHT - pad * 2
 
         # panel 1: chief of police
