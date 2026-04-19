@@ -9,7 +9,7 @@ and breadth-first search for shortest-path navigation.
 import room as rm
 from collections import deque
 from typing import Optional 
-
+#TODO: add an error for none existing edges
 class RoomGraphError(Exception):
     """Raised when a graph operation receives an invalid room."""
     pass
@@ -131,14 +131,14 @@ class RoomGraph:
         return f"RoomGraph(rooms={len(self.graph)}, locked={len(self.locked_edges)})"
 
 ## Testing 
-"""rooms = rm.listt_of_rooms
+rooms = rm.listt_of_rooms
 
 room_graph = RoomGraph(rooms)
 room_graph.build_graph(rooms)
 #print(room_graph.graph)
 #print(room_graph.graph)
 #room_graph.show_graph()
-room_graph.lock_edge(rm.la, rm.mh)
+"""room_graph.lock_edge(rm.la, rm.mh)
 room_graph.lock_edge(rm.la, rm.hub)
 room_graph.lock_edge(rm.mh, rm.vh)
 room_graph.show_locked_edges()
@@ -150,4 +150,14 @@ print(room_graph.is_locked(rm.mh, rm.la))
 room_graph.show_locked_edges()
 print("----------")
 room_graph.lock_edge(rm.not_room, rm.mh)#trying to add an locked edge for a room that is not in the graph"""
+
+##Testing the bfs functions:
+room_graph.lock_edge(rm.mh, rm.vh)
+room_graph.lock_edge(rm.hub, rm.vh)
+room_graph.lock_edge(rm.mh, rm.la)
+room_graph.lock_edge(rm.hub, rm.la)
+room_graph.lock_edge(rm.sb, rm.fdh)
+room_graph.lock_edge(rm.fdh, rm.eo)
+print(room_graph.is_reachable(rm.fdh, rm.eo))
+print(room_graph.route_with_blocker(rm.fdh, rm.eo).name)
 ### Amir_H Javadi_B - 5717292
