@@ -49,7 +49,7 @@ class RoomGraph:
         self._validate(room_a, room_b)
         return frozenset((room_a, room_b)) in self.locked_edges
     
-    def show_locked_edges(self):
+    def show_locked_edges(self) -> None:
         for edge in self.locked_edges:
             print("(", end ="")
             for room in edge:
