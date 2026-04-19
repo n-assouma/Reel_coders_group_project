@@ -9,7 +9,7 @@ and breadth-first search for shortest-path navigation.
 import room as rm
 from collections import deque
 from typing import Optional 
-#TODO: add an error for none existing edges
+
 class RoomGraphError(Exception):
     """Raised when a graph operation receives an invalid room."""
     pass
@@ -132,6 +132,12 @@ class RoomGraph:
         for room in rooms:
             if room not in self.graph:
                 raise RoomGraphError(f"room {room.name}, is not in the graph.")
+    
+    def _edge_validate(self, *edges: list[rm.Room]) -> None:
+        """Raise EdgeNotExistError if any given edges is not in the graph."""
+        for edge in edges:
+            if edge[1] not in self.graph[edge[0]]:
+                raise EdgeNotExistError(f"the edge between the rooms {edge[0].name} and {edge[1].name} does not exist in the graph")
         
     def __repr__(self) -> str:
         """Return a concise debug string showing room count and lock count."""
