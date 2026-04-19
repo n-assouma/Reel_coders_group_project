@@ -30,6 +30,7 @@ class EvidenceBag:
         self.__data: list[ev.Evidence] = []
     
     def show(self):
+        """Showing the bag evidences names."""
         bag = []
         for evidence in self.__data:
             bag.append(evidence.name)
@@ -55,7 +56,7 @@ class EvidenceBag:
             self.__data.remove(evidence)
         except ValueError:
             raise EvidenceNotFoundError(f"Evidence '{evidence.name}' is not in the bag.")            
-        
+
     def _merge(self, first_sorted_bag_data: list[ev.Evidence], second_sorted_bag_data: list[ev.Evidence]) -> list[ev.Evidence]:
         """Merge two sorted lists of Evidence into one sorted list, comparing by priority."""
         if not first_sorted_bag_data:
@@ -100,20 +101,4 @@ class EvidenceBag:
         """Return a concise debug string showing bag occupancy."""
         return f"EvidenceBag({len(self.__data)}/{self.MAX_SIZE} items)"
 
-
-##Testing 
-bag = EvidenceBag()
-bag.add_evidence(ev.tt)
-bag.add_evidence(ev.cf)
-bag.add_evidence(ev.de)
-bag.add_evidence(ev.di)
-bag.add_evidence(ev.mkl)
-bag.show()
-#bag.add_evidence(ev.le)
-bag.remove_evidence(ev.tt)
-bag.sort_by_priority()
-#bag.remove_evidence(ev.tt)
-bag.show()
-bag.__data.append(ev.tt)
-bag.show()
 ### Amir_H Javadi_B - 5717292
