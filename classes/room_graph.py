@@ -22,14 +22,17 @@ class RoomGraph:
         """
         if not rooms:
             raise RoomGraphError("room graph cannot be built with no rooms.")
-        self.graph: dict[rm.Room, set[rm.Room]] = {}#room: set(room.connections) for room in rooms
+        self.graph: dict[rm.Room, set[rm.Room]] = {}
         self.locked_edges: set[frozenset[rm.Room]] = set()
     
     def build_graph(self, rooms: list[rm.Room]) -> None:
         for room in rooms:
-            self._validate((room))
             self.graph[room] = set(room.connections)
-        
+    
+    def show_graph(self) -> None:
+        for room in self.graph.keys():
+            for adjacent in self.graph[room]:
+                print(f"({room.name}, {adjacent.name})")
 
     def lock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
         """Mark the edge between two rooms as locked. Idempotent."""
@@ -126,5 +129,7 @@ rooms = rm.listt_of_rooms
 room_graph = RoomGraph(rooms)
 room_graph.build_graph(rooms)
 #print(room_graph.graph)
+#print(room_graph.graph)
+room_graph.show_graph()
    
 ### Amir_H Javadi_B - 5717292
