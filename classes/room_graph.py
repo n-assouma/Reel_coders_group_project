@@ -37,6 +37,7 @@ class RoomGraph:
             self.graph[room] = set(room.connections)
     
     def show_graph(self) -> None:
+        """Showing all the edges in the class."""
         for room in self.graph.keys():
             for adjacent in self.graph[room]:
                 print(f"({room.name}, {adjacent.name})")
@@ -60,6 +61,7 @@ class RoomGraph:
         return frozenset((room_a, room_b)) in self.locked_edges
     
     def show_locked_edges(self) -> None:
+        """Showing all the locked edges."""
         for edge in self.locked_edges:
             print("(", end ="")
             for room in edge:
