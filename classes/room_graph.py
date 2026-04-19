@@ -43,17 +43,17 @@ class RoomGraph:
 
     def lock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
         """Mark the edge between two rooms as locked. Idempotent."""
-        self._validate(room_a, room_b)
+        self._room_validate(room_a, room_b)
         self.locked_edges.add(frozenset((room_a, room_b)))
        
     def unlock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
         """Remove the lock from an edge"""
-        self._validate(room_a, room_b)
+        self._room_validate(room_a, room_b)
         self.locked_edges.discard(frozenset((room_a, room_b)))
     
     def is_locked(self, room_a: rm.Room, room_b: rm.Room) -> bool:
         """returning True if the edge between two rooms is currently locked"""
-        self._validate(room_a, room_b)
+        self._room_validate(room_a, room_b)
         return frozenset((room_a, room_b)) in self.locked_edges
     
     def show_locked_edges(self) -> None:
@@ -104,7 +104,7 @@ class RoomGraph:
     
     def is_reachable(self, origin: rm.Room, destination: rm.Room) -> bool:
         """Return True if a currently-passable route exists between the two rooms."""
-        self._validate(origin, destination)
+        self._room_validate(origin, destination)
         return self._bfs(origin, destination, respect_locks=True) is not None
     
     def route_with_blocker(self, origin: rm.Room, destination: rm.Room) -> Optional[rm.Room]:
@@ -119,7 +119,7 @@ class RoomGraph:
         Returns the first locked Room on the shortest path (ignoring locks),
         or None if the destination is unreachable even with all locks ignored.
         """
-        self._validate(origin, destination)
+        self._room_validate(origin, destination)
         path: Optional[list[rm.Room]] = self._bfs(origin, destination, respect_locks=False)
         if path is None:
             return None 
@@ -127,7 +127,7 @@ class RoomGraph:
             if self.is_locked(path[i], path[i+1]):
                 return path[i+1]
 
-    def _validate(self, *rooms: rm.Room) -> None:
+    def _room_validate(self, *rooms: rm.Room) -> None:
         """Raise RoomGraphError if any of the given rooms is not in the graph."""
         for room in rooms:
             if room not in self.graph:
