@@ -49,6 +49,13 @@ class RoomGraph:
         self._validate(room_a, room_b)
         return frozenset((room_a, room_b)) in self.locked_edges
     
+    def show_locked_edges(self):
+        for edge in self.locked_edges:
+            print("(", end ="")
+            for room in edge:
+                print(room.name, end=" ")
+            print(")")
+    
     def _bfs(self, origin: rm.Room, destination: rm.Room, respect_locks: bool) -> Optional[list[rm.Room]]:
         """Return the shortest path from origin to destination, or None if unreachable.
 
@@ -117,19 +124,30 @@ class RoomGraph:
         """Raise RoomGraphError if any of the given rooms is not in the graph."""
         for room in rooms:
             if room not in self.graph:
-                raise RoomGraphError(f"room {room}, is not in the graph.")
+                raise RoomGraphError(f"room {room.name}, is not in the graph.")
         
     def __repr__(self) -> str:
         """Return a concise debug string showing room count and lock count."""
         return f"RoomGraph(rooms={len(self.graph)}, locked={len(self.locked_edges)})"
 
 ## Testing 
-rooms = rm.listt_of_rooms
+"""rooms = rm.listt_of_rooms
 
 room_graph = RoomGraph(rooms)
 room_graph.build_graph(rooms)
 #print(room_graph.graph)
 #print(room_graph.graph)
-room_graph.show_graph()
-   
+#room_graph.show_graph()
+room_graph.lock_edge(rm.la, rm.mh)
+room_graph.lock_edge(rm.la, rm.hub)
+room_graph.lock_edge(rm.mh, rm.vh)
+room_graph.show_locked_edges()
+print(room_graph.is_locked(rm.mh, rm.la))
+print("-----------")
+room_graph.unlock_edge(rm.mh, rm.la)
+room_graph.unlock_edge(rm.hub, rm.mh)# doing nothing as its not in the locked_edges
+print(room_graph.is_locked(rm.mh, rm.la))
+room_graph.show_locked_edges()
+print("----------")
+room_graph.lock_edge(rm.not_room, rm.mh)#trying to add an locked edge for a room that is not in the graph"""
 ### Amir_H Javadi_B - 5717292
