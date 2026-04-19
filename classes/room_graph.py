@@ -44,16 +44,19 @@ class RoomGraph:
     def lock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
         """Mark the edge between two rooms as locked. Idempotent."""
         self._room_validate(room_a, room_b)
+        self._edge_validate((room_a, room_b))
         self.locked_edges.add(frozenset((room_a, room_b)))
        
     def unlock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
         """Remove the lock from an edge"""
         self._room_validate(room_a, room_b)
+        self._edge_validate((room_a, room_b))
         self.locked_edges.discard(frozenset((room_a, room_b)))
     
     def is_locked(self, room_a: rm.Room, room_b: rm.Room) -> bool:
         """returning True if the edge between two rooms is currently locked"""
         self._room_validate(room_a, room_b)
+        self._edge_validate((room_a, room_b))
         return frozenset((room_a, room_b)) in self.locked_edges
     
     def show_locked_edges(self) -> None:
@@ -171,6 +174,7 @@ room_graph.lock_edge(rm.mh, rm.la)
 room_graph.lock_edge(rm.hub, rm.la)
 room_graph.lock_edge(rm.sb, rm.fdh)
 room_graph.lock_edge(rm.fdh, rm.eo)
+room_graph.lock_edge(rm.sb, rm.la)
 print(room_graph.is_reachable(rm.fdh, rm.eo))
 print(room_graph.route_with_blocker(rm.fdh, rm.eo).name)
 ### Amir_H Javadi_B - 5717292
