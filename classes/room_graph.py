@@ -16,7 +16,7 @@ class RoomGraphError(Exception):
 
 
 class EdgeNotExistError(Exception):
-    """Raised when a locked_edges operations receives an invalid room."""
+    """Raised when a locked_edges operations receives an invalid edge."""
     pass
 
 
