@@ -8,8 +8,10 @@
 
     },
     "police_station": {
-        "room_sprites": ["detective_rowe", "accusation_board", "background", "case_file","background","case_file", "decor_1", "decor_2", "desk", "map_board"],
-        "detective_row": {
+        "furnitures": ["decor_1", "decor_2", "desk"],
+        "interactable_objects": ["accusation_board", "map_board"],
+        "evidences": ["case_file"],
+        "detective_rowe": {
             "sprite": "default.png",
             "position": [0.65, 0.3],
             "scale": 0.85
