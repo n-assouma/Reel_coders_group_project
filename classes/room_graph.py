@@ -13,6 +13,13 @@ from typing import Optional
 class RoomGraphError(Exception):
     """Raised when a graph operation receives an invalid room."""
     pass
+
+
+class EdgeNotExistError(Exception):
+    """Raised when a locked_edges operations receives an invalid room."""
+    pass
+
+
 class RoomGraph:
     """Undirected room graph with lockable edges and BFS pathfinding."""
 
