@@ -27,7 +27,13 @@ class EvidenceBag:
 
     def __init__(self) -> None:
         """Create an empty evidence bag."""
-        self.data: list[ev.Evidence] = []
+        self.__data: list[ev.Evidence] = []
+    
+    def show(self):
+        bag = []
+        for evidence in self.__data:
+            bag.append(evidence.name)
+        print(bag)
     
     def add_evidence(self, evidence: ev.Evidence) -> None:
         """Add evidence to the bag if space is available.
@@ -36,9 +42,9 @@ class EvidenceBag:
         only once in the game world. Raises MaximumEvidenceReachedError
         if the bag is full.
         """
-        if len(self.data) >= self.MAX_SIZE:
+        if len(self.__data) >= self.MAX_SIZE:
             raise MaximumEvidenceReachedError(f"Evidence bag is full (maximum {self.MAX_SIZE} items).")
-        self.data.append(evidence)
+        self.__data.append(evidence)
 
     def remove_evidence(self, evidence: ev.Evidence) -> None:
         """Remove specified evidence from the bag.
@@ -46,9 +52,9 @@ class EvidenceBag:
         Raises EvidenceNotFoundError if the evidence is not in the bag.
         """
         try:
-            self.data.remove(evidence)
+            self.__data.remove(evidence)
         except ValueError:
-            raise EvidenceNotFoundError(f"Evidence '{evidence}' is not in the bag.")            
+            raise EvidenceNotFoundError(f"Evidence '{evidence.name}' is not in the bag.")            
         
     def _merge(self, first_sorted_bag_data: list[ev.Evidence], second_sorted_bag_data: list[ev.Evidence]) -> list[ev.Evidence]:
         """Merge two sorted lists of Evidence into one sorted list, comparing by priority."""
@@ -84,14 +90,30 @@ class EvidenceBag:
     
     def sort_by_priority(self) -> None:
         """Sort the evidence in this bag by priority (in place)."""
-        self.data = self._merge_sort(self.data)
+        self.__data = self._merge_sort(self.__data)
     
     def __len__(self) -> int:
         """Return the number of evidence items currently in the bag."""
-        return len(self.data)
+        return len(self.__data)
 
     def __repr__(self) -> str:
         """Return a concise debug string showing bag occupancy."""
-        return f"EvidenceBag({len(self.data)}/{self.MAX_SIZE} items)"
+        return f"EvidenceBag({len(self.__data)}/{self.MAX_SIZE} items)"
 
+
+##Testing 
+bag = EvidenceBag()
+bag.add_evidence(ev.tt)
+bag.add_evidence(ev.cf)
+bag.add_evidence(ev.de)
+bag.add_evidence(ev.di)
+bag.add_evidence(ev.mkl)
+bag.show()
+#bag.add_evidence(ev.le)
+bag.remove_evidence(ev.tt)
+bag.sort_by_priority()
+#bag.remove_evidence(ev.tt)
+bag.show()
+bag.__data.append(ev.tt)
+bag.show()
 ### Amir_H Javadi_B - 5717292
