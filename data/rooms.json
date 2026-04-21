@@ -1,7 +1,7 @@
 {
     "_meta": {
-        "author": "Aryan Naranath 5758224",
-        "co_author": "Nael Karimou 5734316",
+        "author": "Nael Karimou 5734316",
+        "co_author": null,
         "description": "This file contains the data for the rooms in the game. It defines the sprites, their positions, and the walkable area for each room.",
         "todo": "For elenas_room, change 'research_paper' to the actual sprite instead of a ball. Define walkable area for background and positions for sprites. reproduce the same structure others rooms. Adjust if needed. Especially for data collision using depth sorting.",
         "completed": "post_office only"
@@ -16,6 +16,7 @@
             "position": [0.65, 0.3],
             "scale": 0.85
         },
+        "accusation_board": ["accusation_board.png", [0.76, 0.2], 0.8],
         "background": {
             "path": "background.png",
             "x": 1,
@@ -27,52 +28,11 @@
                 "bottom_left": [1, 0.65]
             }
         },
-        "accusation_board": {
-            "path": "accusation_board.png",
-            "position": [0.76, 0.2],
-            "scale": 0.8,
-            "class": "InteractableObject",
-            "collision": true
-        },
-        "case_file": {
-            "path": "case_file.png",
-            "position": [0.421, 0.325],
-            "scale": 0.94,
-            "class": "Evidence",
-            "collision": false
-
-        },
-
-        "decor_1": {
-            "path": "decor_1.png",
-            "position": [0.015, 0.42],
-            "scale": 0.94,
-            "class": "Furniture",
-            "collision": true
-
-        },
-        "decor_2": {
-            "path": "decor_2.png",
-            "position": [0.024, 0.086],
-            "scale": 0.85,
-            "class": "Furniture",
-            "collision": true
-        },
-        "desk": {
-            "path": "desk.png",
-            "position": [0.3, 0.2],
-            "scale": 0.9,
-            "class": "Furniture",
-            "collision": true
-            
-        },
-        "map_board": {
-            "path": "map_board.png",
-            "position": [0.67, 0.013],
-            "scale": 0.72,
-            "class": "InteractableObject",
-            "collision": false
-        }
+        "case_file": ["case_file.png", [0.421, 0.325], 0.94],
+        "decor_1": ["decor_1.png", [0.015, 0.42], 0.94],
+        "decor_2": ["decor_2.png", [0.024, 0.086], 0.85],
+        "desk":["desk.png", [0.3, 0.2], 0.9],
+        "map_board": ["map_board.png", [0.67, 0.013], 0.72]
     },
     "elenas_office": {
         "room_sprites": ["accusation_board", "background", "bookshelf", "broken_lamp", "chair", "computer", "desk", "dinner_invitation", "research_paper", "tweed_thread"],
