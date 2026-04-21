@@ -13,6 +13,13 @@ from typing import Optional
 class RoomGraphError(Exception):
     """Raised when a graph operation receives an invalid room."""
     pass
+
+
+class EdgeNotExistError(Exception):
+    """Raised when a locked_edges operations receives an invalid edge."""
+    pass
+
+
 class RoomGraph:
     """Undirected room graph with lockable edges and BFS pathfinding."""
 
@@ -22,23 +29,44 @@ class RoomGraph:
         """
         if not rooms:
             raise RoomGraphError("room graph cannot be built with no rooms.")
-        self.graph: dict[rm.Room, set[rm.Room]] = {room: set(room.connections) for room in rooms}
-        self.locked_edges: set[frozenset[rm.Room]] = set()
+        self.__graph: dict[rm.Room, set[rm.Room]] = {}
+        self.__locked_edges: set[frozenset[rm.Room]] = set()
+    
+    def build_graph(self, rooms: list[rm.Room]) -> None:
+        for room in rooms:
+            self.__graph[room] = set(room.connections)
+    
+    def show_graph(self) -> None:
+        """Showing all the edges in the class."""
+        for room in self.__graph.keys():
+            for adjacent in self.__graph[room]:
+                print(f"({room.name}, {adjacent.name})")
 
     def lock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
         """Mark the edge between two rooms as locked. Idempotent."""
-        self._validate(room_a, room_b)
-        self.locked_edges.add(frozenset((room_a, room_b)))
+        self._room_validate(room_a, room_b)
+        self._edge_validate((room_a, room_b))
+        self.__locked_edges.add(frozenset((room_a, room_b)))
        
     def unlock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
         """Remove the lock from an edge"""
-        self._validate(room_a, room_b)
-        self.locked_edges.discard(frozenset((room_a, room_b)))
+        self._room_validate(room_a, room_b)
+        self._edge_validate((room_a, room_b))
+        self.__locked_edges.discard(frozenset((room_a, room_b)))
     
     def is_locked(self, room_a: rm.Room, room_b: rm.Room) -> bool:
-        """returning True if the edge between two rooms is currently locked"""
-        self._validate(room_a, room_b)
-        return frozenset((room_a, room_b)) in self.locked_edges
+        """returning True if the edge between two rooms is currently locked."""
+        self._room_validate(room_a, room_b)
+        self._edge_validate((room_a, room_b))
+        return frozenset((room_a, room_b)) in self.__locked_edges
+    
+    def show_locked_edges(self) -> None:
+        """Showing all the locked edges."""
+        for edge in self.__locked_edges:
+            print("(", end ="")
+            for room in edge:
+                print(room.name, end=" ")
+            print(")")
     
     def _bfs(self, origin: rm.Room, destination: rm.Room, respect_locks: bool) -> Optional[list[rm.Room]]:
         """Return the shortest path from origin to destination, or None if unreachable.
@@ -64,7 +92,7 @@ class RoomGraph:
             if current_room == destination:
                 is_found = True
                 break
-            for room in self.graph[current_room]:
+            for room in self.__graph[current_room]:
                 if room not in child_parent and not(respect_locks and self.is_locked(current_room, room)):
                     queue.append(room)
                     child_parent[room] = current_room
@@ -81,7 +109,7 @@ class RoomGraph:
     
     def is_reachable(self, origin: rm.Room, destination: rm.Room) -> bool:
         """Return True if a currently-passable route exists between the two rooms."""
-        self._validate(origin, destination)
+        self._room_validate(origin, destination)
         return self._bfs(origin, destination, respect_locks=True) is not None
     
     def route_with_blocker(self, origin: rm.Room, destination: rm.Room) -> Optional[rm.Room]:
@@ -96,7 +124,7 @@ class RoomGraph:
         Returns the first locked Room on the shortest path (ignoring locks),
         or None if the destination is unreachable even with all locks ignored.
         """
-        self._validate(origin, destination)
+        self._room_validate(origin, destination)
         path: Optional[list[rm.Room]] = self._bfs(origin, destination, respect_locks=False)
         if path is None:
             return None 
@@ -104,14 +132,20 @@ class RoomGraph:
             if self.is_locked(path[i], path[i+1]):
                 return path[i+1]
 
-    def _validate(self, *rooms: rm.Room) -> None:
+    def _room_validate(self, *rooms: rm.Room) -> None:
         """Raise RoomGraphError if any of the given rooms is not in the graph."""
         for room in rooms:
-            if room not in self.graph:
-                raise RoomGraphError(f"room {room}, is not in the graph.")
+            if room not in self.__graph:
+                raise RoomGraphError(f"room {room.name}, is not in the graph.")
+    
+    def _edge_validate(self, *edges: list[rm.Room]) -> None:
+        """Raise EdgeNotExistError if any given edges is not in the graph."""
+        for edge in edges:
+            if edge[1] not in self.__graph[edge[0]]:
+                raise EdgeNotExistError(f"the edge between the rooms {edge[0].name} and {edge[1].name} does not exist in the graph")
         
     def __repr__(self) -> str:
         """Return a concise debug string showing room count and lock count."""
-        return f"RoomGraph(rooms={len(self.graph)}, locked={len(self.locked_edges)})"
-    
+        return f"RoomGraph(rooms={len(self.__graph)}, locked={len(self.__locked_edges)})"
+
 ### Amir_H Javadi_B - 5717292
