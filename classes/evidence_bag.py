@@ -27,14 +27,7 @@ class EvidenceBag:
 
     def __init__(self) -> None:
         """Create an empty evidence bag."""
-        self.__data: list[ev.Evidence] = []
-    
-    def show(self):
-        """Showing the bag evidences names."""
-        bag = []
-        for evidence in self.__data:
-            bag.append(evidence.name)
-        print(bag)
+        self.data: list[ev.Evidence] = []
     
     def add_evidence(self, evidence: ev.Evidence) -> None:
         """Add evidence to the bag if space is available.
@@ -43,9 +36,9 @@ class EvidenceBag:
         only once in the game world. Raises MaximumEvidenceReachedError
         if the bag is full.
         """
-        if len(self.__data) >= self.MAX_SIZE:
+        if len(self.data) >= self.MAX_SIZE:
             raise MaximumEvidenceReachedError(f"Evidence bag is full (maximum {self.MAX_SIZE} items).")
-        self.__data.append(evidence)
+        self.data.append(evidence)
 
     def remove_evidence(self, evidence: ev.Evidence) -> None:
         """Remove specified evidence from the bag.
@@ -53,10 +46,10 @@ class EvidenceBag:
         Raises EvidenceNotFoundError if the evidence is not in the bag.
         """
         try:
-            self.__data.remove(evidence)
+            self.data.remove(evidence)
         except ValueError:
-            raise EvidenceNotFoundError(f"Evidence '{evidence.name}' is not in the bag.")            
-
+            raise EvidenceNotFoundError(f"Evidence '{evidence}' is not in the bag.")            
+        
     def _merge(self, first_sorted_bag_data: list[ev.Evidence], second_sorted_bag_data: list[ev.Evidence]) -> list[ev.Evidence]:
         """Merge two sorted lists of Evidence into one sorted list, comparing by priority."""
         if not first_sorted_bag_data:
@@ -91,14 +84,14 @@ class EvidenceBag:
     
     def sort_by_priority(self) -> None:
         """Sort the evidence in this bag by priority (in place)."""
-        self.__data = self._merge_sort(self.__data)
+        self.data = self._merge_sort(self.data)
     
     def __len__(self) -> int:
         """Return the number of evidence items currently in the bag."""
-        return len(self.__data)
+        return len(self.data)
 
     def __repr__(self) -> str:
         """Return a concise debug string showing bag occupancy."""
-        return f"EvidenceBag({len(self.__data)}/{self.MAX_SIZE} items)"
+        return f"EvidenceBag({len(self.data)}/{self.MAX_SIZE} items)"
 
 ### Amir_H Javadi_B - 5717292
