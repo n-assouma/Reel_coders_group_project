@@ -93,7 +93,8 @@ class Game:
     def _update(self) -> None:
         '''handle player movement and update hud hints'''
         keys = pygame.key.get_pressed()
-        self.current_room.player.handle_movement(keys)
+        self.current_room.player.handle_movement(keys,
+                                                 self.current_room.collision_rects)
 
         player_center = self.current_room.player.get_center()
 

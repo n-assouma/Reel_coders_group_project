@@ -1,9 +1,16 @@
+### Author: Nael Karimou - 5734316
+
+
 import os
 import pygame
 
 from .player import Player
 from .interactable_object import *
 
+# TODO: Update this to room.json. I made think really harder for me 
+#A room should own a player. TODO
+#The room should handle the collisin detection and y sorting
+# a room should give oone method to draw the whole room.
 class Room:
     def __init__(self, room_name: str, room_data: dict)-> None:
         self.name = room_name
@@ -16,47 +23,68 @@ class Room:
         self.background = pygame.image.load(path).convert()
         self.background = pygame.transform.scale(self.background, (SCREEN_WIDTH, MAIN_SCREEN_HEIGHT))
 
-        # keep track of drawable objects in the room for depth sorting and collision detection.
-        self.room_objects = []
+        # load background walkable area
+        self._walkable_area = ... # TODO
 
-        # load furnitures and their data
-        self.furnitures = {}
-        for furniture_name in room_data['furnitures']:
-            self.furnitures[furniture_name] = Furniture(room_name, furniture_name,
-                                                         room_data[furniture_name])
+        # load furniture, Interactable objects and evidences in the room with their name as a key
+        self._objects = {}
+        for obj_name in room_data['objects']:
+            if obj_name not in self._objects:
+                match room_data[obj_name]['class']:
+                    case 'Furniture':
+                        self._objects[obj_name]['object'] = Furniture(room_name, obj_name, room_data[obj_name])
+                    case 'InteractableObject':
+                        self._objects[obj_name]['object'] = InteractableObject(room_name, obj_name, room_data[obj_name])
+                    case 'Evidence':
+                        self._objects[obj_name]['object'] = Evidence(room_name, obj_name, room_data[obj_name])
+                    case _:
+                        # An error occured during loading, there is a typo in room.json. 
+                        print(f"Object '{obj_name}' not found in room data for room '{room_name}'. Error may come from json file.")
+
+            else:
+                #if there is a duplicate of an object in rooms.json
+                continue
+
+        # get a list of obejct the player can collid with
+        self._collision_rects = [
+            self.objects[obj_name]['object'].collision_rect
+            for obj_name in self.objects
+            if self.objects[obj_name]['object'].collision == True
+        ]
+
             
-            #add to room objects.
-            self.room_objects.append(self.furnitures[furniture_name])
 
-        # load interactible objects in the room
-        self.interactable_objects = {}
-        for obj_name in room_data['interactable_objects']:
-            self.interactable_objects[obj_name] = InteractableObject(room_name, obj_name,
-                                                                     room_data[obj_name])
-            # add to drawable objects
-            self.room_objects.append(self.interactable_objects[obj_name])
-
-        # load evidences in the room
-        self.evidences = {}
-        for evidence_name in room_data['evidences']:
-            self.evidences[evidence_name] = Evidence(room_name, evidence_name,
-                                                                room_data[evidence_name])
-            # add to drawable objects
-            self.room_objects.append(self.evidences[evidence_name])
-
-
-    def get_room_objects(self) -> list[Furniture]:
+    @property
+    def objects(self) -> dict:
         '''
-        Get the drawable objects in the room as a list.
+        Get the all objects in the room.
+        Return: a dictonnary with the following structure:
+        {
+            object_name: {
+                object: the object itself
+            },
+            ...
+        }
         '''
-        return self.room_objects
+        return self._objects #TODO: Define seperate function to load different types of objects
+                             # if needed
 
-    def get_walkable_area(self) -> list[pygame.Rect]:
+    @property
+    def collision_objects(self):
+        '''
+        return a list of object th plyer can collide with
+        '''
+        return self._collision_objects
+    
+
+    # Dunno if we need that
+    def get_walkable_area(self) -> pygame.Rect:
         '''
         Define the walkable area of the room as a list of pygame rectangles.
         This is used for border collision detection when the player moves around.
         It does not include the area occupied by furnitures.
         '''
+        self._walkable_area
 
     def draw_background(self, surface: pygame.Surface) -> None:
         '''
@@ -65,21 +93,37 @@ class Room:
         '''
         surface.blit(self.background, (0, 0))
 
-    def draw_room_object(self, surface: pygame.Surface, object_name: str) -> None:
+
+    '''New structure for drawing objects in a room'''
+    #def draw Evidence
+    #def draw InteractableObject
+    #def draw Furniture
+    
+    def depth_sorting(self) -> list:
+        '''
+        Get a list of all objects in the room sorted by their y position for depth sorting.
+        This should be used when drawing the screen so that objects are drawn in the correct order.
+        '''
+        pass
+
+    #def draw (whole room)
+
+    def draw_room_object(self, surface: pygame.Surface, object_name: str) -> None: # TODO: update this to use depth sorting
         '''
         Draw a specific object in the room onto the given surface.
         This should be used when drawing the screen using depth sorting,
         so that objects are drawn in the correct order based on their y position.
         '''
-        for obj in self.room_objects:
-            if obj.name == object_name:
-                if type(obj) == Furniture:
-                    obj.draw(surface)
-                else:
-                    obj.draw(surface, self.player.get_center(), pygame.font.SysFont('Arial', 20))
-                break
+        #if the name of the object is valid
+        if object_name in self.objects:
+            if type(self.objects[object_name]) == Furniture:
+                self.objects[object_name][object].draw(surface)
+
+            elif type(self.objects[object_name]) in (InteractableObject, Evidence):
+                self.objects[object_name][object].draw(surface, self.player.get_center())
         else:
             print(f"Object '{object_name}' not found in room '{self.name}'")
+            
 
     def __str__(self) -> str:
-        return f"Room(name={self.name}, player_start={self.player_start}, furnitures={list(self.furnitures.keys())}, interactable_objects={list(self.interactable_objects.keys())}, evidences={list(self.evidences.keys())})"
+        return f"Room(name={self.name})"
