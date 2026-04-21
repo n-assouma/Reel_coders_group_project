@@ -8,7 +8,9 @@
 
     },
     "police_station": {
-        "objects": ["decor_1", "decor_2", "desk","accusation_board", "map_board","case_file"],
+        "furnitures": ["decor_1", "decor_2", "desk"],
+        "interactable_objects": ["accusation_board", "map_board"],
+        "evidences": ["case_file"],
         "detective_rowe": {
             "sprite": "default.png",
             "position": [0.65, 0.3],
