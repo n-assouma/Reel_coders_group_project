@@ -10,7 +10,7 @@ import pygame
 import sys
 
 
-from classes.interactable_object import InteractableObject
+from classes.interactable_object import Furniture, InteractableObject
 from classes.room_graph import RoomGraph
 from classes.room import Room
 from classes.hud import HUD
@@ -82,7 +82,7 @@ class Game:
     def _try_interact(self) -> None:
         '''check if the player is near any interactable objects and if so, interact with it.'''
         player_center = self.current_room.player.get_center()
-        interactible_objects = filter(lambda obj: isinstance(obj, InteractableObject), self.current_room.room_objects) 
+        interactible_objects = filter(lambda obj: isinstance(obj, InteractableObject), self.current_room.objects) 
         for obj in interactible_objects:
             if obj.is_player_near(player_center):
                 print("[INTERACT] examined:", obj.name)
@@ -93,22 +93,24 @@ class Game:
     def _update(self) -> None:
         '''handle player movement and update hud hints'''
         keys = pygame.key.get_pressed()
-        self.current_room.player.handle_movement(keys)
+        self.current_room.player.handle_movement(keys, self.current_room.collision_rects)
 
         player_center = self.current_room.player.get_center()
 
-        for obj in self.current_room.room_objects[3:]: # TODO: only check evidence objects, not furnitures or interactable objects. 
-                                                       # this is a bit hacky, maybe we should have a separate list for interactable 
-                                                       # objects and evidences in the room class instead of putting them all in one list.
-            if obj.is_player_near(player_center):
-                self.hud.set_hint("That looks like a " + obj.name.lower() + ". Press E to examine it.")
-                return
-        self.hud.set_hint("Walk around the station. Use WASD to move, E to interact.")
+        # Set hud chief of police hint display to something. TODO: update with actual messages
+        for obj_name in self.current_room.objects:
+            obj = self.current_room.objects[obj_name]
+            if type(obj) != Furniture:
+                if obj.is_player_near(player_center):
+                    self.hud.set_hint("That looks like a " + obj.name + ". Press E to examine it.")
+                    return
+            self.hud.set_hint("Walk around the station. Use WASD to move, E to interact.")
 
     def _draw(self) -> None:
         '''draw the current room, the player and the hud'''
         self.current_room.draw_background(self.screen)
-        for obj in self.current_room.room_objects:
+        for obj_name in self.current_room.objects:
+            obj = self.current_room.objects[obj_name]
             self.current_room.draw_room_object(self.screen, obj.name)
         self.current_room.player.draw(self.screen)
         self.hud.draw(self.screen)

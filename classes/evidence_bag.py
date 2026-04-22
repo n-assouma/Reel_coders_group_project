@@ -6,7 +6,7 @@ The player's evidence container. Holds up to MAX_SIZE items and
 supports merge-sort ordering by evidence priority.
 """
 
-import evidence as ev
+from .interactable_object import Evidence
 
 class MaximumEvidenceReachedError(Exception):
     """Raised when a there are already 5 evidences in the bag 
@@ -27,7 +27,7 @@ class EvidenceBag:
 
     def __init__(self) -> None:
         """Create an empty evidence bag."""
-        self.__data: list[ev.Evidence] = []
+        self.__data: list[Evidence] = []
     
     def show(self):
         """Showing the bag evidences names."""
@@ -36,7 +36,7 @@ class EvidenceBag:
             bag.append(evidence.name)
         print(bag)
     
-    def add_evidence(self, evidence: ev.Evidence) -> None:
+    def add_evidence(self, evidence: Evidence) -> None:
         """Add evidence to the bag if space is available.
     
         Duplicate checking is unnecessary as each evidence item exists
@@ -47,7 +47,7 @@ class EvidenceBag:
             raise MaximumEvidenceReachedError(f"Evidence bag is full (maximum {self.MAX_SIZE} items).")
         self.__data.append(evidence)
 
-    def remove_evidence(self, evidence: ev.Evidence) -> None:
+    def remove_evidence(self, evidence: Evidence) -> None:
         """Remove specified evidence from the bag.
     
         Raises EvidenceNotFoundError if the evidence is not in the bag.
@@ -57,7 +57,7 @@ class EvidenceBag:
         except ValueError:
             raise EvidenceNotFoundError(f"Evidence '{evidence.name}' is not in the bag.")            
 
-    def _merge(self, first_sorted_bag_data: list[ev.Evidence], second_sorted_bag_data: list[ev.Evidence]) -> list[ev.Evidence]:
+    def _merge(self, first_sorted_bag_data: list[Evidence], second_sorted_bag_data: list[Evidence]) -> list[Evidence]:
         """Merge two sorted lists of Evidence into one sorted list, comparing by priority."""
         if not first_sorted_bag_data:
             return second_sorted_bag_data
@@ -65,7 +65,7 @@ class EvidenceBag:
             return first_sorted_bag_data
         first_pointer: int = 0
         second_pointer: int = 0        
-        merged_bag_data: list[ev.Evidence] = []
+        merged_bag_data: list[Evidence] = []
         while first_pointer < len(first_sorted_bag_data) and second_pointer < len(second_sorted_bag_data):
             if first_sorted_bag_data[first_pointer].priority < second_sorted_bag_data[second_pointer].priority:
                 merged_bag_data.append(first_sorted_bag_data[first_pointer])
@@ -78,7 +78,7 @@ class EvidenceBag:
         merged_bag_data += second_sorted_bag_data[second_pointer:]
         return merged_bag_data
     
-    def _merge_sort(self, bag_data: list[ev.Evidence]) -> list[ev.Evidence]:
+    def _merge_sort(self, bag_data: list[Evidence]) -> list[Evidence]:
         """Recursively sort a list of Evidence by priority using merge sort.
     
         Returns a new sorted list. Time complexity: O(n log n).

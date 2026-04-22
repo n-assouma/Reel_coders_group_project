@@ -14,21 +14,45 @@ class Furniture:
         self.room_name = room_name
         
         # load the sprite
-        path = os.path.join('assets',room_name, obj_data[0])
+        path = os.path.join('assets',room_name, obj_data['path'])
         self.sprite = pygame.image.load(path).convert_alpha()
 
         # scale the sprite based on the scale factor in the data
-        scaled_width = int(self.sprite.get_width() * obj_data[2])
-        scaled_height = int(self.sprite.get_height() * obj_data[2])
+        scaled_width = int(self.sprite.get_width() * obj_data['scale'])
+        scaled_height = int(self.sprite.get_height() * obj_data['scale'])
         self.sprite = pygame.transform.scale(self.sprite,(scaled_width, scaled_height))
 
         # get the rectangle for the sprite, positioned at the x and y in the data
-        self.rect = self.sprite.get_rect(topleft=(obj_data[1][0] * SCREEN_WIDTH,
-                                                  obj_data[1][1] * SCREEN_HEIGHT))
+        self.rect = self.sprite.get_rect(topleft=(obj_data['position'][0] * SCREEN_WIDTH,
+                                                  obj_data['position'][1] * SCREEN_HEIGHT))
+        
+        # define if object needs collision or not 
+        self.collision = obj_data['collision']
+
+        # load collision detection rectangle if needed
+        if self.collision:  
+            collision_rect_width = scaled_width
+            collision_rect_height = self.sprite.get_height() // 10 # about 10% of object height
+
+            collision_rect_pos = (
+                obj_data['position'][0] * SCREEN_WIDTH,
+                obj_data['position'][1] * SCREEN_HEIGHT +  (scaled_height - collision_rect_height)
+            )
+            self._collision_rect = pygame.Rect(collision_rect_pos, 
+                                              (collision_rect_width, collision_rect_height)
+            )
 
     def draw(self, surface: pygame.Surface) -> None:
-        '''draw the furniture onto the given surface.'''
+        '''draw the furniture onto the given surface at the position of its rectangle'''
         surface.blit(self.sprite, self.rect)
+
+    @property
+    def collision_rect(self):
+        '''
+        Return the collision rectangle of the object
+        '''
+        return self._collision_rect
+    
         
     def __repr__(self) -> str:
         return f"Furniture(name={self.name}, room={self.room_name})"
@@ -41,12 +65,13 @@ class InteractableObject(Furniture):
     '''
     def __init__(self, room_name: str, name: str, obj_data: dict) -> None:
         super().__init__(room_name, name, obj_data)
+        self._font = pygame.font.SysFont('Arial', 20)
 
-    def draw(self, surface: pygame.Surface, player_center: tuple[int, int], font: pygame.font.Font) -> None:
+    def draw(self, surface: pygame.Surface, player_center: tuple[int, int]) -> None:
         '''draw the object onto the given surface. also draws the [E] prompt if the player is near.'''
         surface.blit(self.sprite, self.rect)
         if self.is_player_near(player_center):
-            self._draw_prompt(surface, font)
+            self._draw_prompt(surface)
 
     def is_player_near(self, player_center: tuple[int, int]) -> bool:
         '''
@@ -62,10 +87,10 @@ class InteractableObject(Furniture):
         distance = math.sqrt(dx ** 2 + dy ** 2)
         return distance <= INTERACTION_RADIUS
     
-    def _draw_prompt(self, surface, font):
+    def _draw_prompt(self, surface):
         '''show [E] + name above the object'''
         text = "[E] " + self.name
-        label = font.render(text, True, COLOUR_TEXT)
+        label = self._font.render(text, True, COLOUR_TEXT)
         pad = 6
         bg_rect = label.get_rect()
         bg_rect.centerx = self.rect.centerx
@@ -93,9 +118,7 @@ class Evidence(InteractableObject):
         self.collected = False
         self.visible = True 
 
-    def draw(self, surface: pygame.Surface, player_center: tuple[int, int], font: pygame.font.Font) -> None:
+    def draw(self, surface: pygame.Surface, player_center: tuple[int, int]) -> None:
         '''draw the evidence onto the given surface. also draws the [E] prompt if the player is near and has not collected it yet.'''
         if self.visible and not self.collected:
-            super().draw(surface, player_center, font)
-
-
+            super().draw(surface, player_center)
