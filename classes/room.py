@@ -4,6 +4,7 @@
 import os
 import pygame
 
+from .evidence import Evidence
 from .player import Player
 from .interactable_object import *
 

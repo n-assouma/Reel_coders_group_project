@@ -6,7 +6,7 @@ The player's evidence container. Holds up to MAX_SIZE items and
 supports merge-sort ordering by evidence priority.
 """
 
-from .interactable_object import Evidence
+from .evidence import Evidence
 
 class MaximumEvidenceReachedError(Exception):
     """Raised when a there are already 5 evidences in the bag 

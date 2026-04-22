@@ -4,8 +4,8 @@
 # TODO: maybe move colours to a seperate file later
 
 # screen size
-SCREEN_WIDTH = 1024
-SCREEN_HEIGHT = 640
+SCREEN_WIDTH = 1200
+SCREEN_HEIGHT = 700
 FPS = 60
 
 # hud takes the bottom 28% of the screen

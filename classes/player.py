@@ -87,7 +87,6 @@ class Player:
     def draw(self, surface: pygame.Surface) -> None:
         '''draw the player onto the given surface.'''
         surface.blit(self.sprite, self.rect.topleft)
-        pygame.draw.rect(surface, (0, 0, 0), self.collision_rect)
 
     def get_center(self) -> tuple[int, int]:
         '''get the center point of the player's rectangle. used for calculating distance to interactable objects.'''
