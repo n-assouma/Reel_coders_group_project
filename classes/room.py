@@ -61,10 +61,7 @@ class Room:
         Get the all objects in the room.
         Return: a dictonnary with the following structure:
         {
-            object_name: {
-                object: the object itself
-            },
-            ...
+            object_name: the object itself
         }
         '''
         return self._objects #TODO: Define seperate function to load different types of objects
