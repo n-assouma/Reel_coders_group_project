@@ -10,7 +10,8 @@ class Player:
     '''the player character that the user controls. Can move around with WASD.
     '''
     def __init__(self, player_data: dict) -> None:
-        self._pos = self._pos_x, self._pos_y = player_data['position']
+        self._pos_x = player_data['position'][0] * SCREEN_WIDTH
+        self._pos_y = player_data['position'][1] * SCREEN_HEIGHT
         self._speed = PLAYER_SPEED
 
         # load the sprite
@@ -21,20 +22,21 @@ class Player:
         self.sprite = pygame.transform.scale(self.sprite, (PLAYER_WIDTH, PLAYER_HEIGHT))
 
         # get the position rectangle for the sprite 
-        self.rect = self.sprite.get_rect(topleft=(self._pos_x * SCREEN_WIDTH,
-                                                  self._pos_y * SCREEN_HEIGHT))
+        self.rect = self.sprite.get_rect(topleft=(self._pos_x, self._pos_y))
         
         # get collision rectangle for player
         collision_rect_width = PLAYER_WIDTH
         collision_rect_height = PLAYER_HEIGHT // 10 # about 10% of player height
-
         collision_rect_pos = (
-            self._pos_x * SCREEN_WIDTH,
-            self._pos_y * SCREEN_HEIGHT + (PLAYER_HEIGHT - collision_rect_height)
+            self._pos_x,
+            self._pos_y + (PLAYER_HEIGHT - collision_rect_height)
         )
-
         self.collision_rect = pygame.Rect(collision_rect_pos,
                                         (collision_rect_width, collision_rect_height))
+        
+        # get next collision box for player next position computation
+        self._next_pos_x = self.collision_rect.topleft[0]
+        self._next_pos_y = self.collision_rect.topleft[1]
         
 
     def handle_movement(self, pressed_keys: list, collision_obj_lst: list) -> None: 
@@ -52,13 +54,13 @@ class Player:
         if pressed_keys[pygame.K_d]:
             dx = self._speed
 
-        # define next position
-        next_pos_x = self.collision_rect.topleft[0] + dx,
-        next_pos_y = self.collision_rect.topleft[1] + dy
+        # define next position fror collision rectangle
+        self._next_pos_x += dx
+        self._next_pos_y += dy
         
         # define next position rectangle
-        next_pos_rect = pygame.Rect(next_pos_x,
-                                    next_pos_y,
+        next_pos_rect = pygame.Rect(self._next_pos_x,
+                                    self._next_pos_y,
                                     self.collision_rect.width,
                                     self.collision_rect.height)
         
@@ -67,14 +69,25 @@ class Player:
 
         # update position and rectangle
         if collided == -1: # if there was no collision
-            self._pos_x = next_pos_x
-            self._pos_y = next_pos_y
-            self.rect.topleft = (self._pos_x, self._pos_y)
-
+            #update player position
+            self._pos_x += dx
+            self._pos_y += dy
+            self.rect.topleft = (self._pos_x,
+                                 self._pos_y)
+            
+            #update collision rectangle position
+            self.collision_rect = next_pos_rect
+        
+        else:
+            # if there is a collision, reset next coordonate
+            self._next_pos_x -= dx
+            self._next_pos_y -= dy
+        
 
     def draw(self, surface: pygame.Surface) -> None:
         '''draw the player onto the given surface.'''
         surface.blit(self.sprite, self.rect.topleft)
+        pygame.draw.rect(surface, (0, 0, 0), self.collision_rect)
 
     def get_center(self) -> tuple[int, int]:
         '''get the center point of the player's rectangle. used for calculating distance to interactable objects.'''

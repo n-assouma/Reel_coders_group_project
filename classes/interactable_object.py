@@ -32,7 +32,7 @@ class Furniture:
         # load collision detection rectangle if needed
         if self.collision:  
             collision_rect_width = scaled_width
-            collision_rect_height = int(self.sprite.get_height() * obj_data['scale'] / 10) # about 10% of object height
+            collision_rect_height = self.sprite.get_height() // 10 # about 10% of object height
 
             collision_rect_pos = (
                 obj_data['position'][0] * SCREEN_WIDTH,
@@ -118,7 +118,7 @@ class Evidence(InteractableObject):
         self.collected = False
         self.visible = True 
 
-    def draw(self, surface: pygame.Surface, player_center: tuple[int, int], font: pygame.font.Font) -> None:
+    def draw(self, surface: pygame.Surface, player_center: tuple[int, int]) -> None:
         '''draw the evidence onto the given surface. also draws the [E] prompt if the player is near and has not collected it yet.'''
         if self.visible and not self.collected:
-            super().draw(surface, player_center, font)
+            super().draw(surface, player_center)

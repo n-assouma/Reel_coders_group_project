@@ -31,6 +31,6 @@ COLOUR_TEXT_NOTEPAD = (150, 200, 140)
 
 # player speed
 # TODO: make speed independent of FPS so that it is consistent across different machines. maybe use delta time?
-PLAYER_SPEED = 0.01   # pixels per frame
+PLAYER_SPEED = 1.5  # pixels per frame
 INTERACTION_RADIUS = 55  # how close you need to be to press E
 

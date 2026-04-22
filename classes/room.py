@@ -32,11 +32,11 @@ class Room:
             if obj_name not in self._objects:
                 match room_data[obj_name]['class']:
                     case 'Furniture':
-                        self._objects[obj_name]['object'] = Furniture(room_name, obj_name, room_data[obj_name])
+                        self._objects[obj_name] = Furniture(room_name, obj_name, room_data[obj_name])
                     case 'InteractableObject':
-                        self._objects[obj_name]['object'] = InteractableObject(room_name, obj_name, room_data[obj_name])
+                        self._objects[obj_name] = InteractableObject(room_name, obj_name, room_data[obj_name])
                     case 'Evidence':
-                        self._objects[obj_name]['object'] = Evidence(room_name, obj_name, room_data[obj_name])
+                        self._objects[obj_name] = Evidence(room_name, obj_name, room_data[obj_name])
                     case _:
                         # An error occured during loading, there is a typo in room.json. 
                         print(f"Object '{obj_name}' not found in room data for room '{room_name}'. Error may come from json file.")
@@ -47,9 +47,9 @@ class Room:
 
         # get a list of obejct the player can collid with
         self._collision_rects = [
-            self.objects[obj_name]['object'].collision_rect
+            self.objects[obj_name].collision_rect
             for obj_name in self.objects
-            if self.objects[obj_name]['object'].collision == True
+            if self.objects[obj_name].collision == True
         ]
 
             
@@ -70,11 +70,11 @@ class Room:
                              # if needed
 
     @property
-    def collision_objects(self):
+    def collision_rects(self):
         '''
         return a list of object th plyer can collide with
         '''
-        return self._collision_objects
+        return self._collision_rects
     
 
     # Dunno if we need that
@@ -93,20 +93,12 @@ class Room:
         '''
         surface.blit(self.background, (0, 0))
 
-
-    '''New structure for drawing objects in a room'''
-    #def draw Evidence
-    #def draw InteractableObject
-    #def draw Furniture
-    
     def depth_sorting(self) -> list:
         '''
         Get a list of all objects in the room sorted by their y position for depth sorting.
         This should be used when drawing the screen so that objects are drawn in the correct order.
         '''
         pass
-
-    #def draw (whole room)
 
     def draw_room_object(self, surface: pygame.Surface, object_name: str) -> None: # TODO: update this to use depth sorting
         '''
@@ -117,10 +109,10 @@ class Room:
         #if the name of the object is valid
         if object_name in self.objects:
             if type(self.objects[object_name]) == Furniture:
-                self.objects[object_name][object].draw(surface)
+                self.objects[object_name].draw(surface)
 
             elif type(self.objects[object_name]) in (InteractableObject, Evidence):
-                self.objects[object_name][object].draw(surface, self.player.get_center())
+                self.objects[object_name].draw(surface, self.player.get_center())
         else:
             print(f"Object '{object_name}' not found in room '{self.name}'")
             
