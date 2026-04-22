@@ -16,13 +16,10 @@
         },
         "background": {
             "path": "background.png",
-            "x": 1,
-            "y": 0.75,
             "walkable_area": {
-                "top_right": [0.04, 0.29],
-                "top_left": [0.96, 0.29],
-                "bottom_right": [0.01, 0.64],
-                "bottom_left": [1, 0.65]
+                "top_left": [0.04, 0.27],
+                "width": 0.97,
+                "height": 0.41
             }
         },
         "accusation_board": {
