@@ -3,6 +3,7 @@
 # 5750779
 
 import pygame
+from .evidence_bag import EvidenceBag
 from settings import *
 
 # TODO: make the notepad actually work so the player can type in it
@@ -33,25 +34,27 @@ class HUD:
 
         # figure out the size of each of the 3 panels
         pad = 12
-        panel_w = (SCREEN_WIDTH - pad * 4) // 3
+        width = (SCREEN_WIDTH - pad * 3)
+        panel1_w = width * 6 // 10
+        panel2_w = width * 4 // 10
         panel_y = MAIN_SCREEN_HEIGHT + pad
         panel_h = HUD_HEIGHT - pad * 2
 
         # panel 1: chief of police
         x1 = pad
-        self.draw_panel(surface, x1, panel_y, panel_w, panel_h,
+        self.draw_panel(surface, x1 , panel_y, panel1_w , panel_h,
                         "CHIEF OF POLICE", COLOUR_TEXT_CHIEF,
                         self.current_hint, COLOUR_TEXT)
 
         # panel 2: notepad
-        x2 = x1 + panel_w + pad
-        self.draw_panel(surface, x2, panel_y, panel_w, panel_h,
-                        "NOTEPAD", COLOUR_TEXT_NOTEPAD,
-                        "Type your own notes here. (coming soon)", COLOUR_TEXT_DIM)
+        #x2 = x1 + panel_w + pad
+        #self.draw_panel(surface, x2, panel_y, panel_w, panel_h,
+                       # "NOTEPAD", COLOUR_TEXT_NOTEPAD,
+                      #  "Type your own notes here. (coming soon)", COLOUR_TEXT_DIM)
 
         # panel 3: evidence bag
-        x3 = x2 + panel_w + pad
-        self.draw_panel(surface, x3, panel_y, panel_w, panel_h,
+        x2 = x1 + panel1_w + pad
+        self.draw_panel(surface, x2, panel_y, panel2_w, panel_h,
                         "EVIDENCE BAG  (0 / 5)", COLOUR_TEXT_EVIDENCE,
                         "No evidence collected yet. (Amirhoseinj is building this)", COLOUR_TEXT_DIM)
 
