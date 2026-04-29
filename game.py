@@ -72,7 +72,9 @@ class Game:
         handle window events and keyboard input'''
         # This code is copy pasted rom somewhere.
         # Must change it.
-        
+
+### Amir H Javadi B 5717292
+
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left mouse button
@@ -93,6 +95,7 @@ class Game:
                 if self.active_evidence is not None:
                     self.evidence_bag.items[self.active_evidence].rect.move_ip(event.rel)
 
+### Amir H Javadi B 5717292
 
             if event.type == pygame.QUIT:
                 self.running = False
@@ -101,8 +104,6 @@ class Game:
                     self.running = False
                 elif event.key == pygame.K_e:
                     self._try_interact()
-        
-
 
     def _try_interact(self) -> None:
         player_center = self.current_room.player.get_center()
