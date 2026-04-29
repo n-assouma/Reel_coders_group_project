@@ -58,6 +58,14 @@ class HUD:
                         "EVIDENCE BAG  (0 / 5)", COLOUR_TEXT_EVIDENCE,
                         "No evidence collected yet. (Amirhoseinj is building this)", COLOUR_TEXT_DIM)
 
+            for num, evidence in enumerate(self.evidence_bag.items):
+                scaled = pygame.transform.scale(evidence.sprite, (50, 50))
+                if num == active_evidence:
+                    surface.blit(scaled, evidence.rect.topleft)
+                else:
+                    surface.blit(scaled, (img_x, img_y))
+                    evidence.rect = pygame.Rect(img_x, img_y, 50, 50)
+                img_x += 60
     def draw_panel(self, surface, x, y, w, h, title, title_colour, body, body_colour):
         # draw one panel on the hud
 
