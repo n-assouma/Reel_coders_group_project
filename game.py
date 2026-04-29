@@ -80,15 +80,23 @@ class Game:
                     self._try_interact()
 
     def _try_interact(self) -> None:
+        player_center = self.current_room.player.get_center()
         '''check if the player is near any interactable objects and if so, interact with it.'''
         player_center = self.current_room.player.get_center()
-        interactible_objects = filter(lambda obj: isinstance(obj, InteractableObject), self.current_room.objects) 
+        interactible_objects = filter(lambda obj: isinstance(obj, InteractableObject), self.current_room.objects.values()) 
         for obj in interactible_objects:
             if obj.is_player_near(player_center):
-                print("[INTERACT] examined:", obj.name)
-                msg = "You examined the " + obj.name.lower() + ". (pickup/interaction logic coming from team)"
-                self.hud.set_hint(msg)
+                if isinstance(obj, Evidence) and not obj.collected:
+                    obj.collected = True
+                    self.evidence_bag.add_evidence(obj)
+                    self.evidence_bag.sort_by_priority()
+                    self.hud.set_hint("You picked up: " + obj.name)
+                else:
+                    print("[INTERACT] examined:", obj.name)
+                    msg = "You examined the " + obj.name.lower() + ". (pickup/interaction logic coming from team)"
+                    self.hud.set_hint(msg)
                 return
+            
     
     def _update(self) -> None:
         '''handle player movement and update hud hints'''
