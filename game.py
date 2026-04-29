@@ -121,8 +121,12 @@ class Game:
         self.current_room.draw_background(self.screen)
         for obj_name in self.current_room.objects:
             obj = self.current_room.objects[obj_name]
-            self.current_room.draw_room_object(self.screen, obj.name)
+            if isinstance(obj, Evidence):
+                if not obj.collected:
+                    self.current_room.draw_room_object(self.screen, obj.name)
+            else:
+                self.current_room.draw_room_object(self.screen, obj.name)
         self.current_room.player.draw(self.screen)
-        self.hud.draw(self.screen)
+        self.hud.draw(self.screen, self.active_evidence)
         pygame.display.flip()
 
