@@ -96,6 +96,11 @@ class EvidenceBag:
     def __len__(self) -> int:
         """Return the number of evidence items currently in the bag."""
         return len(self.__data)
+    
+    @property
+    def items(self) -> list[Evidence]:
+        """Return a copy of the list of evidence items in the bag."""
+        return self.__data.copy()
 
     def __repr__(self) -> str:
         """Return a concise debug string showing bag occupancy."""
