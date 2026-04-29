@@ -74,6 +74,26 @@ class Game:
         # Must change it.
         
         for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:  # Left mouse button
+                    for num, evidence in enumerate(self.evidence_bag.items):
+                        if evidence.rect.collidepoint(event.pos):
+                            self.active_evidence = num
+                    
+                    if self.evidence_bag.rect.collidepoint(event.pos):
+                        if self.evidence_bag.is_open:
+                            self.evidence_bag.is_open = False
+                        else:
+                            self.evidence_bag.is_open = True
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:  # Left mouse button
+                    self.active_evidence = None
+            if event.type == pygame.MOUSEMOTION:
+                if self.active_evidence is not None:
+                    self.evidence_bag.items[self.active_evidence].rect.move_ip(event.rel)
+
+
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
@@ -81,6 +101,8 @@ class Game:
                     self.running = False
                 elif event.key == pygame.K_e:
                     self._try_interact()
+        
+
 
     def _try_interact(self) -> None:
         player_center = self.current_room.player.get_center()
