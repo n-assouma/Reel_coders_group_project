@@ -47,11 +47,12 @@ class Game:
 
         # build the room graph
         # self.room_graph = RoomGraph(self.rooms)
-
         # set current room
         self.current_room: Room = self.rooms[0]
 
-        self.hud: HUD = HUD()
+        self.evidence_bag: EvidenceBag = EvidenceBag()
+        self.active_evidence = None
+        self.hud: HUD = HUD(self.evidence_bag)
         self.running: bool = True
         print("game started")
 
