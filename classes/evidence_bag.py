@@ -32,15 +32,15 @@ class EvidenceBag:
         self.__data: list[Evidence] = []
         self.is_open: bool = False
 
-        closed_bag_path = os.path.join("assets", "sprites", "detective_rowe", "closed_bag.png")
+        closed_bag_path = os.path.join("assets", "evidence_bag", "closed_bag.png")
         self.closed_bag_image = pygame.image.load(closed_bag_path).convert_alpha()
         self.closed_bag_image = pygame.transform.scale(self.closed_bag_image, (150, 150))
 
-        empty_opened_bag_path = os.path.join("assets", "sprites", "detective_rowe", "empty_opened_bag.png")
+        empty_opened_bag_path = os.path.join("assets", "evidence_bag", "empty_opened_bag.png")
         self.empty_opened_bag_image = pygame.image.load(empty_opened_bag_path).convert_alpha()
         self.empty_opened_bag_image = pygame.transform.scale(self.empty_opened_bag_image, (150, 150))
 
-        full_opened_bag_path = os.path.join("assets", "sprites", "detective_rowe", "full_opened_bag.png")
+        full_opened_bag_path = os.path.join("assets", "evidence_bag", "full_opened_bag.png")
         self.full_opened_bag_image = pygame.image.load(full_opened_bag_path).convert_alpha()
         self.full_opened_bag_image = pygame.transform.scale(self.full_opened_bag_image, (150, 150))
 
