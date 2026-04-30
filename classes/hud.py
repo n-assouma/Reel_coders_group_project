@@ -3,6 +3,7 @@
 # 5750779
 
 import pygame
+from .evidence_bag import EvidenceBag
 from settings import *
 
 # TODO: make the notepad actually work so the player can type in it
@@ -11,19 +12,20 @@ from settings import *
 class HUD:
     # the bottom strip with 3 panels
 
-    def __init__(self):
+    def __init__(self, evidence_bag: EvidenceBag) -> None:
         # starting hint
         self.current_hint = "Walk around with WASD. Get close to objects and press E."
         # fonts (these look better than the default)
         self.font_title = pygame.font.SysFont("Segoe UI,Arial", 15, bold=True)
         self.font_body = pygame.font.SysFont("Segoe UI,Arial", 14)
         self.font_small = pygame.font.SysFont("Segoe UI,Arial", 12)
+        self.evidence_bag = evidence_bag
 
     def set_hint(self, text):
         # change the chief of police hint
         self.current_hint = text
 
-    def draw(self, surface):
+    def draw(self, surface, active_evidence=None):
         # draw the hud background + 3 panels
 
         # big background box for the whole hud
@@ -33,28 +35,56 @@ class HUD:
 
         # figure out the size of each of the 3 panels
         pad = 12
-        panel_w = (SCREEN_WIDTH - pad * 4) // 3
+        width = (SCREEN_WIDTH - pad * 3)
+        panel1_w = width * 6 // 10
+        panel2_w = width * 4 // 10
         panel_y = MAIN_SCREEN_HEIGHT + pad
         panel_h = HUD_HEIGHT - pad * 2
 
         # panel 1: chief of police
         x1 = pad
-        self.draw_panel(surface, x1, panel_y, panel_w, panel_h,
+        self.draw_panel(surface, x1 , panel_y, panel1_w , panel_h,
                         "CHIEF OF POLICE", COLOUR_TEXT_CHIEF,
                         self.current_hint, COLOUR_TEXT)
 
         # panel 2: notepad
-        x2 = x1 + panel_w + pad
-        self.draw_panel(surface, x2, panel_y, panel_w, panel_h,
-                        "NOTEPAD", COLOUR_TEXT_NOTEPAD,
-                        "Type your own notes here. (coming soon)", COLOUR_TEXT_DIM)
+        #x2 = x1 + panel_w + pad
+        #self.draw_panel(surface, x2, panel_y, panel_w, panel_h,
+                       # "NOTEPAD", COLOUR_TEXT_NOTEPAD,
+                      #  "Type your own notes here. (coming soon)", COLOUR_TEXT_DIM)
+
+### Amir H Javadi B 5717292
 
         # panel 3: evidence bag
-        x3 = x2 + panel_w + pad
-        self.draw_panel(surface, x3, panel_y, panel_w, panel_h,
-                        "EVIDENCE BAG  (0 / 5)", COLOUR_TEXT_EVIDENCE,
-                        "No evidence collected yet. (Amirhoseinj is building this)", COLOUR_TEXT_DIM)
+        items_number = len(self.evidence_bag)
+        x2 = x1 + panel1_w + pad
+        self.draw_panel(surface, x2, panel_y, panel2_w, panel_h,
+                        f"EVIDENCE BAG  ({items_number} / {self.evidence_bag.MAX_SIZE})", COLOUR_TEXT_EVIDENCE,
+                        "" if items_number > 0 else "No evidence collected yet.", COLOUR_TEXT_DIM)
+        
+        # drawing each evidence item in the bag
+        img_x = x2 + pad
+        img_y = panel_y + 42
+        if self.evidence_bag.is_open:
+            if len(self.evidence_bag.items):
+                surface.blit(self.evidence_bag.full_opened_bag_image, (x2 + panel2_w - 150, panel_y + panel_h - 145))
+            else:
+                surface.blit(self.evidence_bag.empty_opened_bag_image, (x2 + panel2_w - 150, panel_y + panel_h - 145))
+            for num, evidence in enumerate(self.evidence_bag.items):
+                scaled = pygame.transform.scale(evidence.sprite, (50, 50))
+                if num == active_evidence:
+                    surface.blit(scaled, evidence.rect.topleft)
+                else:
+                    surface.blit(scaled, (img_x, img_y))
+                    evidence.rect = pygame.Rect(img_x, img_y, 50, 50)
+                img_x += 60
+        else:
+            surface.blit(self.evidence_bag.closed_bag_image, (x2 + panel2_w - 150, panel_y + panel_h - 145))
+        self.evidence_bag.rect.topleft = (x2 + panel2_w - 150, panel_y + panel_h - 145)
 
+        
+
+### Amir H Javadi B 5717292
     def draw_panel(self, surface, x, y, w, h, title, title_colour, body, body_colour):
         # draw one panel on the hud
 

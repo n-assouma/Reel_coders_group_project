@@ -7,6 +7,8 @@ supports merge-sort ordering by evidence priority.
 """
 
 from .evidence import Evidence
+import os
+import pygame
 
 class MaximumEvidenceReachedError(Exception):
     """Raised when a there are already 5 evidences in the bag 
@@ -28,6 +30,24 @@ class EvidenceBag:
     def __init__(self) -> None:
         """Create an empty evidence bag."""
         self.__data: list[Evidence] = []
+        self.is_open: bool = False
+
+        closed_bag_path = os.path.join("assets", "evidence_bag", "closed_bag.png")
+        self.closed_bag_image = pygame.image.load(closed_bag_path).convert_alpha()
+        self.closed_bag_image = pygame.transform.scale(self.closed_bag_image, (150, 150))
+
+        empty_opened_bag_path = os.path.join("assets", "evidence_bag", "empty_opened_bag.png")
+        self.empty_opened_bag_image = pygame.image.load(empty_opened_bag_path).convert_alpha()
+        self.empty_opened_bag_image = pygame.transform.scale(self.empty_opened_bag_image, (150, 150))
+
+        full_opened_bag_path = os.path.join("assets", "evidence_bag", "full_opened_bag.png")
+        self.full_opened_bag_image = pygame.image.load(full_opened_bag_path).convert_alpha()
+        self.full_opened_bag_image = pygame.transform.scale(self.full_opened_bag_image, (150, 150))
+
+
+        self.rect = self.closed_bag_image.get_rect()
+
+
     
     def show(self):
         """Showing the bag evidences names."""
@@ -96,6 +116,11 @@ class EvidenceBag:
     def __len__(self) -> int:
         """Return the number of evidence items currently in the bag."""
         return len(self.__data)
+    
+    @property
+    def items(self) -> list[Evidence]:
+        """Return a copy of the list of evidence items in the bag."""
+        return self.__data.copy()
 
     def __repr__(self) -> str:
         """Return a concise debug string showing bag occupancy."""

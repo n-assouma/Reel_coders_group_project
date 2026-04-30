@@ -12,6 +12,8 @@ import sys
 
 from classes.interactable_object import Furniture, InteractableObject
 from classes.room_graph import RoomGraph
+from classes.evidence_bag import EvidenceBag
+from classes.evidence import Evidence
 from classes.room import Room
 from classes.hud import HUD
 from settings import *
@@ -45,11 +47,12 @@ class Game:
 
         # build the room graph
         # self.room_graph = RoomGraph(self.rooms)
-
         # set current room
         self.current_room: Room = self.rooms[0]
 
-        self.hud: HUD = HUD()
+        self.evidence_bag: EvidenceBag = EvidenceBag()
+        self.active_evidence = None
+        self.hud: HUD = HUD(self.evidence_bag)
         self.running: bool = True
         print("game started")
 
@@ -69,8 +72,31 @@ class Game:
         handle window events and keyboard input'''
         # This code is copy pasted rom somewhere.
         # Must change it.
-        
+
+### Amir H Javadi B 5717292
+
         for event in pygame.event.get():
+            if event.type == pygame.MOUSEBUTTONDOWN:
+                if event.button == 1:  # Left mouse button
+                    for num, evidence in enumerate(self.evidence_bag.items):
+                        if evidence.rect.collidepoint(event.pos):
+                            self.active_evidence = num
+                    
+                    if self.evidence_bag.rect.collidepoint(event.pos):
+                        if self.evidence_bag.is_open:
+                            self.evidence_bag.is_open = False
+                        else:
+                            self.evidence_bag.is_open = True
+
+            if event.type == pygame.MOUSEBUTTONUP:
+                if event.button == 1:  # Left mouse button
+                    self.active_evidence = None
+            if event.type == pygame.MOUSEMOTION:
+                if self.active_evidence is not None:
+                    self.evidence_bag.items[self.active_evidence].rect.move_ip(event.rel)
+
+### Amir H Javadi B 5717292
+
             if event.type == pygame.QUIT:
                 self.running = False
             elif event.type == pygame.KEYDOWN:
@@ -80,15 +106,23 @@ class Game:
                     self._try_interact()
 
     def _try_interact(self) -> None:
+        player_center = self.current_room.player.get_center()
         '''check if the player is near any interactable objects and if so, interact with it.'''
         player_center = self.current_room.player.get_center()
-        interactible_objects = filter(lambda obj: isinstance(obj, InteractableObject), self.current_room.objects) 
+        interactible_objects = filter(lambda obj: isinstance(obj, InteractableObject), self.current_room.objects.values()) 
         for obj in interactible_objects:
             if obj.is_player_near(player_center):
-                print("[INTERACT] examined:", obj.name)
-                msg = "You examined the " + obj.name.lower() + ". (pickup/interaction logic coming from team)"
-                self.hud.set_hint(msg)
+                if isinstance(obj, Evidence) and not obj.collected:
+                    obj.collected = True
+                    self.evidence_bag.add_evidence(obj)
+                    self.evidence_bag.sort_by_priority()
+                    self.hud.set_hint("You picked up: " + obj.name)
+                else:
+                    print("[INTERACT] examined:", obj.name)
+                    msg = "You examined the " + obj.name.lower() + ". (pickup/interaction logic coming from team)"
+                    self.hud.set_hint(msg)
                 return
+            
     
     def _update(self) -> None:
         '''handle player movement and update hud hints'''
@@ -111,8 +145,12 @@ class Game:
         self.current_room.draw_background(self.screen)
         for obj_name in self.current_room.objects:
             obj = self.current_room.objects[obj_name]
-            self.current_room.draw_room_object(self.screen, obj.name)
+            if isinstance(obj, Evidence):
+                if not obj.collected:
+                    self.current_room.draw_room_object(self.screen, obj.name)
+            else:
+                self.current_room.draw_room_object(self.screen, obj.name)
         self.current_room.player.draw(self.screen)
-        self.hud.draw(self.screen)
+        self.hud.draw(self.screen, self.active_evidence)
         pygame.display.flip()
 
