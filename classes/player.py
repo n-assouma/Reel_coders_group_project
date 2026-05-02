@@ -104,6 +104,11 @@ class Player:
         self._next_pos_y = self.collision_rect.topleft[1]
         
 
+        self.x_direction = 0
+        self.y_direction = 0
+        self.animation_counter = 0
+        self.last_movement = "u"
+
     def handle_movement(self, pressed_keys: list, collision_obj_lst: list) -> None: 
         '''handle player movement based on user input and detect collision.
         TODO: make movement speed independent of FPS so that 
@@ -118,6 +123,19 @@ class Player:
             dx = -self._speed
         if pressed_keys[pygame.K_d]:
             dx = self._speed
+
+        ### Amir H Javadi B - 5717292
+
+        #playing the walking sound effect if the player is moving, and stopping it if the player is not moving.
+        if dx != 0 or dy != 0:
+            if not self.is_walking:
+                self.walk_sound.play(-1)  # -1 means loop
+                self.is_walking = True
+        else:
+            self.walk_sound.stop()
+            self.is_walking = False
+        
+        ### Amir H Javadi B - 5717292
 
         # define next position fror collision rectangle
         self._next_pos_x += dx
