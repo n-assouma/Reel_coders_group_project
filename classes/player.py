@@ -14,15 +14,80 @@ class Player:
         self._pos_y = player_data['position'][1] * SCREEN_HEIGHT
         self._speed = PLAYER_SPEED
 
-        # load the sprite
-        path = os.path.join('assets','sprites', 'detective_rowe', player_data['sprite'])
-        self.sprite = pygame.image.load(path).convert_alpha()
-        PLAYER_WIDTH = self.sprite.get_width() * player_data['scale']
-        PLAYER_HEIGHT = self.sprite.get_height() * player_data['scale']
-        self.sprite = pygame.transform.scale(self.sprite, (PLAYER_WIDTH, PLAYER_HEIGHT))
+        # load all the sprites for the player. We will switch between them to create a walking animation.
+        
+        front1_path = os.path.join('assets','Character_movement', "front1.png")
+        self.front1_sprite = pygame.image.load(front1_path).convert_alpha()
+        PLAYER_WIDTH = self.front1_sprite.get_width() * player_data['scale'] 
+        PLAYER_HEIGHT = self.front1_sprite.get_height() * player_data['scale']
+        self.front1_sprite = pygame.transform.scale(self.front1_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT)) 
+        
+        ###Amir H Javadi B - 5717292
+
+        ###TODO: adjusting the scales
+
+        front2_path = os.path.join('assets','Character_movement', "front2.png")
+        self.front2_sprite = pygame.image.load(front2_path).convert_alpha()
+        self.front2_sprite = pygame.transform.scale(self.front2_sprite, (PLAYER_WIDTH -30 , PLAYER_HEIGHT))
+
+        front3_path = os.path.join('assets','Character_movement', "front3.png")
+        self.front3_sprite = pygame.image.load(front3_path).convert_alpha()
+        self.front3_sprite = pygame.transform.scale(self.front3_sprite, (PLAYER_WIDTH -30 , PLAYER_HEIGHT))
+
+        back1_path = os.path.join('assets','Character_movement', "back1.png")
+        self.back1_sprite = pygame.image.load(back1_path).convert_alpha()
+        self.back1_sprite = pygame.transform.scale(self.back1_sprite, (PLAYER_WIDTH   , PLAYER_HEIGHT)) #Worning
+
+        back2_path = os.path.join('assets','Character_movement', "back2.png")
+        self.back2_sprite = pygame.image.load(back2_path).convert_alpha()
+        self.back2_sprite = pygame.transform.scale(self.back2_sprite, (PLAYER_WIDTH -20, PLAYER_HEIGHT))
+
+        back3_path = os.path.join('assets','Character_movement', "back3.png")
+        self.back3_sprite = pygame.image.load(back3_path).convert_alpha()
+        self.back3_sprite = pygame.transform.scale(self.back3_sprite, (PLAYER_WIDTH -20, PLAYER_HEIGHT))
+
+        right1_path = os.path.join('assets','Character_movement', "right1.png")
+        self.right1_sprite = pygame.image.load(right1_path).convert_alpha()
+        self.right1_sprite = pygame.transform.scale(self.right1_sprite, (PLAYER_WIDTH   , PLAYER_HEIGHT)) #Worning
+
+        right2_path = os.path.join('assets','Character_movement', "right2.png")
+        self.right2_sprite = pygame.image.load(right2_path).convert_alpha()
+        self.right2_sprite = pygame.transform.scale(self.right2_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT))
+
+        right3_path = os.path.join('assets','Character_movement', "right3.png")
+        self.right3_sprite = pygame.image.load(right3_path).convert_alpha()
+        self.right3_sprite = pygame.transform.scale(self.right3_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT))
+
+        right4_path = os.path.join('assets','Character_movement', "right4.png")
+        self.right4_sprite = pygame.image.load(right4_path).convert_alpha()
+        self.right4_sprite = pygame.transform.scale(self.right4_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT))
+
+        left1_path = os.path.join('assets','Character_movement', "left1.png")
+        self.left1_sprite = pygame.image.load(left1_path).convert_alpha()
+        self.left1_sprite = pygame.transform.scale(self.left1_sprite, (PLAYER_WIDTH   , PLAYER_HEIGHT)) #Worning
+
+        left2_path = os.path.join('assets','Character_movement', "left2.png")
+        self.left2_sprite = pygame.image.load(left2_path).convert_alpha()
+        self.left2_sprite = pygame.transform.scale(self.left2_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT))
+
+        left3_path = os.path.join('assets','Character_movement', "left3.png")
+        self.left3_sprite = pygame.image.load(left3_path).convert_alpha()
+        self.left3_sprite = pygame.transform.scale(self.left3_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT))
+
+        left4_path = os.path.join('assets','Character_movement', "left4.png")
+        self.left4_sprite = pygame.image.load(left4_path).convert_alpha()
+        self.left4_sprite = pygame.transform.scale(self.left4_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT))
+
+        # loading the walking sound effect
+        pygame.mixer.init()
+        self.walk_sound = pygame.mixer.Sound(os.path.join("assets", "walking_sound.mp3"))
+        self.walk_sound.set_volume(0.1)
+        self.is_walking = False
+
+        ###Amir H Javadi B - 5717292
 
         # get the position rectangle for the sprite 
-        self.rect = self.sprite.get_rect(topleft=(self._pos_x, self._pos_y))
+        self.rect = self.front1_sprite.get_rect(topleft=(self._pos_x, self._pos_y))
         
         # get collision rectangle for player
         collision_rect_width = PLAYER_WIDTH
