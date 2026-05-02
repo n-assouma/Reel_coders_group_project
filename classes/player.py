@@ -166,10 +166,73 @@ class Player:
             self._next_pos_x -= dx
             self._next_pos_y -= dy
         
-
+        self.y_direction = dy
+        self.x_direction = dx
+        
     def draw(self, surface: pygame.Surface) -> None:
-        '''draw the player onto the given surface.'''
-        surface.blit(self.sprite, self.rect.topleft)
+        '''draw the player onto the given surface. and showing the walking animation.'''
+
+        ###Amir H Javadi B - 5717292
+
+        if self.y_direction > 0:
+            self.last_movement = "d"
+            self.animation_counter += 1
+            if self.animation_counter < 10: # change sprite every 10 frames
+                frame = self.front2_sprite
+            elif self.animation_counter < 20:
+                frame = self.front3_sprite
+            else:
+                frame = self.front1_sprite
+                self.animation_counter = 0
+        
+        elif self.y_direction < 0:
+            self.last_movement = "u"
+            self.animation_counter += 1
+            if self.animation_counter < 10: # change sprite every 10 frames
+                 frame = self.back2_sprite
+            elif self.animation_counter < 20:
+                frame = self.back3_sprite
+            else:
+                frame = self.back1_sprite
+                self.animation_counter = 0
+        
+        elif self.x_direction > 0:
+            self.last_movement = "r"
+            self.animation_counter += 1
+            if self.animation_counter < 5: # change sprite every 5 frames
+                 frame = self.right1_sprite
+            elif self.animation_counter < 10:
+                frame = self.right2_sprite
+            elif self.animation_counter < 15:
+                frame = self.right3_sprite
+            elif self.animation_counter < 20:
+                frame = self.right4_sprite
+            else:
+                frame = self.right1_sprite
+                self.animation_counter = 0
+        elif self.x_direction < 0:
+            self.last_movement = "l"
+            self.animation_counter += 1
+            if self.animation_counter < 5: # change sprite every 5 frames
+                 frame = self.left1_sprite
+            elif self.animation_counter < 10:
+                frame = self.left2_sprite
+            elif self.animation_counter < 15:
+                frame = self.left3_sprite
+            elif self.animation_counter < 20:
+                frame = self.left4_sprite
+            else:
+                frame = self.left1_sprite
+                self.animation_counter = 0
+        else:        
+            if self.last_movement == "u":
+                frame = self.back1_sprite
+            else: 
+                frame = self.front1_sprite 
+
+        rect = frame.get_rect(center=self.rect.center)
+        surface.blit(frame, rect)
+        ### Amir H Javadi B - 5717292
 
     def get_center(self) -> tuple[int, int]:
         '''get the center point of the player's rectangle. used for calculating distance to interactable objects.'''
