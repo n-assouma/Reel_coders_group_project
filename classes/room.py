@@ -19,8 +19,8 @@ class Room:
     Attributes:
         Room.name : return current rroom name
         Room.player: return a reference to the player in the room
-        ROom.objects: return a dictionnary of all furniture in a room
-
+        Room.objects: return a dictionnary of all furniture in a room
+        ...
     '''
     def __init__(self, room_name: str, room_data: dict)-> None:
         self.name = room_name
@@ -62,7 +62,7 @@ class Room:
 
         # get a list of objects to sort by y position when drawing the room
         # for vertical sorting
-        self._y_sort_lst = []
+        self._y_sort_lst: list[Player | Furniture | InteractableObject | Evidence] = []
         # add the player to the list
         self._y_sort_lst.append(self.player)
 
