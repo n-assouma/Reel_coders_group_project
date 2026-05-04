@@ -1,6 +1,8 @@
 # chief of police hint class for showing hints on HUD
 # 5750779
 
+import json
+import os
 import pygame
 from settings import *
 
@@ -8,14 +10,21 @@ from settings import *
 class ChiefOfPoliceHint:
 
     def __init__(self):
-        # the message that gets shown in the panel
-        self.current_hint = "Walk around with WASD. Get close to objects and press E."
+        # default text shown when not near anything
+        self.default_hint = "Walk around with WASD. Get close to objects and press E."
+        # the message that gets shown in the panel right now
+        self.current_hint = self.default_hint
 
         # font for the title at the top of the panel
         self.font_title = pygame.font.SysFont("Segoe UI,Arial", 15, bold=True)
 
         # font for the hint text in the body of the panel
         self.font_body = pygame.font.SysFont("Segoe UI,Arial", 14)
+
+        # dictionaries that hold all the chief's lines from the json file
+        self.object_hints = {}
+        self.room_unlocks_hints = {}
+        self.load_hints()
 
     def set_hint(self, text):
         # change the hint that the panel shows
@@ -93,3 +102,40 @@ class ChiefOfPoliceHint:
                 rendered = self.font_body.render(line, True, colour)
                 surface.blit(rendered, (x, text_y))
                 text_y = text_y + line_h
+
+    def load_hints(self):
+        # try to read the json file with all the chief hints
+        path = os.path.join("data", "chief_hints.json")
+        try:
+            f = open(path, "r")
+            data = json.load(f)
+            f.close()
+        except FileNotFoundError:
+            print("chief_hints.json not found at " + path)
+            return
+        except json.JSONDecodeError:
+            print("chief_hints.json is not valid JSON")
+            return
+
+        # copy the two sections we care about (skip _meta)
+        if "object_hint" in data:
+            self.object_hints = data["object_hint"]
+        if "room_unlocks_hint" in data:
+            self.room_unlocks_hints = data["room_unlocks_hint"]
+
+    def show_object_hint(self, object_name):
+        # show the chief's line for this object, or a generic message if there is no entry
+        if object_name in self.object_hints:
+            self.current_hint = self.object_hints[object_name]
+        else:
+            # fallback so unknown objects still show something
+            self.current_hint = "That looks like a " + object_name.lower() + ". Press E to examine it."
+
+    def show_room_unlocks_hint(self, room_name):
+        # show the chief's line for unlocking this room
+        if room_name in self.room_unlocks_hints:
+            self.current_hint = self.room_unlocks_hints[room_name]
+
+    def show_default(self):
+        # reset to the default starting message
+        self.current_hint = self.default_hint
