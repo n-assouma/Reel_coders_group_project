@@ -43,6 +43,9 @@ class Player:
         # define next collision coordonate for player next position computation
         self._next_pos_x = self.collision_rect.topleft[0]
         self._next_pos_y = self.collision_rect.topleft[1]
+
+        # define position for vertical sorting
+        self.y_sort_pos = self.rect.bottomleft[1]
         
 
     def handle_movement(self, pressed_keys: list, collision_obj_lst: list) -> None: 
@@ -83,6 +86,8 @@ class Player:
             self._pos_y += dy
             self.rect.topleft = (self._pos_x,
                                  self._pos_y)
+            # update player position for y sorting
+            self.y_sort_pos = self.rect.bottomleft[1]
             
             #update collision rectangle position
             self.collision_rect = next_collision_rect
