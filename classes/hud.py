@@ -2,6 +2,7 @@
 # hud class (bottom panel with chief hint, notepad, and evidence)
 # 5750779
 
+from .interactable_object import InteractableObject
 import pygame
 from .evidence_bag import EvidenceBag
 from settings import *
@@ -12,7 +13,7 @@ from settings import *
 class HUD:
     # the bottom strip with 3 panels
 
-    def __init__(self, evidence_bag: EvidenceBag) -> None:
+    def __init__(self, evidence_bag: EvidenceBag, map: InteractableObject) -> None:
         # starting hint
         self.current_hint = "Walk around with WASD. Get close to objects and press E."
         # fonts (these look better than the default)
@@ -20,6 +21,7 @@ class HUD:
         self.font_body = pygame.font.SysFont("Segoe UI,Arial", 14)
         self.font_small = pygame.font.SysFont("Segoe UI,Arial", 12)
         self.evidence_bag = evidence_bag
+        self.map = map
 
     def set_hint(self, text):
         # change the chief of police hint
@@ -82,7 +84,8 @@ class HUD:
             surface.blit(self.evidence_bag.closed_bag_image, (x2 + panel2_w - 150, panel_y + panel_h - 145))
         self.evidence_bag.rect.topleft = (x2 + panel2_w - 150, panel_y + panel_h - 145)
 
-        
+        map_scaled = pygame.transform.scale(self.map.sprite, (80, 50))
+        surface.blit(map_scaled, (x2 + pad - 120, panel_y + panel_h - 130))
 
 ### Amir H Javadi B 5717292
     def draw_panel(self, surface, x, y, w, h, title, title_colour, body, body_colour):
