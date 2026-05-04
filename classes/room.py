@@ -8,24 +8,31 @@ from .evidence import Evidence
 from .player import Player
 from .interactable_object import *
 
-# TODO: Update this to room.json. I made think really harder for me 
-#A room should own a player. TODO
 #The room should handle the collisin detection and y sorting
-# a room should give oone method to draw the whole room.
+# a room should give oone method to draw the whole room. #TODO
 class Room:
+    '''
+    A class representing a room with its own player and objects
+    
+    Methods:
+    
+    Attributes:
+        Room.name : return current rroom name
+        Room.player: return a reference to the player in the room
+        ROom.objects: return a dictionnary of all furniture in a room
+
+    '''
     def __init__(self, room_name: str, room_data: dict)-> None:
         self.name = room_name
         
         # load player at starting position
-        self.player = Player(room_data['detective_rowe'])
+        self.player = Player(room_data['detective_rowe'],
+                            room_data['background']['walkable_area'])
 
         # load background
         path = os.path.join('assets',room_name, room_data['background']['path'])
         self.background = pygame.image.load(path).convert()
         self.background = pygame.transform.scale(self.background, (SCREEN_WIDTH, MAIN_SCREEN_HEIGHT))
-
-        # load background walkable area
-        self._walkable_area = ... # TODO
 
         # load furniture, Interactable objects and evidences in the room with their name as a key
         self._objects = {}
@@ -68,21 +75,11 @@ class Room:
                              # if needed
 
     @property
-    def collision_rects(self):
+    def collision_rects(self) -> pygame.Rect:
         '''
         return a list of object th plyer can collide with
         '''
         return self._collision_rects
-    
-
-    # Dunno if we need that
-    def get_walkable_area(self) -> pygame.Rect:
-        '''
-        Define the walkable area of the room as a list of pygame rectangles.
-        This is used for border collision detection when the player moves around.
-        It does not include the area occupied by furnitures.
-        '''
-        self._walkable_area
 
     def draw_background(self, surface: pygame.Surface) -> None:
         '''

@@ -32,7 +32,7 @@ class Furniture:
         # load collision detection rectangle if needed
         if self.collision:  
             collision_rect_width = scaled_width
-            collision_rect_height = self.sprite.get_height() // 10 # about 10% of object height
+            collision_rect_height = self.sprite.get_height() // 5 # about 10% of object height
 
             collision_rect_pos = (
                 obj_data['position'][0] * SCREEN_WIDTH,

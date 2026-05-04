@@ -69,10 +69,8 @@ class Game:
 
     def _handle_events(self) -> None:
         '''
-        handle window events and keyboard input'''
-        # This code is copy pasted rom somewhere.
-        # Must change it.
-
+        handle window events and keyboard input
+        '''
 ### Amir H Javadi B 5717292
 
         for event in pygame.event.get():
