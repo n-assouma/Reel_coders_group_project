@@ -1,4 +1,4 @@
-# chief of police hint class - shows hints in the HUD
+# chief of police hint class for showing hints on HUD
 # 5750779
 
 import pygame
@@ -74,11 +74,11 @@ class ChiefOfPoliceHint:
                 else:
                     test = line + " " + word
 
-                # check how wide the test line would be
+                # check how wide the test line will be 
                 width, height = self.font_body.size(test)
 
                 if width <= max_w:
-                    # the word still fits, so keep it on this line
+                    # the word still fits so keep it on this line
                     line = test
                 else:
                     # the word does not fit, so draw what we have

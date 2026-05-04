@@ -16,6 +16,7 @@ from classes.evidence_bag import EvidenceBag
 from classes.evidence import Evidence
 from classes.room import Room
 from classes.hud import HUD
+from classes.chief_of_police_hint import ChiefOfPoliceHint
 from settings import *
 
 
@@ -52,7 +53,9 @@ class Game:
 
         self.evidence_bag: EvidenceBag = EvidenceBag()
         self.active_evidence = None
-        self.hud: HUD = HUD(self.evidence_bag)
+        # create the chief panel first, then pass it into the HUD
+        self.chief_hint = ChiefOfPoliceHint()
+        self.hud: HUD = HUD(self.evidence_bag, self.chief_hint)
         self.running: bool = True
         print("game started")
 

@@ -4,6 +4,7 @@
 
 import pygame
 from .evidence_bag import EvidenceBag
+from .chief_of_police_hint import ChiefOfPoliceHint
 from settings import *
 
 # TODO: make the notepad actually work so the player can type in it
@@ -12,18 +13,18 @@ from settings import *
 class HUD:
     # the bottom strip with 3 panels
 
-    def __init__(self, evidence_bag: EvidenceBag) -> None:
-        # starting hint
-        self.current_hint = "Walk around with WASD. Get close to objects and press E."
+    def __init__(self, evidence_bag: EvidenceBag, chief_hint: ChiefOfPoliceHint) -> None:
         # fonts (these look better than the default)
+        # used by the evidence panel below
         self.font_title = pygame.font.SysFont("Segoe UI,Arial", 15, bold=True)
         self.font_body = pygame.font.SysFont("Segoe UI,Arial", 14)
         self.font_small = pygame.font.SysFont("Segoe UI,Arial", 12)
         self.evidence_bag = evidence_bag
+        self.chief_hint = chief_hint
 
     def set_hint(self, text):
-        # change the chief of police hint
-        self.current_hint = text
+        # forward the hint text to the chief panel
+        self.chief_hint.set_hint(text)
 
     def draw(self, surface, active_evidence=None):
         # draw the hud background + 3 panels
@@ -41,11 +42,9 @@ class HUD:
         panel_y = MAIN_SCREEN_HEIGHT + pad
         panel_h = HUD_HEIGHT - pad * 2
 
-        # panel 1: chief of police
+        # panel 1: chief of police - drawn by the ChiefOfPoliceHint class
         x1 = pad
-        self.draw_panel(surface, x1 , panel_y, panel1_w , panel_h,
-                        "CHIEF OF POLICE", COLOUR_TEXT_CHIEF,
-                        self.current_hint, COLOUR_TEXT)
+        self.chief_hint.draw(surface, x1, panel_y, panel1_w, panel_h)
 
         # panel 2: notepad
         #x2 = x1 + panel_w + pad
