@@ -67,6 +67,7 @@
             "class": "InteractableObject",
             "collision": false
         }
+        
     },
     "elenas_office": {
         "room_sprites": ["accusation_board", "background", "bookshelf", "broken_lamp", "chair", "computer", "desk", "dinner_invitation", "research_paper", "tweed_thread"],
@@ -81,7 +82,7 @@
                 "bottom_left": "TODO"
             }
         },
-        "board": ["board.png", ["position x", "position y"], "width", "height"],
+        "map_board": ["map_board.png", ["position x", "position y"], "width", "height"],
         "bookshelf": ["bookshelf.png", ["position x", "position y"], "width", "height"],
         "broken_lamp": ["broken_lamp.png", ["position x", "position y"], "width", "height"],
         "chair": ["chair.png", ["position x", "position y"], "width", "height"],

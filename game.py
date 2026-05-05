@@ -52,7 +52,7 @@ class Game:
 
         self.evidence_bag: EvidenceBag = EvidenceBag()
         self.active_evidence = None
-        self.hud: HUD = HUD(self.evidence_bag)
+        self.hud: HUD = HUD(self.evidence_bag, self.current_room.objects['map_board'])
         self.running: bool = True
         print("game started")
 
@@ -114,7 +114,8 @@ class Game:
                     obj.collected = True
                     self.evidence_bag.add_evidence(obj)
                     self.evidence_bag.sort_by_priority()
-                    self.hud.set_hint("You picked up: " + obj.name)
+                    self.hud.set_hint("You picked up: " + obj.name) 
+
                 else:
                     print("[INTERACT] examined:", obj.name)
                     msg = "You examined the " + obj.name.lower() + ". (pickup/interaction logic coming from team)"
