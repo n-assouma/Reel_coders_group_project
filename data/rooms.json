@@ -79,7 +79,7 @@
             "walkable_area": {
                 "top_left": [0.04, 0.3],
                 "width": 0.92,
-                "height": 0.56
+                "height": 0.45
             }
         },
         "desk": {

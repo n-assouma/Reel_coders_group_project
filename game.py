@@ -1,8 +1,4 @@
-
-# main game loop and drawing
-# has the player, the room and the hud
-# Andrei Sidorenko - 5750779
-# Nael Karimou - 5734316
+### Nael Karimou - 5734316
 
 import json
 import os
@@ -47,7 +43,7 @@ class Game:
         self.rooms.append(Room('elenas_office', room_data['elenas_office']))
         self.rooms.append(Room('security_booth', room_data['security_booth']))  
         # build the room graph
-        # self.room_graph = RoomGraph(self.rooms)
+        self.room_graph = RoomGraph(self.rooms)
         # set current room
         self.current_room: Room = self.rooms[0]
 
@@ -58,7 +54,7 @@ class Game:
         print("game started")
 
         #TODO: DELETE THIS
-        self.current_room = self.rooms[2]
+        #self.current_room = self.rooms[2]
 
     def run(self) -> None:
         '''game loop'''
@@ -150,3 +146,4 @@ class Game:
         self.hud.draw(self.screen, self.active_evidence)
         pygame.display.flip()
 
+### Nael Karimou - 5734316

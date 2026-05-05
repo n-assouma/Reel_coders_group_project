@@ -1,5 +1,4 @@
-### Author: Andrei Sidorenko - 5750779
-### Reviewer: Nael Karimou - 5734316
+### Nael Karimou - 5734316
 
 import math
 import os
@@ -117,4 +116,6 @@ class InteractableObject(Furniture):
 class FurnitureCollisionError(Exception):
     '''Raised when there is an error with the collision rectangle of a furniture object. This can be caused by a missing or incorrect collision rectangle in the room data.'''
     pass
+
+### Nael Karimou - 5734316
     
