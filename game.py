@@ -44,7 +44,8 @@ class Game:
         self.rooms = []
          # only load the first room for now
         self.rooms.append(Room('police_station', room_data['police_station']))
-
+        self.rooms.append(Room('elenas_office', room_data['elenas_office']))
+        
         # build the room graph
         # self.room_graph = RoomGraph(self.rooms)
         # set current room
@@ -55,6 +56,9 @@ class Game:
         self.hud: HUD = HUD(self.evidence_bag, self.current_room.objects['map_board'])
         self.running: bool = True
         print("game started")
+
+        #TODO: DELETE THIS
+        self.current_room = self.rooms[1]
 
     def run(self) -> None:
         '''game loop'''

@@ -69,26 +69,85 @@
         
     },
     "elenas_office": {
-        "room_sprites": ["accusation_board", "background", "bookshelf", "broken_lamp", "chair", "computer", "desk", "dinner_invitation", "research_paper", "tweed_thread"],
-        "detective_row_spawn_position": "TODO",
-        "detective_row_spawn_sprite": "default.png",
+        "objects": ["board", "bookshelf", "desk", "broken_lamp", "chair", "computer", "dinner_invitation", "research_paper", "tweed_thread"],
+        "detective_rowe": {
+            "position": [0.65, 0.3],
+            "scale": 0.95
+        },
         "background": {
             "path": "background.png",
             "walkable_area": {
-                "top_right": "TODO",
-                "top_left": "TODO",
-                "bottom_right": "TODO",
-                "bottom_left": "TODO"
+                "top_left": [0.04, 0.3],
+                "width": 0.92,
+                "height": 0.56
             }
         },
-        "map_board": ["map_board.png", ["position x", "position y"], "width", "height"],
-        "bookshelf": ["bookshelf.png", ["position x", "position y"], "width", "height"],
-        "broken_lamp": ["broken_lamp.png", ["position x", "position y"], "width", "height"],
-        "chair": ["chair.png", ["position x", "position y"], "width", "height"],
-        "computer": ["computer.png", ["position x", "position y"], "width", "height"],
-        "desk": ["desk.png", ["position x", "position y"], "width", "height"],
-        "dinner_invitation": ["dinner_invitation.png", ["position x", "position y"], "width", "height"],
-        "research_paper": ["research_paper.png", ["position x", "position y"], "width", "height"],
-        "tweed_thread": ["tweed_thread.png", ["position x", "position y"], "width", "height"]
+        "desk": {
+            "path": "desk.png",
+            "position": [0.0679, 0.14],
+            "scale": 0.8,
+            "class": "Furniture",
+            "collision": true
+        },
+        "board": {
+            "path": "board.png",
+            "position": [0.5175, 0.0371],
+            "scale": 1.09,
+            "class": "Furniture",
+            "collision": false
+        },
+        "bookshelf": {
+            "path": "bookshelf.png",
+            "position": [0.7592, 0.0264],
+            "scale": 1.215,
+            "class": "Furniture",
+            "collision": true
+        },
+        "broken_lamp": {
+            "path": "broken_lamp.png",
+            "position": [0.15, 0.0686],
+            "scale": 1.035,
+            "class": "Furniture",
+            "collision": false,
+            "dropped_on": "desk"
+        },
+        "chair": {
+            "path": "chair.png",
+            "position": [0.0992, 0.4179],
+            "scale": 0.9,
+            "class": "Furniture",
+            "collision": true
+        },
+        "computer": {
+            "path": "computer.png",
+            "position": [0.0537, 0.05],
+            "scale": 1.0,
+            "class": "InteractableObject",
+            "collision": false,
+            "dropped_on": "desk"
+        },
+        "dinner_invitation": {
+            "path": "dinner_invitation.png",
+            "position": [0.3454, 0.3557],
+            "scale": 1.0,
+            "class": "Evidence",
+            "collision": true
+        },
+        "research_paper": {
+            "path": "research_paper.png",
+            "position": [0.5308, 0.0729],
+            "scale": 1.095,
+            "class": "Evidence",
+            "collision": false,
+            "dropped_on": "board"
+        },
+        "tweed_thread": {
+            "path": "tweed_thread.png",
+            "position": [0.17, 0.1150],
+            "scale": 2.025,
+            "class": "Evidence",
+            "collision": false,
+            "dropped_on": "desk"
+        }
     }
 }

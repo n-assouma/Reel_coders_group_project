@@ -93,7 +93,7 @@ class InteractableObject(Furniture):
         dx = ox - px
         dy = oy - py
         distance = math.sqrt(dx ** 2 + dy ** 2)
-        return distance <= INTERACTION_RADIUS
+        return distance <= (INTERACTION_RADIUS + self.rect.width // 2)
     
     def _draw_prompt(self, surface):
         '''show [E] + name above the object'''
