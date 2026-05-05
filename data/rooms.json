@@ -17,7 +17,7 @@
         "background": {
             "path": "background.png",
             "walkable_area": {
-                "top_left": [0.04, 0.27],
+                "top_left": [0.01, 0.27],
                 "width": 0.97,
                 "height": 0.41
             }
@@ -34,7 +34,8 @@
             "position": [0.48, 0.34],
             "scale": 0.92,
             "class": "Evidence",
-            "collision": false
+            "collision": false,
+            "dropped_on": "desk"
         },
         "decor_1": {
             "path": "decor_1.png",

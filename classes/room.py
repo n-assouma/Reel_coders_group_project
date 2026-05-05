@@ -8,24 +8,31 @@ from .evidence import Evidence
 from .player import Player
 from .interactable_object import *
 
-# TODO: Update this to room.json. I made think really harder for me 
-#A room should own a player. TODO
 #The room should handle the collisin detection and y sorting
-# a room should give oone method to draw the whole room.
+# a room should give oone method to draw the whole room. #TODO
 class Room:
+    '''
+    A class representing a room with its own player and objects
+    
+    Methods:
+    
+    Attributes:
+        Room.name : return current rroom name
+        Room.player: return a reference to the player in the room
+        Room.objects: return a dictionnary of all furniture in a room
+        ...
+    '''
     def __init__(self, room_name: str, room_data: dict)-> None:
         self.name = room_name
         
         # load player at starting position
-        self.player = Player(room_data['detective_rowe'])
+        self.player = Player(room_data['detective_rowe'],
+                            room_data['background']['walkable_area'])
 
         # load background
         path = os.path.join('assets',room_name, room_data['background']['path'])
         self.background = pygame.image.load(path).convert()
         self.background = pygame.transform.scale(self.background, (SCREEN_WIDTH, MAIN_SCREEN_HEIGHT))
-
-        # load background walkable area
-        self._walkable_area = ... # TODO
 
         # load furniture, Interactable objects and evidences in the room with their name as a key
         self._objects = {}
@@ -46,43 +53,46 @@ class Room:
                 #if there is a duplicate of an object in rooms.json
                 continue
 
-        # get a list of obejct the player can collid with
+        # get a list of object the player can collide with
         self._collision_rects = [
             self.objects[obj_name].collision_rect
-            for obj_name in self.objects
+            for obj_name in self.objects.keys()
             if self.objects[obj_name].collision == True
         ]
 
-            
+        # get a list of objects to sort by y position when drawing the room
+        # for vertical sorting
+        self._y_sort_lst: list[Player | Furniture | InteractableObject | Evidence] = []
+        # add the player to the list
+        self._y_sort_lst.append(self.player)
+
+        # (re)defining furnitture y sorting position as it might not be properly set when the object is instantiated
+        for obj_name in self.objects.keys():
+            obj = self.objects[obj_name]
+            if 'dropped_on' in room_data[obj_name]:
+                obj_it_is_dropped_on = room_data[obj_name]['dropped_on']
+                obj.y_sort_pos = 1 + self.objects[obj_it_is_dropped_on].rect.bottomleft[1] # adding 1 allow to draw it after the object it is dropped on
+
+            # add furnitture to the list
+            self._y_sort_lst.append(obj)
+
 
     @property
     def objects(self) -> dict:
         '''
         Get the all objects in the room.
-        Return: a dictonnary with the following structure:
-        {
-            object_name: the object itself
-        }
+        Return: a dictonnary where the key is the object name and the value
+        is the object itself
         '''
         return self._objects #TODO: Define seperate function to load different types of objects
                              # if needed
 
     @property
-    def collision_rects(self):
+    def collision_rects(self) -> pygame.Rect:
         '''
         return a list of object th plyer can collide with
         '''
         return self._collision_rects
-    
-
-    # Dunno if we need that
-    def get_walkable_area(self) -> pygame.Rect:
-        '''
-        Define the walkable area of the room as a list of pygame rectangles.
-        This is used for border collision detection when the player moves around.
-        It does not include the area occupied by furnitures.
-        '''
-        self._walkable_area
 
     def draw_background(self, surface: pygame.Surface) -> None:
         '''
@@ -91,29 +101,35 @@ class Room:
         '''
         surface.blit(self.background, (0, 0))
 
-    def depth_sorting(self) -> list:
+    def vert_sorted(self) -> list:
         '''
-        Get a list of all objects in the room sorted by their y position for depth sorting.
-        This should be used when drawing the screen so that objects are drawn in the correct order.
+        return a list of all objects (including player) in the room sorted by their bottom left position for vertical sorting.
+        This methods implements a custom bubble sort only use for our depth sorting
         '''
-        pass
+        for i in range(len(self._y_sort_lst)-1):
+            if self._y_sort_lst[i].y_sort_pos > self._y_sort_lst[i+1].y_sort_pos:
+                self._y_sort_lst[i], self._y_sort_lst[i+1] = self._y_sort_lst[i+1], self._y_sort_lst[i]
+        return self._y_sort_lst
 
-    def draw_room_object(self, surface: pygame.Surface, object_name: str) -> None: # TODO: update this to use depth sorting
+    def draw_room_objects(self, surface: pygame.Surface) -> None:
         '''
         Draw a specific object in the room onto the given surface.
         This should be used when drawing the screen using depth sorting,
         so that objects are drawn in the correct order based on their y position.
         '''
-        #if the name of the object is valid
-        if object_name in self.objects:
-            if type(self.objects[object_name]) == Furniture:
-                self.objects[object_name].draw(surface)
+        sorted_objects = self.vert_sorted()
+        for obj in sorted_objects:
+            if type(obj) in (Player, Furniture):
+                obj.draw(surface)
 
-            elif type(self.objects[object_name]) in (InteractableObject, Evidence):
-                self.objects[object_name].draw(surface, self.player.get_center())
-        else:
-            print(f"Object '{object_name}' not found in room '{self.name}'")
+            elif type(obj) in (InteractableObject, Evidence):
+                obj.draw(surface, self.player.get_center())
             
+            else:
+                print(f"Object '{type(obj)}' not found in room '{self.name}'")
 
+        
     def __str__(self) -> str:
         return f"Room(name={self.name})"
+
+### Nael Karimou - 5734316
