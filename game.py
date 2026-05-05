@@ -45,7 +45,7 @@ class Game:
          # only load the first room for now
         self.rooms.append(Room('police_station', room_data['police_station']))
         self.rooms.append(Room('elenas_office', room_data['elenas_office']))
-        
+        self.rooms.append(Room('security_booth', room_data['security_booth']))  
         # build the room graph
         # self.room_graph = RoomGraph(self.rooms)
         # set current room
@@ -58,7 +58,7 @@ class Game:
         print("game started")
 
         #TODO: DELETE THIS
-        self.current_room = self.rooms[1]
+        self.current_room = self.rooms[2]
 
     def run(self) -> None:
         '''game loop'''

@@ -149,5 +149,64 @@
             "collision": false,
             "dropped_on": "desk"
         }
+    },
+    "security_booth": {
+        "objects": ["cctv_screen", "desk","chair", "keyboard", "master_key_log", "shelf"],
+        "detective_rowe": {
+            "position": [0.5, 0.4],
+            "scale": 1.1
+        },
+        "background": {
+            "path": "background.png",
+            "walkable_area": {
+                "top_left": [0.0, 0.35],
+                "width": 1,
+                "height": 0.4
+            }
+        },
+        "cctv_screen": {
+            "path": "cctv_screen.png",
+            "position": [0.3850, 0.0129],
+            "scale": 0.565,
+            "class": "Furniture",
+            "collision": false
+        },
+        "chair": {
+            "path": "chair.png",
+            "position": [0.3063, 0.2936],
+            "scale": 0.43,
+            "class": "Furniture",
+            "collision": true
+        },
+        "desk": {
+            "path": "desk.png",
+            "position": [0.32, 0.24],
+            "scale": 0.67,
+            "class": "Furniture",
+            "collision": true
+        },
+        "keyboard": {
+            "path": "keyboard.png",
+            "position": [0.42, 0.251],
+            "scale": 0.15,
+            "class": "InteractableObject",
+            "collision": false,
+            "dropped_on": "desk"
+        },
+        "master_key_log": {
+            "path": "master_key_log.png",
+            "position": [0.6, 0.2450],
+            "scale": 0.205,
+            "class": "Evidence",
+            "collision": false,
+            "dropped_on": "desk"
+        },
+        "shelf": {
+            "path": "shelf.png",
+            "position": [0.8025, 0.0186],
+            "scale": 0.555,
+            "class": "Furniture",
+            "collision": true
+        }
     }
 }
