@@ -171,7 +171,7 @@ class Player:
             elif self.animation_counter < 20:
                 frame = self.front3_sprite
             else:
-                frame = self.front1_sprite
+                frame = self.front2_sprite
                 self.animation_counter = 0
         
         elif self.y_direction < 0:
@@ -182,7 +182,7 @@ class Player:
             elif self.animation_counter < 20:
                 frame = self.back3_sprite
             else:
-                frame = self.back1_sprite
+                frame = self.back2_sprite
                 self.animation_counter = 0
         
         elif self.x_direction > 0:
