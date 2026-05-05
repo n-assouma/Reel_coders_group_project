@@ -16,7 +16,7 @@ class Player:
 
         # load all the sprites for the player. We will switch between them to create a walking animation.
         
-        front1_path = os.path.join('assets','Character_movement', "front1.png")
+        front1_path = os.path.join('assets','sprites/detective_rowe', "front1.png")
         self.front1_sprite = pygame.image.load(front1_path).convert_alpha()
         PLAYER_WIDTH = self.front1_sprite.get_width() * player_data['scale'] 
         PLAYER_HEIGHT = self.front1_sprite.get_height() * player_data['scale']
@@ -26,39 +26,39 @@ class Player:
 
         ###TODO: adjusting the scales
 
-        front2_path = os.path.join('assets','Character_movement', "front2.png")
+        front2_path = os.path.join('assets','sprites/detective_rowe', "front2.png")
         self.front2_sprite = pygame.image.load(front2_path).convert_alpha()
         self.front2_sprite = pygame.transform.scale(self.front2_sprite, (PLAYER_WIDTH  , PLAYER_HEIGHT))
 
-        front3_path = os.path.join('assets','Character_movement', "front3.png")
+        front3_path = os.path.join('assets','sprites/detective_rowe', "front3.png")
         self.front3_sprite = pygame.image.load(front3_path).convert_alpha()
         self.front3_sprite = pygame.transform.scale(self.front3_sprite, (PLAYER_WIDTH  , PLAYER_HEIGHT))
 
-        back1_path = os.path.join('assets','Character_movement', "back1.png")
+        back1_path = os.path.join('assets','sprites/detective_rowe', "back1.png")
         self.back1_sprite = pygame.image.load(back1_path).convert_alpha()
         self.back1_sprite = pygame.transform.scale(self.back1_sprite, (PLAYER_WIDTH   , PLAYER_HEIGHT)) 
 
-        back2_path = os.path.join('assets','Character_movement', "back2.png")
+        back2_path = os.path.join('assets','sprites/detective_rowe', "back2.png")
         self.back2_sprite = pygame.image.load(back2_path).convert_alpha()
         self.back2_sprite = pygame.transform.scale(self.back2_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT +5))
 
-        back3_path = os.path.join('assets','Character_movement', "back3.png")
+        back3_path = os.path.join('assets','sprites/detective_rowe', "back3.png")
         self.back3_sprite = pygame.image.load(back3_path).convert_alpha()
         self.back3_sprite = pygame.transform.scale(self.back3_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT + 5))
 
-        left1_path = os.path.join('assets','Character_movement', "left1.png")
+        left1_path = os.path.join('assets','sprites/detective_rowe', "left1.png")
         self.left1_sprite = pygame.image.load(left1_path).convert_alpha()
         self.left1_sprite = pygame.transform.scale(self.left1_sprite, (PLAYER_WIDTH   , PLAYER_HEIGHT)) 
 
-        left2_path = os.path.join('assets','Character_movement', "left2.png")
+        left2_path = os.path.join('assets','sprites/detective_rowe', "left2.png")
         self.left2_sprite = pygame.image.load(left2_path).convert_alpha()
         self.left2_sprite = pygame.transform.scale(self.left2_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT))
 
-        left3_path = os.path.join('assets','Character_movement', "left3.png")
+        left3_path = os.path.join('assets','sprites/detective_rowe', "left3.png")
         self.left3_sprite = pygame.image.load(left3_path).convert_alpha()
         self.left3_sprite = pygame.transform.scale(self.left3_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT))
 
-        left4_path = os.path.join('assets','Character_movement', "left4.png")
+        left4_path = os.path.join('assets','sprites/detective_rowe', "left4.png")
         self.left4_sprite = pygame.image.load(left4_path).convert_alpha()
         self.left4_sprite = pygame.transform.scale(self.left4_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT))
 
@@ -69,7 +69,7 @@ class Player:
 
         # loading the walking sound effect
         pygame.mixer.init()
-        self.walk_sound = pygame.mixer.Sound(os.path.join("assets", "walking_sound.mp3"))
+        self.walk_sound = pygame.mixer.Sound(os.path.join("assets", "sprites", "detective_rowe", "walking_sound.mp3"))
         self.walk_sound.set_volume(0.1)
         self.is_walking = False
 
