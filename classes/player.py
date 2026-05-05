@@ -9,7 +9,7 @@ from settings import *
 class Player:
     '''the player character that the user controls. Can move around with WASD.
     '''
-    def __init__(self, player_data: dict) -> None:
+    def __init__(self, player_data: dict, walkable_area_info: dict) -> None:
         self._pos_x = player_data['position'][0] * SCREEN_WIDTH
         self._pos_y = player_data['position'][1] * SCREEN_HEIGHT
         self._speed = PLAYER_SPEED
@@ -77,6 +77,12 @@ class Player:
 
         # get the position rectangle for the sprite 
         self.rect = self.front1_sprite.get_rect(topleft=(self._pos_x, self._pos_y))
+
+        # load background walkable area rectangle
+        self.walkable_area_rect = pygame.Rect(walkable_area_info['top_left'][0] * SCREEN_WIDTH,
+                                             walkable_area_info['top_left'][1] * SCREEN_HEIGHT,
+                                             walkable_area_info['width'] * SCREEN_WIDTH,
+                                             walkable_area_info['height'] * SCREEN_HEIGHT)
         
         # get collision rectangle for player
         collision_rect_width = PLAYER_WIDTH
@@ -88,9 +94,12 @@ class Player:
         self.collision_rect = pygame.Rect(collision_rect_pos,
                                         (collision_rect_width, collision_rect_height))
         
-        # get next collision box for player next position computation
+        # define next collision coordonate for player next position computation
         self._next_pos_x = self.collision_rect.topleft[0]
         self._next_pos_y = self.collision_rect.topleft[1]
+
+        # define position for vertical sorting
+        self.y_sort_pos = self.rect.bottomleft[1]
         
 
         self.x_direction = 0
@@ -131,24 +140,29 @@ class Player:
         self._next_pos_y += dy
         
         # define next position rectangle
-        next_pos_rect = pygame.Rect(self._next_pos_x,
+        next_collision_rect = pygame.Rect(self._next_pos_x,
                                     self._next_pos_y,
                                     self.collision_rect.width,
                                     self.collision_rect.height)
         
-        # check for collision
-        collided = next_pos_rect.collidelist(collision_obj_lst) # return -1 if no collision
+        # check if player is inside walkable area i.e not colliding with a wall
+        not_collide_with_wall = self.walkable_area_rect.contains(next_collision_rect)
+        
+        # check for collision with furniture
+        collide_with_objects = False if next_collision_rect.collidelist(collision_obj_lst) == -1 else True
 
         # update position and rectangle
-        if collided == -1: # if there was no collision
+        if not collide_with_objects and not_collide_with_wall: # if there was no collision
             #update player position
             self._pos_x += dx
             self._pos_y += dy
             self.rect.topleft = (self._pos_x,
                                  self._pos_y)
+            # update player position for y sorting
+            self.y_sort_pos = self.rect.bottomleft[1]
             
             #update collision rectangle position
-            self.collision_rect = next_pos_rect
+            self.collision_rect = next_collision_rect
         
         else:
             # if there is a collision, reset next coordonate
