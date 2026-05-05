@@ -10,7 +10,6 @@
     "police_station": {
         "objects": ["accusation_board","decor_1","desk","case_file","decor_2","map_board"],
         "detective_rowe": {
-            "sprite": "default.png",
             "position": [0.65, 0.3],
             "scale": 0.8
         },
