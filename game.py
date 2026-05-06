@@ -42,6 +42,10 @@ class Game:
         self.rooms.append(Room('police_station', room_data['police_station']))
         self.rooms.append(Room('elenas_office', room_data['elenas_office']))
         self.rooms.append(Room('security_booth', room_data['security_booth']))  
+
+        # update the room connections to be actual room objects instead of strings. This is necessary for room graph to work
+        self._update_room_connections_to_room_objects()
+
         # build the room graph
         self.room_graph = RoomGraph(self.rooms)
         # set current room
@@ -49,12 +53,11 @@ class Game:
 
         self.evidence_bag: EvidenceBag = EvidenceBag()
         self.active_evidence = None
-        self.hud: HUD = HUD(self.evidence_bag, self.current_room.objects['map_board'])
+        self.hud: HUD = HUD(self.evidence_bag, self.current_room.objects['map_board']) # current room should be the police station when this line is executed 
         self.running: bool = True
         print("game started")
 
-        #TODO: DELETE THIS
-        #self.current_room = self.rooms[2]
+
 
     def run(self) -> None:
         '''game loop'''
@@ -145,5 +148,18 @@ class Game:
         self.current_room.draw_room_objects(self.screen)
         self.hud.draw(self.screen, self.active_evidence)
         pygame.display.flip()
+
+    def _update_room_connections_to_room_objects(self) -> None:
+        for room in self.rooms:
+            actual_room_connections = []
+            for room_name in room.connections:
+                for room_obj in self.rooms:
+                    if room_obj.name == room_name:
+                        actual_room_connections.append(room_obj)
+                        break
+            room.connections = actual_room_connections 
+    
+
+
 
 ### Nael Karimou - 5734316
