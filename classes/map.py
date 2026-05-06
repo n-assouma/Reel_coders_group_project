@@ -24,3 +24,6 @@ class Map:
         self.background = pygame.image.load(os.path.join('assets', 'map', 'map.png')).convert_alpha()
         self.background = pygame.transform.scale(self.background, (1200, 700))
 
+    def name_maker(self, name):
+        return name.replace("_", " ").upper()
+    
