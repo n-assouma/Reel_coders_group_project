@@ -47,12 +47,8 @@ class Game:
         self.rooms.append(Room('police_station', room_data['police_station']))
 
         # build the room graph
-<<<<<<< HEAD
         self.room_graph = RoomGraph(self.rooms)
         self.room_graph.build_graph(self.rooms)
-=======
-        # self.room_graph = RoomGraph(self.rooms)
->>>>>>> a2cf5dba48d279152367c945b33b659f91c82552
         # set current room
         self.current_room: Room = self.rooms[0]
 
