@@ -24,6 +24,7 @@ class Room:
     '''
     def __init__(self, room_name: str, room_data: dict)-> None:
         self.name = room_name
+        self.connections = []#TODO
         
         # load player at starting position
         self.player = Player(room_data['detective_rowe'],
