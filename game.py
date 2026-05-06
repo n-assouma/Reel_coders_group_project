@@ -54,7 +54,8 @@ class Game:
 
         self.evidence_bag: EvidenceBag = EvidenceBag()
         self.active_evidence = None
-        self.hud: HUD = HUD(self.evidence_bag, self.current_room.objects['map_board'])
+        self.map: Map = Map()
+        self.hud: HUD = HUD(self.evidence_bag, self.map.hud_map)
         self.running: bool = True
         print("game started")
 
