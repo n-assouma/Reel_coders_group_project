@@ -88,6 +88,23 @@ class Game:
                             self.evidence_bag.is_open = False
                         else:
                             self.evidence_bag.is_open = True
+                    
+                    if self.hud.map_rect.collidepoint(event.pos):
+                        self.map.is_open = True
+                    
+                    if self.map.is_open:
+                        hovered_room = self.map.get_hovered_room(event.pos)
+                        if hovered_room:
+                            distination_room = None
+                            for room in self.rooms:
+                                if room.name == hovered_room:
+                                    distination_room = room
+                                    break
+                            if self.room_graph.is_reachable(self.current_room, distination_room):
+                                self.current_room = distination_room
+                                self.map.is_open = False
+                           
+
 
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  # Left mouse button
@@ -147,5 +164,6 @@ class Game:
         self.current_room.draw_background(self.screen)
         self.current_room.draw_room_objects(self.screen)
         self.hud.draw(self.screen, self.active_evidence)
+        self.map.draw(self.screen, self.current_room, self.current_room.player.front1_sprite)
         pygame.display.flip()
 
