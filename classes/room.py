@@ -20,11 +20,15 @@ class Room:
         Room.name : return current rroom name
         Room.player: return a reference to the player in the room
         Room.objects: return a dictionnary of all furniture in a room
+        Room.connections: return a list of the names of the rooms that 
+            are connected to the current room
         ...
     '''
     def __init__(self, room_name: str, room_data: dict)-> None:
         self.name = room_name
-        self.connections = []#TODO
+
+        # load the name of the rooms the current room is connected to.
+        self._connections: list[str] = room_data['connections'] # load only the names of the rooms self is connected to
         
         # load player at starting position
         self.player = Player(room_data['detective_rowe'],
@@ -79,6 +83,21 @@ class Room:
 
 
     @property
+    def connections(self) -> list[str]:
+        '''
+        return a list of the names of the rooms that are connected to the current room
+        '''
+        return self._connections
+    
+    @connections.setter
+    def connections(self, actual_connections: list[Room]) -> None:
+        '''
+        set the actual rooms the self is connected to. 
+        This is necessary because of the wait RoomGraph setup the connections. 
+        '''
+        self._connections: list[Room] = actual_connections 
+    
+    @property
     def objects(self) -> dict:
         '''
         Get the all objects in the room.
@@ -128,9 +147,9 @@ class Room:
             
             else:
                 print(f"Object '{type(obj)}' not found in room '{self.name}'")
-
         
     def __str__(self) -> str:
         return f"Room(name={self.name})"
+    
 
 ### Nael Karimou - 5734316

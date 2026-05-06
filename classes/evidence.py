@@ -1,5 +1,4 @@
 ### Author: Nael Karimou 5734316
-### Co-author(s): ...
 
 import pygame
 
@@ -28,8 +27,11 @@ class Evidence(InteractableObject):
         super().__init__(room_name, name, obj_data)
         self.collected = False
         self.visible = True 
+        self.priority: int = obj_data['priority']
 
     def draw(self, surface: pygame.Surface, player_center: tuple[int, int]) -> None:
         '''draw the evidence onto the given surface. also draws the [E] prompt if the player is near and has not collected it yet.'''
         if self.visible and not self.collected:
             super().draw(surface, player_center)
+
+### Nael Karimou - 5734316

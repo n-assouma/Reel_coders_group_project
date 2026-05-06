@@ -1,8 +1,4 @@
-
-# main game loop and drawing
-# has the player, the room and the hud
-# Andrei Sidorenko - 5750779
-# Nael Karimou - 5734316
+### Nael Karimou - 5734316
 
 import json
 import os
@@ -45,6 +41,11 @@ class Game:
         self.rooms = []
          # only load the first room for now
         self.rooms.append(Room('police_station', room_data['police_station']))
+        self.rooms.append(Room('elenas_office', room_data['elenas_office']))
+        self.rooms.append(Room('security_booth', room_data['security_booth']))  
+
+        # update the room connections to be actual room objects instead of strings. This is necessary for room graph to work
+        self._update_room_connections_to_room_objects()
 
         # build the room graph
         self.room_graph = RoomGraph(self.rooms)
@@ -58,6 +59,8 @@ class Game:
         self.hud: HUD = HUD(self.evidence_bag, self.map.hud_map)
         self.running: bool = True
         print("game started")
+
+
 
     def run(self) -> None:
         '''game loop'''
@@ -165,3 +168,17 @@ class Game:
         self.map.draw(self.screen, self.current_room, self.current_room.player.front1_sprite)
         pygame.display.flip()
 
+    def _update_room_connections_to_room_objects(self) -> None:
+        for room in self.rooms:
+            actual_room_connections = []
+            for room_name in room.connections:
+                for room_obj in self.rooms:
+                    if room_obj.name == room_name:
+                        actual_room_connections.append(room_obj)
+                        break
+            room.connections = actual_room_connections 
+    
+
+
+
+### Nael Karimou - 5734316
