@@ -27,3 +27,9 @@ class Map:
     def name_maker(self, name):
         return name.replace("_", " ").upper()
     
+    def get_hovered_room(self, mouse_posision):
+        for name, rectangle in self.rooms_rect.items():
+            if rectangle["rect"].collidepoint(mouse_posision):
+                return name
+        return None
+    
