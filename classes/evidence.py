@@ -1,4 +1,5 @@
 ### Author: Nael Karimou 5734316
+### Co-author(s): ...
 
 import pygame
 
@@ -32,5 +33,3 @@ class Evidence(InteractableObject):
         '''draw the evidence onto the given surface. also draws the [E] prompt if the player is near and has not collected it yet.'''
         if self.visible and not self.collected:
             super().draw(surface, player_center)
-
-### Nael Karimou - 5734316

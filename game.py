@@ -1,4 +1,8 @@
-### Nael Karimou - 5734316
+
+# main game loop and drawing
+# has the player, the room and the hud
+# Andrei Sidorenko - 5750779
+# Nael Karimou - 5734316
 
 import json
 import os
@@ -12,6 +16,7 @@ from classes.evidence_bag import EvidenceBag
 from classes.evidence import Evidence
 from classes.room import Room
 from classes.hud import HUD
+from classes.map import Map
 from settings import *
 
 
@@ -40,21 +45,23 @@ class Game:
         self.rooms = []
          # only load the first room for now
         self.rooms.append(Room('police_station', room_data['police_station']))
-        self.rooms.append(Room('elenas_office', room_data['elenas_office']))
-        self.rooms.append(Room('security_booth', room_data['security_booth']))  
+
         # build the room graph
+<<<<<<< HEAD
         self.room_graph = RoomGraph(self.rooms)
+        self.room_graph.build_graph(self.rooms)
+=======
+        # self.room_graph = RoomGraph(self.rooms)
+>>>>>>> a2cf5dba48d279152367c945b33b659f91c82552
         # set current room
         self.current_room: Room = self.rooms[0]
 
         self.evidence_bag: EvidenceBag = EvidenceBag()
         self.active_evidence = None
-        self.hud: HUD = HUD(self.evidence_bag, self.current_room.objects['map_board'])
+        self.map: Map = Map()
+        self.hud: HUD = HUD(self.evidence_bag, self.map.hud_map)
         self.running: bool = True
         print("game started")
-
-        #TODO: DELETE THIS
-        #self.current_room = self.rooms[2]
 
     def run(self) -> None:
         '''game loop'''
@@ -85,7 +92,22 @@ class Game:
                             self.evidence_bag.is_open = False
                         else:
                             self.evidence_bag.is_open = True
-
+                    
+                    if self.hud.map_rect.collidepoint(event.pos):
+                        self.map.is_open = True
+                    
+                    if self.map.is_open:
+                        hovered_room = self.map.get_hovered_room(event.pos)
+                        if hovered_room:
+                            distination_room = None
+                            for room in self.rooms:
+                                if room.name == hovered_room:
+                                    distination_room = room
+                                    break
+                            if self.room_graph.is_reachable(self.current_room, distination_room):
+                                self.current_room = distination_room
+                                self.map.is_open = False
+                           
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  # Left mouse button
                     self.active_evidence = None
@@ -144,6 +166,6 @@ class Game:
         self.current_room.draw_background(self.screen)
         self.current_room.draw_room_objects(self.screen)
         self.hud.draw(self.screen, self.active_evidence)
+        self.map.draw(self.screen, self.current_room, self.current_room.player.front1_sprite)
         pygame.display.flip()
 
-### Nael Karimou - 5734316

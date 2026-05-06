@@ -1,4 +1,5 @@
-### Nael Karimou - 5734316
+### Author: Andrei Sidorenko - 5750779
+### Reviewer: Nael Karimou - 5734316
 
 import math
 import os
@@ -92,7 +93,7 @@ class InteractableObject(Furniture):
         dx = ox - px
         dy = oy - py
         distance = math.sqrt(dx ** 2 + dy ** 2)
-        return distance <= (INTERACTION_RADIUS + self.rect.width // 2)
+        return distance <= INTERACTION_RADIUS
     
     def _draw_prompt(self, surface):
         '''show [E] + name above the object'''
@@ -116,6 +117,4 @@ class InteractableObject(Furniture):
 class FurnitureCollisionError(Exception):
     '''Raised when there is an error with the collision rectangle of a furniture object. This can be caused by a missing or incorrect collision rectangle in the room data.'''
     pass
-
-### Nael Karimou - 5734316
     

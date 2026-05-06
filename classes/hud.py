@@ -22,6 +22,7 @@ class HUD:
         self.font_small = pygame.font.SysFont("Segoe UI,Arial", 12)
         self.evidence_bag = evidence_bag
         self.map = map
+        self.map_rect = pygame.Rect(0, 0, 80, 50)
 
     def set_hint(self, text):
         # change the chief of police hint
@@ -86,6 +87,7 @@ class HUD:
 
         map_scaled = pygame.transform.scale(self.map.sprite, (80, 50))
         surface.blit(map_scaled, (x2 + pad - 120, panel_y + panel_h - 130))
+        self.map_rect = pygame.Rect(x2 + pad - 120, panel_y + panel_h - 130, 80, 50)
 
 ### Amir H Javadi B 5717292
     def draw_panel(self, surface, x, y, w, h, title, title_colour, body, body_colour):
