@@ -1,5 +1,5 @@
 
-# Andrei Sidorenko 5750779
+# 5750779
 
 from game import Game
 
@@ -9,5 +9,3 @@ print("starting game...")
 g = Game()
 g.run()
 print("game closed")
-
-# Andrei Sidorenko - 575079
