@@ -16,6 +16,7 @@ from classes.evidence_bag import EvidenceBag
 from classes.evidence import Evidence
 from classes.room import Room
 from classes.hud import HUD
+from classes.map import Map
 from settings import *
 
 
