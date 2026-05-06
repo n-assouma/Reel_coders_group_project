@@ -12,6 +12,7 @@ from classes.evidence_bag import EvidenceBag
 from classes.evidence import Evidence
 from classes.room import Room
 from classes.hud import HUD
+from classes.map import Map
 from settings import *
 
 
@@ -48,12 +49,14 @@ class Game:
 
         # build the room graph
         self.room_graph = RoomGraph(self.rooms)
+        self.room_graph.build_graph(self.rooms)
         # set current room
         self.current_room: Room = self.rooms[0]
 
         self.evidence_bag: EvidenceBag = EvidenceBag()
         self.active_evidence = None
-        self.hud: HUD = HUD(self.evidence_bag, self.current_room.objects['map_board']) # current room should be the police station when this line is executed 
+        self.map: Map = Map()
+        self.hud: HUD = HUD(self.evidence_bag, self.map.hud_map)
         self.running: bool = True
         print("game started")
 
@@ -88,7 +91,22 @@ class Game:
                             self.evidence_bag.is_open = False
                         else:
                             self.evidence_bag.is_open = True
-
+                    
+                    if self.hud.map_rect.collidepoint(event.pos):
+                        self.map.is_open = True
+                    
+                    if self.map.is_open:
+                        hovered_room = self.map.get_hovered_room(event.pos)
+                        if hovered_room:
+                            distination_room = None
+                            for room in self.rooms:
+                                if room.name == hovered_room:
+                                    distination_room = room
+                                    break
+                            if self.room_graph.is_reachable(self.current_room, distination_room):
+                                self.current_room = distination_room
+                                self.map.is_open = False
+                           
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  # Left mouse button
                     self.active_evidence = None
@@ -147,6 +165,7 @@ class Game:
         self.current_room.draw_background(self.screen)
         self.current_room.draw_room_objects(self.screen)
         self.hud.draw(self.screen, self.active_evidence)
+        self.map.draw(self.screen, self.current_room, self.current_room.player.front1_sprite)
         pygame.display.flip()
 
     def _update_room_connections_to_room_objects(self) -> None:
