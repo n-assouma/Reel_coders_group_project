@@ -1,8 +1,11 @@
-from .room import Room
-from .player import Player
+### Amir H Javadi B 5717292
 import os
 import json
 import pygame
+
+from .room import Room
+from .player import Player
+
 
 class Map:
     def __init__(self):
@@ -47,4 +50,6 @@ class Map:
                 font = pygame.font.SysFont("Arial", 20)
                 label = font.render(self.name_maker(hovered_room), True, (255, 255, 255))
                 surface.blit(label, (self.rooms_rect[hovered_room]["rect"].x + self.rooms_rect[hovered_room]["rect"].width // 2 - label.get_width() // 2, self.rooms_rect[hovered_room]["rect"].y -40))
+
+### Amir H Javadi B 5717292
                 

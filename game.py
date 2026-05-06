@@ -104,8 +104,6 @@ class Game:
                                 self.current_room = distination_room
                                 self.map.is_open = False
                            
-
-
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  # Left mouse button
                     self.active_evidence = None
