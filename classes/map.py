@@ -33,3 +33,18 @@ class Map:
                 return name
         return None
     
+    def draw(self, surface, current_room: Room, player_sprite=None):
+        if self.is_open:
+            surface.blit(self.background, (0, 0))
+            mouse_posision = pygame.mouse.get_pos()
+            hovered_room = self.get_hovered_room(mouse_posision)
+
+            if player_sprite:
+                    player_sprite = pygame.transform.scale(player_sprite, (30, 60))
+                    surface.blit(player_sprite, self.rooms_rect[current_room.name]["player_position"] )
+            
+            if hovered_room:
+                font = pygame.font.SysFont("Arial", 20)
+                label = font.render(self.name_maker(hovered_room), True, (255, 255, 255))
+                surface.blit(label, (self.rooms_rect[hovered_room]["rect"].x + self.rooms_rect[hovered_room]["rect"].width // 2 - label.get_width() // 2, self.rooms_rect[hovered_room]["rect"].y -40))
+                
