@@ -8,6 +8,7 @@
 
     },
     "police_station": {
+        "connections": ["elenas_office", "security_booth"],
         "objects": ["accusation_board","decor_1","desk","case_file","decor_2","map_board"],
         "detective_rowe": {
             "position": [0.65, 0.3],
@@ -33,6 +34,7 @@
             "position": [0.48, 0.34],
             "scale": 0.92,
             "class": "Evidence",
+            "priority": 6,
             "collision": false,
             "dropped_on": "desk"
         },
@@ -69,6 +71,7 @@
         
     },
     "elenas_office": {
+        "connections": ["police_station"],
         "objects": ["board", "bookshelf", "desk", "broken_lamp", "chair", "computer", "dinner_invitation", "research_paper", "tweed_thread"],
         "detective_rowe": {
             "position": [0.65, 0.3],
@@ -131,6 +134,7 @@
             "position": [0.3454, 0.3557],
             "scale": 1.0,
             "class": "Evidence",
+            "priority": 4,
             "collision": true
         },
         "research_paper": {
@@ -138,6 +142,7 @@
             "position": [0.5308, 0.0729],
             "scale": 1.095,
             "class": "Evidence",
+            "priority": 5,
             "collision": false,
             "dropped_on": "board"
         },
@@ -146,11 +151,13 @@
             "position": [0.17, 0.1150],
             "scale": 2.025,
             "class": "Evidence",
+            "priority": 2,
             "collision": false,
             "dropped_on": "desk"
         }
     },
     "security_booth": {
+        "connections": ["police_station"],
         "objects": ["cctv_screen", "desk","chair", "keyboard", "master_key_log", "shelf"],
         "detective_rowe": {
             "position": [0.5, 0.4],
@@ -198,6 +205,7 @@
             "position": [0.6, 0.2450],
             "scale": 0.205,
             "class": "Evidence",
+            "priority": 3, 
             "collision": false,
             "dropped_on": "desk"
         },
