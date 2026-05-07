@@ -50,6 +50,9 @@ class Game:
         # build the room graph
         self.room_graph = RoomGraph(self.rooms)
         self.room_graph.build_graph(self.rooms)
+        for room in self.rooms[1].connections:
+            self.room_graph.lock_edge(self.rooms[1], room)
+
         # set current room
         self.current_room: Room = self.rooms[0]
 
