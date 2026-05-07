@@ -131,6 +131,8 @@ class Game:
         interactible_objects = filter(lambda obj: isinstance(obj, InteractableObject), self.current_room.objects.values()) 
         for obj in interactible_objects:
             if obj.is_player_near(player_center):
+                if obj.name == "map_board":
+                    self.map.is_open = True
                 if isinstance(obj, Evidence) and not obj.collected:
                     obj.collected = True
                     self.evidence_bag.add_evidence(obj)
