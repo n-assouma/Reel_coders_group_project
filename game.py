@@ -63,7 +63,6 @@ class Game:
         self.running: bool = True
         print("game started")
 
-
         # error handling for map navigation
         self.error_message = None
         self.error_time = None
@@ -134,7 +133,6 @@ class Game:
                             if self.room_graph.is_reachable(self.current_room, distination_room):
                                 self.current_room = distination_room
                                 self.map.is_open = False
-                           
                             else:
                                 self.error_message = f"You need to unlock {self.room_graph.route_with_blocker(self.current_room, distination_room).name} first."
                                 self.error_time = pygame.time.get_ticks()
@@ -184,6 +182,9 @@ class Game:
             self.error_message = None
             self.error_time = None
         
+        if self.map.is_open:
+            return 
+
         keys = pygame.key.get_pressed()
         self.current_room.player.handle_movement(keys, self.current_room.collision_rects)
 
@@ -217,7 +218,4 @@ class Game:
                         break
             room.connections = actual_room_connections 
     
-
-
-
 ### Nael Karimou - 5734316
