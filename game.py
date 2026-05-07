@@ -66,6 +66,7 @@ class Game:
 
         # error handling for map navigation
         self.error_message = None
+        self.error_time = None
 
     def run(self) -> None:
         '''game loop'''
@@ -136,6 +137,7 @@ class Game:
                            
                             else:
                                 self.error_message = f"You need to unlock {self.room_graph.route_with_blocker(self.current_room, distination_room).name} first."
+                                self.error_time = pygame.time.get_ticks()
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  # Left mouse button
                     self.active_evidence = None
@@ -177,6 +179,11 @@ class Game:
     
     def _update(self) -> None:
         '''handle player movement and update hud hints'''
+
+        if self.error_message and pygame.time.get_ticks() - self.error_time > 3000: # shoeing the error message for 3 seconds
+            self.error_message = None
+            self.error_time = None
+        
         keys = pygame.key.get_pressed()
         self.current_room.player.handle_movement(keys, self.current_room.collision_rects)
 
@@ -197,6 +204,7 @@ class Game:
         self.current_room.draw_room_objects(self.screen)
         self.hud.draw(self.screen, self.active_evidence)
         self.map.draw(self.screen, self.current_room, self.current_room.player.front1_sprite)
+        self._draw_error(self.screen, self.error_message)
         pygame.display.flip()
 
     def _update_room_connections_to_room_objects(self) -> None:
