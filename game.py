@@ -64,6 +64,8 @@ class Game:
         print("game started")
 
 
+        # error handling for map navigation
+        self.error_message = None
 
     def run(self) -> None:
         '''game loop'''
@@ -75,6 +77,28 @@ class Game:
 
         pygame.quit()
         sys.exit()
+    
+    ### Amir H Javadi B 5717292
+    def _draw_error(self, surface, message: str = None) -> None:
+        """Displaying error if any ahppened
+            especially for the map navicgation,
+            if the user wants to reach a room that there is a locked room in the middle of the path."""
+
+        if message is not None:
+            font = pygame.font.SysFont("Segoe UI,Arial", 22, bold=True)
+            padding  = 20
+            text_surface = font.render(message, True, (255, 80, 80))
+            w = text_surface.get_width() + padding * 2
+            h = text_surface.get_height() + padding * 2
+            x = (SCREEN_WIDTH - w) // 2
+            y = (MAIN_SCREEN_HEIGHT - h) // 2
+
+            box = pygame.Surface((w, h), pygame.SRCALPHA)
+            box.fill((20, 0, 0, 200))
+            surface.blit(box, (x, y))
+            surface.blit(text_surface, (x + padding, y + padding))
+
+    ### Amir H Javadi B 5717292
 
     def _handle_events(self) -> None:
         '''
