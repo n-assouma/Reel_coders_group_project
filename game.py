@@ -1,8 +1,4 @@
-
-# main game loop and drawing
-# has the player, the room and the hud
-# Andrei Sidorenko - 5750779
-# Nael Karimou - 5734316
+### Nael Karimou - 5734316
 
 import json
 import os
@@ -17,6 +13,7 @@ from classes.evidence import Evidence
 from classes.room import Room
 from classes.hud import HUD
 from classes.chief_of_police_hint import ChiefOfPoliceHint
+from classes.map import Map
 from settings import *
 
 
@@ -45,19 +42,29 @@ class Game:
         self.rooms = []
          # only load the first room for now
         self.rooms.append(Room('police_station', room_data['police_station']))
+        self.rooms.append(Room('elenas_office', room_data['elenas_office']))
+        self.rooms.append(Room('security_booth', room_data['security_booth']))  
+
+        # update the room connections to be actual room objects instead of strings. This is necessary for room graph to work
+        self._update_room_connections_to_room_objects()
 
         # build the room graph
-        # self.room_graph = RoomGraph(self.rooms)
+        self.room_graph = RoomGraph(self.rooms)
+        self.room_graph.build_graph(self.rooms)
         # set current room
         self.current_room: Room = self.rooms[0]
 
         self.evidence_bag: EvidenceBag = EvidenceBag()
         self.active_evidence = None
-        # create the chief panel first, then pass it into the HUD
+        # create the chief panel and map, then pass it into the HUD
         self.chief_hint = ChiefOfPoliceHint()
-        self.hud: HUD = HUD(self.evidence_bag, self.chief_hint)
+        self.map: Map = Map()
+        self.hud: HUD = HUD(self.evidence_bag, self.chief_hint, self.map.hud_map)
+          
         self.running: bool = True
         print("game started")
+
+
 
     def run(self) -> None:
         '''game loop'''
@@ -72,10 +79,8 @@ class Game:
 
     def _handle_events(self) -> None:
         '''
-        handle window events and keyboard input'''
-        # This code is copy pasted rom somewhere.
-        # Must change it.
-
+        handle window events and keyboard input
+        '''
 ### Amir H Javadi B 5717292
 
         for event in pygame.event.get():
@@ -90,7 +95,22 @@ class Game:
                             self.evidence_bag.is_open = False
                         else:
                             self.evidence_bag.is_open = True
-
+                    
+                    if self.hud.map_rect.collidepoint(event.pos):
+                        self.map.is_open = True
+                    
+                    if self.map.is_open:
+                        hovered_room = self.map.get_hovered_room(event.pos)
+                        if hovered_room:
+                            distination_room = None
+                            for room in self.rooms:
+                                if room.name == hovered_room:
+                                    distination_room = room
+                                    break
+                            if self.room_graph.is_reachable(self.current_room, distination_room):
+                                self.current_room = distination_room
+                                self.map.is_open = False
+                           
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  # Left mouse button
                     self.active_evidence = None
@@ -119,7 +139,8 @@ class Game:
                     obj.collected = True
                     self.evidence_bag.add_evidence(obj)
                     self.evidence_bag.sort_by_priority()
-                    self.hud.set_hint("You picked up: " + obj.name)
+                    self.hud.set_hint("You picked up: " + obj.name) 
+
                 else:
                     print("[INTERACT] examined:", obj.name)
                     msg = "You examined the " + obj.name.lower() + ". (pickup/interaction logic coming from team)"
@@ -148,14 +169,22 @@ class Game:
     def _draw(self) -> None:
         '''draw the current room, the player and the hud'''
         self.current_room.draw_background(self.screen)
-        for obj_name in self.current_room.objects:
-            obj = self.current_room.objects[obj_name]
-            if isinstance(obj, Evidence):
-                if not obj.collected:
-                    self.current_room.draw_room_object(self.screen, obj.name)
-            else:
-                self.current_room.draw_room_object(self.screen, obj.name)
-        self.current_room.player.draw(self.screen)
+        self.current_room.draw_room_objects(self.screen)
         self.hud.draw(self.screen, self.active_evidence)
+        self.map.draw(self.screen, self.current_room, self.current_room.player.front1_sprite)
         pygame.display.flip()
 
+    def _update_room_connections_to_room_objects(self) -> None:
+        for room in self.rooms:
+            actual_room_connections = []
+            for room_name in room.connections:
+                for room_obj in self.rooms:
+                    if room_obj.name == room_name:
+                        actual_room_connections.append(room_obj)
+                        break
+            room.connections = actual_room_connections 
+    
+
+
+
+### Nael Karimou - 5734316

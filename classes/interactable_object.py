@@ -1,5 +1,4 @@
-### Author: Andrei Sidorenko - 5750779
-### Reviewer: Nael Karimou - 5734316
+### Nael Karimou - 5734316
 
 import math
 import os
@@ -32,7 +31,7 @@ class Furniture:
         # load collision detection rectangle if needed
         if self.collision:  
             collision_rect_width = scaled_width
-            collision_rect_height = self.sprite.get_height() // 10 # about 10% of object height
+            collision_rect_height = self.sprite.get_height() // 5 # about 20% of object height
 
             collision_rect_pos = (
                 obj_data['position'][0] * SCREEN_WIDTH,
@@ -41,6 +40,10 @@ class Furniture:
             self._collision_rect = pygame.Rect(collision_rect_pos, 
                                               (collision_rect_width, collision_rect_height)
             )
+
+        # define position for vertical sorting as rect bottom  if object is not dropped
+        # on an other object, else the position should be initialised in the room the object is contained in.
+        self.y_sort_pos = self.rect.bottomleft[1]
 
     def draw(self, surface: pygame.Surface) -> None:
         '''draw the furniture onto the given surface at the position of its rectangle'''
@@ -51,7 +54,11 @@ class Furniture:
         '''
         Return the collision rectangle of the object
         '''
-        return self._collision_rect
+        if self.collision:
+            return self._collision_rect
+        else:
+            raise FurnitureCollisionError(f"Object '{self.name}'\
+            in room '{self.room_name}' does not have a collision rectangle.")
     
         
     def __repr__(self) -> str:
@@ -85,7 +92,7 @@ class InteractableObject(Furniture):
         dx = ox - px
         dy = oy - py
         distance = math.sqrt(dx ** 2 + dy ** 2)
-        return distance <= INTERACTION_RADIUS
+        return distance <= (INTERACTION_RADIUS + self.rect.width // 2)
     
     def _draw_prompt(self, surface):
         '''show [E] + name above the object'''
@@ -105,4 +112,10 @@ class InteractableObject(Furniture):
 
     def __repr__(self) -> str:
         return f"InteractableObject(name={self.name}, room={self.room_name})"
+    
+class FurnitureCollisionError(Exception):
+    '''Raised when there is an error with the collision rectangle of a furniture object. This can be caused by a missing or incorrect collision rectangle in the room data.'''
+    pass
+
+### Nael Karimou - 5734316
     
