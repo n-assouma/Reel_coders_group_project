@@ -12,6 +12,7 @@ from classes.evidence_bag import EvidenceBag
 from classes.evidence import Evidence
 from classes.room import Room
 from classes.hud import HUD
+from classes.chief_of_police_hint import ChiefOfPoliceHint
 from classes.map import Map
 from settings import *
 
@@ -55,8 +56,11 @@ class Game:
 
         self.evidence_bag: EvidenceBag = EvidenceBag()
         self.active_evidence = None
+        # create the chief panel and map, then pass it into the HUD
+        self.chief_hint = ChiefOfPoliceHint()
         self.map: Map = Map()
-        self.hud: HUD = HUD(self.evidence_bag, self.map.hud_map)
+        self.hud: HUD = HUD(self.evidence_bag, self.chief_hint, self.map.hud_map)
+          
         self.running: bool = True
         print("game started")
 
@@ -149,16 +153,18 @@ class Game:
         keys = pygame.key.get_pressed()
         self.current_room.player.handle_movement(keys, self.current_room.collision_rects)
 
+        # update the chief panel based on what (if anything) the player is near
         player_center = self.current_room.player.get_center()
-
-        # Set hud chief of police hint display to something. TODO: update with actual messages
+        found = False
         for obj_name in self.current_room.objects:
             obj = self.current_room.objects[obj_name]
             if type(obj) != Furniture:
                 if obj.is_player_near(player_center):
-                    self.hud.set_hint("That looks like a " + obj.name + ". Press E to examine it.")
-                    return
-            self.hud.set_hint("Walk around the station. Use WASD to move, E to interact.")
+                    self.chief_hint.show_object_hint(obj.name)
+                    found = True
+                    break
+        if not found:
+            self.chief_hint.show_default()
 
     def _draw(self) -> None:
         '''draw the current room, the player and the hud'''
