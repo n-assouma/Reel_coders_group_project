@@ -216,5 +216,98 @@
             "class": "Furniture",
             "collision": true
         }
+    },
+    "faculty_of_dining_hall": {
+        "connections": ["security_booth", "elenas_office"],
+        "objects": ["dining_table", "clock", "waiter", "chair_back1", "chair_back2", "chair_back3", "chair_back4", "chair_front1", "chair_front2", "chair_front3", "chair_front4"], 
+        "detective_rowe": {
+            "position": [0.5, 0.4],
+            "scale": 0.85
+        },
+        "background": {
+            "path": "background.png",
+            "walkable_area": {
+                "top_left": [0.02, 0.3],
+                "width": 0.98,
+                "height": 0.35
+            }
+        },
+        "dining_table": {
+            "path": "dining_table.png",
+            "position": [0.253, 0.29],
+            "scale": 0.4,
+            "class": "Furniture",
+            "collision": true
+        },
+        "clock": {
+            "path": "clock.png",
+            "position": [0.475, 0.01],
+            "scale": 0.17,
+            "class": "Furniture",
+            "collision": true
+        },
+        "waiter": {
+            "path": "waiter.png",
+            "position": [0.9, 0.07],
+            "scale": 0.15,
+            "class": "InteractableObject",
+            "collision": true
+        },
+        "chair_back1": {
+            "path": "chair_back1.png",
+            "position": [0.3, 0.35],
+            "scale": 0.13,
+            "class": "Furniture",
+            "collision": true
+        },
+        "chair_back2": {
+            "path": "chair_back2.png",
+            "position": [0.42, 0.35],
+            "scale": 0.13,
+            "class": "Furniture",
+            "collision": true
+        },
+        "chair_back3": {
+            "path": "chair_back3.png",
+            "position": [0.53, 0.35],
+            "scale": 0.13,
+            "class": "Furniture",
+            "collision": true
+        },
+        "chair_back4": {
+            "path": "chair_back4.png",
+            "position": [0.64, 0.35], 
+            "scale": 0.13,
+            "class": "Furniture",
+            "collision": true 
+        },
+        "chair_front1": {
+            "path": "chair_front1.png",
+            "position": [0.3, 0.245],
+            "scale": 0.15,
+            "class": "Furniture",
+            "collision": true
+        },
+        "chair_front2": {
+            "path": "chair_front2.png",
+            "position": [0.42, 0.245],
+            "scale": 0.15,
+            "class": "Furniture",
+            "collision": true
+        },
+        "chair_front3": {
+            "path": "chair_front3.png",
+            "position": [0.53, 0.245],
+            "scale": 0.15,
+            "class": "Furniture",
+            "collision": true
+        },
+        "chair_front4": {
+            "path": "chair_front4.png",
+            "position": [0.64, 0.245],
+            "scale": 0.15,
+            "class": "Furniture",
+            "collision": true
+        }
     }
 }
