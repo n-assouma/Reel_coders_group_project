@@ -16,7 +16,7 @@ class Map:
             "security_booth": {"rect": pygame.Rect(569, 439, 47, 62), "player_position": (591 - 15, 518 - 60)},
             "lenas_apartment": {"rect": pygame.Rect(910, 130, 131, 171), "player_position": (988 - 15, 325 - 60)},
             "victors_townhouse": {"rect": pygame.Rect(84, 75, 193, 134), "player_position": (178 - 15, 313 - 60)},
-            "faculty_dining_hall": {"rect": pygame.Rect(690, 486, 186, 109), "player_position":(782 - 15, 629 - 60) },
+            "faculty_of_dining_hall": {"rect": pygame.Rect(690, 486, 186, 109), "player_position":(782 - 15, 629 - 60) },
             "marcuss_home": {"rect": pygame.Rect(540, 42, 106, 88), "player_position": (589 - 15, 147 - 60)}
         }
         with open(os.path.join('data','rooms.json'), 'r') as f:
