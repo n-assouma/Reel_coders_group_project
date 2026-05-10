@@ -1,15 +1,20 @@
 {
     "_meta": {
-        "author": "Nael Karimou 5734316",
-        "co_author": null,
-        "description": "This file contains the hints from the chief officer. SO far, it covers when an evidence is examined and when a room is unlocked.",
-        "todo": "Check with data architect if formats get along"
+        "author": "Andrei Sidorenko 5750779",
+        "co_author": "Nael Karimou 5734316",
+        "description": "Chief of Police hint lines. Object hints fire when the player is near an interactable object. Room unlock hints will fire when a locked room is unlocked.",
+        "todo": "Add hints for remaining rooms (Marcus's home, Lena's apartment, Victor's townhouse, Faculty dining hall) when those rooms are added in Sprint 3."
     },
     "object_hint": {
         "case_file": "This is the document of the case your are working on.\nElena, married women with kids, prominent researcher\n and professor at the city university has been found dead\n in her office at XX:XX pm.",
-        "draft_email": "A draft email to a lawyer: 'Regarding financial \nirregularities in Victor Osei's department...'\n She was about to report someone.", 
+        "computer": "A draft email to a lawyer: 'Regarding financial \nirregularities in Victor Osei's department...'\n She was about to report someone.",
         "tweed_thread": "The lamp is smashed. Wait — there's a small thread \n caught on the broken edge. Looks like tweed.",
-        "dinner_invitation": "A faculty dinner invitation for last night.\n We should check what time it actually ended."
+        "dinner_invitation": "A faculty dinner invitation for last night.\n We should check what time it actually ended.",
+        "accusation_board": "The board's almost empty. We need solid evidence before we can put a name on it. Keep digging.",
+        "map_board": "The case map. Every location and connection we know so far. Useful for tracking who was where.",
+        "research_paper": "Draft paper listing Elena as sole author. Another name's crossed out in red — Lena Voss. She had reason to be angry.",
+        "keyboard": "Security station keyboard. Could pull up the CCTV logs from here — if anyone bothered to keep them running.",
+        "master_key_log": "Only two people have master keys: Dean Osei and the head of security. Victor's key was used at 11:18 PM. That's during the murder window."
     },
     "room_unlocks_hint": {
         "victors_house": "Looks like you have unlocked Victors house!\n You can now interrogate him.",
