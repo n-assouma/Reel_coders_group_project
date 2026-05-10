@@ -71,7 +71,7 @@
         
     },
     "elenas_office": {
-        "connections": ["security_booth", "faculty_of_dining_hall"],
+        "connections": ["security_booth", "faculty_dining_hall"],
         "objects": ["board", "bookshelf", "desk", "broken_lamp", "chair", "computer", "dinner_invitation", "research_paper", "tweed_thread"],
         "detective_rowe": {
             "position": [0.65, 0.3],
@@ -157,7 +157,7 @@
         }
     },
     "security_booth": {
-        "connections": ["police_station", "elenas_office", "faculty_of_dining_hall"],
+        "connections": ["police_station", "elenas_office", "faculty_dining_hall"],
         "objects": ["cctv_screen", "desk","chair", "keyboard", "master_key_log", "shelf"],
         "detective_rowe": {
             "position": [0.5, 0.4],
@@ -217,7 +217,7 @@
             "collision": true
         }
     },
-    "faculty_of_dining_hall": {
+    "faculty_dining_hall": {
         "connections": ["security_booth", "elenas_office"],
         "objects": ["dining_table", "clock", "waiter", "chair_back1", "chair_back2", "chair_back3", "chair_back4", "chair_front1", "chair_front2", "chair_front3", "chair_front4"], 
         "detective_rowe": {
