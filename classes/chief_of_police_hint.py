@@ -21,10 +21,31 @@ class ChiefOfPoliceHint:
         # font for the hint text in the body of the panel
         self.font_body = pygame.font.SysFont("Segoe UI,Arial", 14)
 
-        # dictionaries that hold all the chief's lines from the json file
+        # chief lines loaded from json
         self.object_hints = {}
         self.room_unlocks_hints = {}
         self.load_hints()
+
+        # load the officer sprite shown on the left of the panel
+        self.officer_sprite = None
+        self.officer_height = 140
+        self.officer_width = 140
+        try:
+            path = os.path.join("assets", "hud", "Hud_officer.png")
+            raw = pygame.image.load(path).convert_alpha()
+            # keep the original aspect ratio - scale by height
+            original_w = raw.get_width()
+            original_h = raw.get_height()
+            ratio = self.officer_height / original_h
+            new_w = int(original_w * ratio)
+            self.officer_width = new_w
+            self.officer_sprite = pygame.transform.smoothscale(
+                raw, (new_w, self.officer_height)
+            )
+        except FileNotFoundError:
+            print("Hud_officer.png not found, panel will show text only")
+        except pygame.error as err:
+            print("could not load officer sprite: " + str(err))
 
     def set_hint(self, text):
         # change the hint that the panel shows
@@ -53,17 +74,31 @@ class ChiefOfPoliceHint:
         # divider line under the title
         pygame.draw.line(surface, COLOUR_HUD_BORDER, (x + 10, y + 32), (x + w - 10, y + 32), 1)
 
-        # draw the wrapped hint text below the divider line
-        self.draw_wrapped(surface, self.current_hint, x + 12, y + 42, w - 24, COLOUR_TEXT)
+        # sprite on left, text on right
+        sprite_padding = 10
+        sprite_x = x + sprite_padding
+        sprite_y = y + 25  # sits just under the divider line
+
+        # only draw the sprite if it loaded successfully
+        if self.officer_sprite is not None:
+            surface.blit(self.officer_sprite, (sprite_x, sprite_y))
+            # text starts to the right of the sprite, with a bit of space
+            text_x = sprite_x + self.officer_width + sprite_padding
+        else:
+            # no sprite — text uses the full panel width like before
+            text_x = x + 12
+
+        text_y = y + 42
+        text_max_w = (x + w) - text_x - 12
+        self.draw_wrapped(surface, self.current_hint, text_x, text_y, text_max_w, COLOUR_TEXT)
 
     def draw_wrapped(self, surface, text, x, y, max_w, colour):
-        # word wrap the text so it fits inside the panel
-        # also respect newline characters in the hint
+        # wrap text to fit, keep newlines
 
         # how tall one line of text is
         line_h = 19
 
-        # current y position we are drawing at (we move it down as we go)
+        # current draw y (moves down each line)
         text_y = y
 
         # split the text by newlines first so we get each paragraph
@@ -124,7 +159,7 @@ class ChiefOfPoliceHint:
             self.room_unlocks_hints = data["room_unlocks_hint"]
 
     def show_object_hint(self, object_name):
-        # show the chief's line for this object, or a generic message if there is no entry
+        # show chief's line, fallback if unknown
         if object_name in self.object_hints:
             self.current_hint = self.object_hints[object_name]
         else:
