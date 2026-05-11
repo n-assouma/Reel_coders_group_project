@@ -142,7 +142,7 @@ class Game:
                                 self.current_room = distination_room
                                 self.map.is_open = False
                             else:
-                                self.error_message = f"You need to unlock {self.room_graph.route_with_blocker(self.current_room, distination_room).name} first."
+                                self.error_message = f"You need to unlock {self.map.name_maker(self.room_graph.route_with_blocker(self.current_room, distination_room).name)} first."
                                 self.error_time = pygame.time.get_ticks()
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  # Left mouse button
