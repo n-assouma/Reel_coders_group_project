@@ -75,7 +75,14 @@ class EvidenceBag:
         try:
             self.__data.remove(evidence)
         except ValueError:
-            raise EvidenceNotFoundError(f"Evidence '{evidence.name}' is not in the bag.")            
+            raise EvidenceNotFoundError(f"Evidence '{evidence.name}' is not in the bag.") 
+
+    def evidence_exists(self, evidence_name: str) -> bool:
+        """Return True if an evidence with the given name is in the bag."""
+        for evidence in self.__data:
+            if evidence.name == evidence_name:
+                return True
+        return False         
 
     def _merge(self, first_sorted_bag_data: list[Evidence], second_sorted_bag_data: list[Evidence]) -> list[Evidence]:
         """Merge two sorted lists of Evidence into one sorted list, comparing by priority."""
