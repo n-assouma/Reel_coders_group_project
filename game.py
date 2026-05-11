@@ -40,11 +40,13 @@ class Game:
 
         # create the rooms
         self.rooms = []
-         # only load the first room for now
+         # only load the first rooms for now
         self.rooms.append(Room('police_station', room_data['police_station']))
         self.rooms.append(Room('elenas_office', room_data['elenas_office']))
         self.rooms.append(Room('security_booth', room_data['security_booth'])) 
         self.rooms.append(Room('faculty_dining_hall', room_data['faculty_dining_hall']))
+        self.rooms.append(Room('lenas_apartment', room_data['lenas_apartment']))
+        self.rooms.append(Room('marcus_house', room_data['marcus_house']))
 
         # update the room connections to be actual room objects instead of strings. This is necessary for room graph to work
         self._update_room_connections_to_room_objects()

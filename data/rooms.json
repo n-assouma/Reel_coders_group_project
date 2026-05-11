@@ -3,15 +3,14 @@
         "author": "Aryan Naranath 5758224",
         "co_author": "Nael Karimou 5734316",
         "description": "This file contains the data for the rooms in the game. It defines the sprites, their positions, and the walkable area for each room.",
-        "todo": "For elenas_room, change 'research_paper' to the actual sprite instead of a ball. Define walkable area for background and positions for sprites. reproduce the same structure others rooms. Adjust if needed. Especially for data collision using depth sorting.",
-        "completed": "post_office only"
+        "completed": "4/7 rooms"
 
     },
     "police_station": {
-        "connections": ["security_booth"],
+        "connections": ["security_booth", "lenas_apartment"],
         "objects": ["accusation_board","decor_1","desk","case_file","decor_2","map_board"],
         "detective_rowe": {
-            "position": [0.65, 0.3],
+            "position": [0.7, 0.4],
             "scale": 0.8
         },
         "background": {
@@ -31,10 +30,10 @@
         },
         "case_file": {
             "path": "case_file.png",
-            "position": [0.48, 0.34],
+            "position": [0.48, 0.39],
             "scale": 0.92,
             "class": "Evidence",
-            "priority": 6,
+            "priority": 7,
             "collision": false,
             "dropped_on": "desk"
         },
@@ -55,7 +54,7 @@
         },
         "desk": {
             "path": "desk.png",
-            "position": [0.4, 0.26],
+            "position": [0.4, 0.3],
             "scale": 0.9,
             "class": "Furniture",
             "collision": true
@@ -227,8 +226,8 @@
         "background": {
             "path": "background.png",
             "walkable_area": {
-                "top_left": [0.02, 0.3],
-                "width": 0.98,
+                "top_left": [0.0, 0.38],
+                "width": 1.0,
                 "height": 0.35
             }
         },
@@ -308,6 +307,175 @@
             "scale": 0.15,
             "class": "Furniture",
             "collision": true
+        }
+    },
+    "lenas_apartment": {
+        "connections": ["police_station", "marcus_house"],
+        "objects": ["balcony", "carpet", "desk_and_chair", "elena", "phone"],
+        "detective_rowe": {
+            "position": [0.5, 0.35],
+            "scale": 1.2
+        },
+        "background": {
+            "path": "background.png",
+            "walkable_area": {
+                "top_left": [0.02, 0.4],
+                "width": 0.98,
+                "height": 0.35
+            }
+        },
+        "balcony": {
+            "path": "balcony.png",
+            "position": [0.5479, 0.0350],
+            "scale": 1.0,
+            "class": "Furniture",
+            "collision": false
+        },
+        "carpet": {
+            "path": "carpet.png",
+            "position": [0.0396, 0.4143],
+            "scale": 1.065,
+            "class": "Furniture",
+            "collision": false,
+            "dropped_on": "balcony"
+            
+        },
+        "desk_and_chair": {
+            "path": "desk_and_chair.png",
+            "position": [0.13, 0.2979],
+            "scale": 0.94,
+            "class": "Furniture",
+            "collision": true
+        },
+        "elena": {
+            "path": "elena.png",
+            "position": [0.4304, 0.1536],
+            "scale": 0.55,
+            "class": "InteractableObject",
+            "collision": true
+        },
+        "phone": {
+            "path": "phone.png",
+            "position": [0.6496, 0.2550],
+            "scale": 0.11,
+            "class": "InteractableObject",
+            "collision": false,
+            "dropped_on": "balcony"
+        }
+    },
+    "marcus_house": {
+        "connections": ["lenas_apartment"],
+        "objects": ["carpet", "table", "fireplace", "plant_pot", "sofa_1", "sofa_2", "tv", "marcus", "bottle", "glass", "ashtray", "divorce_agreement", "cigarets_box"],
+        "detective_rowe": {
+            "position": [0.5, 0.4],
+            "scale": 1.0
+        },
+        "background": {
+            "path": "background.png",
+            "walkable_area": {
+                "top_left": [0.0, 0.21],
+                "width": 1.0,
+                "height": 0.53
+            }
+        },
+        "carpet": {
+            "path": "carpet.png",
+            "position": [0.2196, 0.4086],
+            "scale": 0.365,
+            "class": "Furniture",
+            "collision": false,
+            "dropped_on": "fireplace"
+        },
+        "table": {
+            "path": "table.png",
+            "position": [0.3304, 0.3807],
+            "scale": 0.3,
+            "class": "Furniture",
+            "collision": true
+        },
+        "fireplace": {
+            "path": "fireplace.png",
+            "position": [0.4058, 0.055],
+            "scale": 0.785,
+            "class": "Furniture",
+            "collision": true
+        },
+        "plant_pot": {
+            "path": "plant_pot.png",
+            "position": [0.9367, 0.065],
+            "scale": 0.325,
+            "class": "Furniture",
+            "collision": true
+        },
+        "sofa_1": {
+            "path": "sofa_1.png",
+            "position": [0.5133, 0.2593],
+            "scale": 0.765,
+            "class": "Furniture",
+            "collision": true
+        },
+        "sofa_2": {
+            "path": "sofa_2.png",
+            "position": [0.6333, 0.3736],
+            "scale": 0.89,
+            "class": "Furniture",
+            "collision": true
+        },
+        "tv": {
+            "path": "tv.png",
+            "position": [-0.0092, 0.0979],
+            "scale": 0.825,
+            "class": "Furniture",
+            "collision": true
+        },
+        "marcus": {
+            "path": "marcus.png",
+            "position": [0.5413, 0.2121],
+            "scale": 0.71,
+            "class": "InteractableObject",
+            "collision": true,
+            "dropped_on": "sofa_1"
+        },
+        "bottle": {
+            "path": "bottle.png",
+            "position": [0.3504, 0.36],
+            "scale": 0.875,
+            "class": "Furniture",
+            "collision": false,
+            "dropped_on": "table"
+        },
+        "glass": {
+            "path": "glass.png",
+            "position": [0.4017, 0.3571],
+            "scale": 1.0,
+            "class": "Furniture",
+            "collision": false,
+            "dropped_on": "table"
+        },
+        "ashtray": {
+            "path": "ashtray.png",
+            "position": [0.3892, 0.4029],
+            "scale": 1.0,
+            "class": "Furniture",
+            "collision": false,
+            "dropped_on": "table"
+        },
+        "divorce_agreement": {
+            "path": "divorce_agreement.png",
+            "position": [0.4425, 0.3957],
+            "scale": 0.625,
+            "class": "Evidence",
+            "priority": 6,
+            "collision": false,
+            "dropped_on": "table"
+        },
+        "cigarets_box": {
+            "path": "cigarets_box.png",
+            "position": [0.0796, 0.3179],
+            "scale": 0.745,
+            "class": "Furniture",
+            "collision": false,
+            "dropped_on": "tv"
         }
     }
 }
