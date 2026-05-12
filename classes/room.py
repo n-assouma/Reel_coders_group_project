@@ -43,17 +43,21 @@ class Room:
         self._objects = {}
         for obj_name in room_data['objects']:
             if obj_name not in self._objects:
-                match room_data[obj_name]['class']:
-                    case 'Furniture':
-                        self._objects[obj_name] = Furniture(room_name, obj_name, room_data[obj_name])
-                    case 'InteractableObject':
-                        self._objects[obj_name] = InteractableObject(room_name, obj_name, room_data[obj_name])
-                    case 'Evidence':
-                        self._objects[obj_name] = Evidence(room_name, obj_name, room_data[obj_name])
-                    case _:
-                        # An error occured during loading, there is a typo in room.json. 
-                        print(f"Object '{obj_name}' not found in room data for room '{room_name}'. Error may come from json file.")
-
+                try:
+                    match room_data[obj_name]['class']:
+                        case 'Furniture':
+                            self._objects[obj_name] = Furniture(room_name, obj_name, room_data[obj_name])
+                        case 'InteractableObject':
+                            self._objects[obj_name] = InteractableObject(room_name, obj_name, room_data[obj_name])
+                        case 'Evidence':
+                            self._objects[obj_name] = Evidence(room_name, obj_name, room_data[obj_name])
+                        case _:
+                            # An error occured during loading, there is a typo in room.json. 
+                            print(f"Object '{obj_name}' not found in room data for room '{room_name}'. Error may come from json file.")
+                except KeyError:
+                    print(f"Object '{obj_name}' not found in room data for room '{room_name}'. Error may come from json file.")
+                except FurnitureCollisionError as e:
+                    print(e)
             else:
                 #if there is a duplicate of an object in rooms.json
                 continue
