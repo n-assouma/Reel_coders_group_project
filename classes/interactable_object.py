@@ -30,6 +30,22 @@ class Furniture:
 
         # load collision detection rectangle if needed
         if self.collision:  
+            # get data from json file about collision
+            collision_height_scale = obj_data.get('collision_height_scale', None)
+            if collision_height_scale is None:
+                raise FurnitureCollisionError(f'Object {self.name} in room \
+                    {self.room_name} is missing collision height data in rooms.json.')
+            else:
+                collision_rect_width = scaled_width
+                collision_rect_height = self.sprite.get_height() * collision_height_scale
+                collision_rect_pos = (
+                obj_data['position'][0] * SCREEN_WIDTH,
+                obj_data['position'][1] * SCREEN_HEIGHT +  (scaled_height - collision_rect_height)
+            )
+            self._collision_rect = pygame.Rect(collision_rect_pos, 
+                                              (collision_rect_width, collision_rect_height)
+            )
+            '''
             collision_rect_width = scaled_width
             collision_rect_height = self.sprite.get_height() // 5 # about 20% of object height
 
@@ -40,6 +56,7 @@ class Furniture:
             self._collision_rect = pygame.Rect(collision_rect_pos, 
                                               (collision_rect_width, collision_rect_height)
             )
+            '''
 
         # define position for vertical sorting as rect bottom  if object is not dropped
         # on an other object, else the position should be initialised in the room the object is contained in.
@@ -114,7 +131,10 @@ class InteractableObject(Furniture):
         return f"InteractableObject(name={self.name}, room={self.room_name})"
     
 class FurnitureCollisionError(Exception):
-    '''Raised when there is an error with the collision rectangle of a furniture object. This can be caused by a missing or incorrect collision rectangle in the room data.'''
+    '''
+    Raised when there is an error with the collision rectangle of a furniture object. 
+    This can be caused by a missing or incorrect collision rectangle in the room data.
+    '''
     pass
 
 ### Nael Karimou - 5734316
