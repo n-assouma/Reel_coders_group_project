@@ -226,7 +226,7 @@
         "background": {
             "path": "background.png",
             "walkable_area": {
-                "top_left": [0.0, 0.38],
+                "top_left": [0.0, 0.3],
                 "width": 1.0,
                 "height": 0.35
             }
