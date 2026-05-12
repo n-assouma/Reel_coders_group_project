@@ -56,9 +56,10 @@ class Game:
         # build the room graph
         self.room_graph = RoomGraph(self.rooms)
         self.room_graph.build_graph(self.rooms)
-        # lock the edges that are supposed to be locked at the start of the game TODO: lock the victor townhouse
+        # lock the edges that are supposed to be locked at the start of the game 
         self.room_graph.lock_room(self.rooms[3])
         self.room_graph.lock_room(self.rooms[4])
+        self.room_graph.lock_room(self.rooms[6])
 
         # set current room
         self.current_room: Room = self.rooms[0]
@@ -208,6 +209,8 @@ class Game:
             self.room_graph.unlock_room(self.rooms[3])
         if self.evidence_bag.evidence_exists("research_paper"):
             self.room_graph.unlock_room(self.rooms[4])
+        if self.evidence_bag.evidence_exists("master_key_log"):
+            self.room_graph.unlock_room(self.rooms[6])
 
         keys = pygame.key.get_pressed()
         self.current_room.player.handle_movement(keys, self.current_room.collision_rects)
