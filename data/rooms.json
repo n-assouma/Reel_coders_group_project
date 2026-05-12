@@ -524,32 +524,32 @@
         },
         "hanger": {
             "path": "hanger.png",
-            "position": [0.0712, 0.1479],
-            "scale": 0.405,
+            "position": [0.0667, 0.2136],
+            "scale": 1.0,
             "class": "Furniture",
             "collision": true,
             "collision_height_scale": 0.2
         },
         "chair": {
             "path": "chair.png",
-            "position": [0.4321, 0.2257],
-            "scale": 0.35,
+            "position": [0.4742, 0.26],
+            "scale": 0.365,
             "class": "Furniture",
             "collision": true,
             "collision_height_scale": 0.2
         },
         "desk": {
             "path": "desk.png",
-            "position": [0.6229, 0.3843],
-            "scale": 0.865,
+            "position": [0.67, 0.3507],
+            "scale": 0.87,
             "class": "Furniture",
             "collision": true,
             "collision_height_scale": 0.2
         },
         "victor": {
             "path": "victor.png",
-            "position": [0.5017, 0.2379],
-            "scale": 0.36,
+            "position": [0.4767, 0.2079],
+            "scale": 0.45,
             "class": "InteractableObject",
             "collision": false,
             "dropped_on": "chair",
@@ -557,17 +557,17 @@
         },
         "laptop": {
             "path": "laptop.png",
-            "position": [0.6746, 0.365],
-            "scale": 0.4,
-            "class": "Evidence",
+            "position": [0.6821, 0.3264],
+            "scale": 0.425,
+            "class": "InteractableObject",
             "priority": 1,
             "collision": false,
             "dropped_on": "desk"
         },
         "jacket": {
             "path": "jacket.png",
-            "position": [0.1292, 0.1964],
-            "scale": 0.265,
+            "position": [0.1192, 0.2607],
+            "scale": 0.305,
             "class": "InteractableObject",
             "collision": false,
             "dropped_on": "hanger"
