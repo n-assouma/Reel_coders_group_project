@@ -44,8 +44,13 @@ class EvidenceBag:
         self.full_opened_bag_image = pygame.image.load(full_opened_bag_path).convert_alpha()
         self.full_opened_bag_image = pygame.transform.scale(self.full_opened_bag_image, (150, 150))
 
+        trash_can_path = os.path.join("assets", "evidence_bag", "trash_can.png")
+        self.trash_can_image = pygame.image.load(trash_can_path).convert_alpha()
+        self.trash_can_image = pygame.transform.scale(self.trash_can_image, (150, 150))
+
 
         self.rect = self.closed_bag_image.get_rect()
+        self.trash_can_rect = self.trash_can_image.get_rect()
 
 
     
