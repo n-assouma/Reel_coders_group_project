@@ -69,8 +69,16 @@ class HUD:
                         "" if items_number > 0 else "No evidence collected yet.", COLOUR_TEXT_DIM)
         
         # drawing each evidence item in the bag
-        img_x = x2 + pad
+        img_x = x2 + pad + 80
         img_y = panel_y + 42
+
+        surface.blit(self.evidence_bag.trash_can_image, (x2 - 3*pad , panel_y + panel_h - 120))
+        self.evidence_bag.trash_can_rect.topleft = (x2 - 3*pad, panel_y + panel_h - 120)
+
+        map_scaled = pygame.transform.scale(self.map.sprite, (80, 50))
+        surface.blit(map_scaled, (x2 + pad - 120, panel_y + panel_h - 130))
+        self.map_rect = pygame.Rect(x2 + pad - 120, panel_y + panel_h - 130, 80, 50)
+
         if self.evidence_bag.is_open:
             if len(self.evidence_bag.items):
                 surface.blit(self.evidence_bag.full_opened_bag_image, (x2 + panel2_w - 150, panel_y + panel_h - 145))
@@ -83,14 +91,14 @@ class HUD:
                 else:
                     surface.blit(scaled, (img_x, img_y))
                     evidence.rect = pygame.Rect(img_x, img_y, 50, 50)
-                img_x += 60
+                if num == 2:
+                    img_x = x2 + pad + 40
+                    img_y = panel_y +100
+                img_x += 80
         else:
             surface.blit(self.evidence_bag.closed_bag_image, (x2 + panel2_w - 150, panel_y + panel_h - 145))
         self.evidence_bag.rect.topleft = (x2 + panel2_w - 150, panel_y + panel_h - 145)
 
-        map_scaled = pygame.transform.scale(self.map.sprite, (80, 50))
-        surface.blit(map_scaled, (x2 + pad - 120, panel_y + panel_h - 130))
-        self.map_rect = pygame.Rect(x2 + pad - 120, panel_y + panel_h - 130, 80, 50)
 
 ### Amir H Javadi B 5717292
     def draw_panel(self, surface, x, y, w, h, title, title_colour, body, body_colour):
