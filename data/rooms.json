@@ -134,7 +134,8 @@
             "scale": 1.0,
             "class": "Evidence",
             "priority": 4,
-            "collision": true
+            "collision": false,
+            "dropped_on": "board"
         },
         "research_paper": {
             "path": "research_paper.png",
