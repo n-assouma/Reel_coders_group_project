@@ -42,18 +42,30 @@ class RoomGraph:
             for adjacent in self.__graph[room]:
                 print(f"({room.name}, {adjacent.name})")
 
-    def lock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
+    def _lock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
         """Mark the edge between two rooms as locked. Idempotent."""
         self._room_validate(room_a, room_b)
         self._edge_validate((room_a, room_b))
         self.__locked_edges.add(frozenset((room_a, room_b)))
+    
+    def lock_room(self, room: rm.Room) -> None:
+        """Lock all edges connected to a room."""
+        self._room_validate(room)
+        for adjacent in room.connections:
+            self._lock_edge(room, adjacent)
        
-    def unlock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
+    def _unlock_edge(self, room_a: rm.Room, room_b: rm.Room) -> None:
         """Remove the lock from an edge"""
         self._room_validate(room_a, room_b)
         self._edge_validate((room_a, room_b))
         self.__locked_edges.discard(frozenset((room_a, room_b)))
     
+    def unlock_room(self, room: rm.Room) -> None:
+        """Unlock all edges connected to a room."""
+        self._room_validate(room)
+        for adjacent in room.connections:
+            self._unlock_edge(room, adjacent)
+
     def is_locked(self, room_a: rm.Room, room_b: rm.Room) -> bool:
         """returning True if the edge between two rooms is currently locked."""
         self._room_validate(room_a, room_b)

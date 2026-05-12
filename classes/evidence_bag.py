@@ -44,8 +44,13 @@ class EvidenceBag:
         self.full_opened_bag_image = pygame.image.load(full_opened_bag_path).convert_alpha()
         self.full_opened_bag_image = pygame.transform.scale(self.full_opened_bag_image, (150, 150))
 
+        trash_can_path = os.path.join("assets", "evidence_bag", "trash_can.png")
+        self.trash_can_image = pygame.image.load(trash_can_path).convert_alpha()
+        self.trash_can_image = pygame.transform.scale(self.trash_can_image, (150, 150))
+
 
         self.rect = self.closed_bag_image.get_rect()
+        self.trash_can_rect = self.trash_can_image.get_rect()
 
 
     
@@ -75,7 +80,14 @@ class EvidenceBag:
         try:
             self.__data.remove(evidence)
         except ValueError:
-            raise EvidenceNotFoundError(f"Evidence '{evidence.name}' is not in the bag.")            
+            raise EvidenceNotFoundError(f"Evidence '{evidence.name}' is not in the bag.") 
+
+    def evidence_exists(self, evidence_name: str) -> bool:
+        """Return True if an evidence with the given name is in the bag."""
+        for evidence in self.__data:
+            if evidence.name == evidence_name:
+                return True
+        return False         
 
     def _merge(self, first_sorted_bag_data: list[Evidence], second_sorted_bag_data: list[Evidence]) -> list[Evidence]:
         """Merge two sorted lists of Evidence into one sorted list, comparing by priority."""

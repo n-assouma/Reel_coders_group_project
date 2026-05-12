@@ -56,8 +56,9 @@ class Game:
         # build the room graph
         self.room_graph = RoomGraph(self.rooms)
         self.room_graph.build_graph(self.rooms)
-        for room in self.rooms[1].connections:
-            self.room_graph.lock_edge(self.rooms[1], room)
+        # lock the edges that are supposed to be locked at the start of the game TODO: lock the victor townhouse
+        self.room_graph.lock_room(self.rooms[3])
+        self.room_graph.lock_room(self.rooms[4])
 
         # set current room
         self.current_room: Room = self.rooms[0]
@@ -118,10 +119,11 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left mouse button
+
                     for num, evidence in enumerate(self.evidence_bag.items):
                         if evidence.rect.collidepoint(event.pos):
                             self.active_evidence = num
-                    
+                             
                     if self.evidence_bag.rect.collidepoint(event.pos):
                         if self.evidence_bag.is_open:
                             self.evidence_bag.is_open = False
@@ -143,11 +145,18 @@ class Game:
                                 self.current_room = distination_room
                                 self.map.is_open = False
                             else:
-                                self.error_message = f"You need to unlock {self.room_graph.route_with_blocker(self.current_room, distination_room).name} first."
+                                self.error_message = f"You need to unlock {self.map.name_maker(self.room_graph.route_with_blocker(self.current_room, distination_room).name)} first."
                                 self.error_time = pygame.time.get_ticks()
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  # Left mouse button
-                    self.active_evidence = None
+                    if self.active_evidence is not None:
+                        if self.evidence_bag.trash_can_image.get_rect(topleft=self.evidence_bag.trash_can_rect.topleft).collidepoint(event.pos):
+                            item = self.evidence_bag.items[self.active_evidence]
+                            self.evidence_bag.remove_evidence(item)
+                            item.collected = False
+                            item.rect = item.original_rect.copy() 
+
+                        self.active_evidence = None
             if event.type == pygame.MOUSEMOTION:
                 if self.active_evidence is not None:
                     self.evidence_bag.items[self.active_evidence].rect.move_ip(event.rel)
@@ -193,6 +202,12 @@ class Game:
         
         if self.map.is_open:
             return 
+        
+        # unlocking the rooms if the player has the required evidence in the bag TODO: unlocking victor house
+        if self.evidence_bag.evidence_exists("dinner_invitation"):
+            self.room_graph.unlock_room(self.rooms[3])
+        if self.evidence_bag.evidence_exists("research_paper"):
+            self.room_graph.unlock_room(self.rooms[4])
 
         keys = pygame.key.get_pressed()
         self.current_room.player.handle_movement(keys, self.current_room.collision_rects)
