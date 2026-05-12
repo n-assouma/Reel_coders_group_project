@@ -117,10 +117,11 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left mouse button
+
                     for num, evidence in enumerate(self.evidence_bag.items):
                         if evidence.rect.collidepoint(event.pos):
                             self.active_evidence = num
-                    
+                             
                     if self.evidence_bag.rect.collidepoint(event.pos):
                         if self.evidence_bag.is_open:
                             self.evidence_bag.is_open = False
@@ -146,7 +147,14 @@ class Game:
                                 self.error_time = pygame.time.get_ticks()
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  # Left mouse button
-                    self.active_evidence = None
+                    if self.active_evidence is not None:
+                        if self.evidence_bag.trash_can_image.get_rect(topleft=self.evidence_bag.trash_can_rect.topleft).collidepoint(event.pos):
+                            item = self.evidence_bag.items[self.active_evidence]
+                            self.evidence_bag.remove_evidence(item)
+                            item.collected = False
+                            item.rect = item.original_rect.copy() 
+
+                        self.active_evidence = None
             if event.type == pygame.MOUSEMOTION:
                 if self.active_evidence is not None:
                     self.evidence_bag.items[self.active_evidence].rect.move_ip(event.rel)
