@@ -24,6 +24,7 @@ class Furniture:
         # get the rectangle for the sprite, positioned at the x and y in the data
         self.rect = self.sprite.get_rect(topleft=(obj_data['position'][0] * SCREEN_WIDTH,
                                                   obj_data['position'][1] * SCREEN_HEIGHT))
+        self.original_rect = self.rect.copy()
         
         # define if object needs collision or not 
         self.collision = obj_data['collision']
