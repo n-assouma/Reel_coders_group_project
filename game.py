@@ -204,7 +204,7 @@ class Game:
         if self.map.is_open:
             return 
         
-        # unlocking the rooms if the player has the required evidence in the bag TODO: unlocking victor house
+        # unlocking the rooms if the player has the required evidence in the bag 
         if self.evidence_bag.evidence_exists("dinner_invitation"):
             self.room_graph.unlock_room(self.rooms[3])
         if self.evidence_bag.evidence_exists("research_paper"):
