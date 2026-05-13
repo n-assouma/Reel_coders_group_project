@@ -14,11 +14,39 @@
         "map_board": "The case map. Every location and connection we know so far. Useful for tracking who was where.",
         "research_paper": "Draft paper listing Elena as sole author. Another name's crossed out in red — Lena Voss. She had reason to be angry.",
         "keyboard": "Security station keyboard. Could pull up the CCTV logs from here — if anyone bothered to keep them running.",
-        "master_key_log": "Only two people have master keys: Dean Osei and the head of security. Victor's key was used at 11:18 PM. That's during the murder window."
+        "master_key_log": "Only two people have master keys: Dean Osei and the head of security. Victor's key was used at 11:18 PM. That's during the murder window.",
+        "phone": "Phone log: she called Elena at 10:55 PM, no answer. Her neighbour confirms she was on this balcony. Alibi checks out.",
+        "divorce_agreement": "Custody hearing next month. Elena was moving Sophie to Switzerland. Strong motive — but motive isn't proof.",
+        "laptop": "Victor's laptop. The sticky note says 'Password: 1101 0011'. That's binary.",
+        "jacket": "That jacket's tweed. There's a small tear on the left sleeve. The thread from the broken lamp matches — same colour, same weave. He was at the scene."
+    },
+    "npc_greeting": {
+        "marcus": "Marcus Hale. Elena's ex-husband. Bitter divorce, custody battle, no alibi for the murder window. Watch how he reacts when you show him things.",
+        "victor": "Dean Victor Osei. Composed, charming, claims he was at dinner until 11:30. Watch his hands when you ask the right questions.",
+        "waiter": "The waiter cleaning up. He was here all evening — he'd know exactly when the dinner ended."
+    },
+    "suspect_reaction": {
+        "tweed_thread_to_marcus": "Two suspects down, both pointing to Victor.",
+        "tweed_thread_to_lena": "Two independent identifications. This thread is Victor's.",
+        "tweed_thread_to_victor": "He didn't deny it's his. And he just touched his left sleeve.",
+        "master_key_log_to_marcus": "Marcus is genuinely surprised.",
+        "master_key_log_to_lena": "Lena's keycard couldn't open Elena's office. A master key could.",
+        "master_key_log_to_victor": "He's shutting down. He can't explain the key log. Strongest evidence.",
+        "computer_to_marcus": "Marcus seems unaware. Focus shifts to Victor.",
+        "computer_to_lena": "Lena corroborates. Elena genuinely found something. Victor had every reason to stop her.",
+        "computer_to_victor": "He didn't deny it. Deflected again.",
+        "case_file_to_marcus": "This just has the basic facts. It won't provoke much of a reaction. Try showing something more specific.",
+        "case_file_to_lena": "This just has the basic facts. It won't provoke much of a reaction. Try showing something more specific.",
+        "case_file_to_victor": "This just has the basic facts. It won't provoke much of a reaction. Try showing something more specific."
     },
     "room_unlocks_hint": {
         "victors_house": "Looks like you have unlocked Victors house!\n You can now interrogate him.",
         "faculty_dining_hall": "Looks like you have unlocked the Faculty Dining hall!\n You might want to interrogate a waiter there.",
         "lenas_house": "Looks like you have unlocked Lena's Apartment! You can now interrogate her."
+    },
+    "ending": {
+        "justice_served": "Victor is arrested. Confronted with the thread, the key log, and the dinner lie, he confesses. Elena's family gets closure. Case closed.",
+        "suspect_escapes": "Not enough evidence. Victor's solicitor blocks the charges. He shreds documents and flies out of the country. The case goes cold.",
+        "wrong_accusation": "An innocent person arrested. Victor walks free. Six months later, new evidence surfaces — but Victor has disappeared. Injustice."
     }
 }
