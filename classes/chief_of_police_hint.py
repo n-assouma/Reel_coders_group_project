@@ -7,6 +7,17 @@ import pygame
 from settings import *
 
 
+# maps a dialogue speaker key to the title shown on the panel
+SPEAKER_TITLES = {
+    "chief": "CHIEF OF POLICE",
+    "marcus": "MARCUS HALE",
+    "lena": "LENA VOSS",
+    "victor": "VICTOR OSEI",
+    "waiter": "WAITER",
+    "detective": "DETECTIVE ROWE"
+}
+
+
 class ChiefOfPoliceHint:
 
     def __init__(self):
@@ -14,6 +25,10 @@ class ChiefOfPoliceHint:
         self.default_hint = "Walk around with WASD. Get close to objects and press E."
         # the message that gets shown in the panel right now
         self.current_hint = self.default_hint
+
+        # default panel title (changes when an npc speaks)
+        self.default_title = "CHIEF OF POLICE"
+        self.current_title = self.default_title
 
         # font for the title at the top of the panel
         self.font_title = pygame.font.SysFont("Segoe UI,Arial", 15, bold=True)
@@ -51,6 +66,14 @@ class ChiefOfPoliceHint:
         # change the hint that the panel shows
         self.current_hint = text
 
+    def set_speaker(self, speaker_name):
+        # change the panel title to show who is speaking
+        if speaker_name in SPEAKER_TITLES:
+            self.current_title = SPEAKER_TITLES[speaker_name]
+        else:
+            # unknown speaker - just use the name in caps as fallback
+            self.current_title = speaker_name.upper()
+
     def draw(self, surface, x, y, w, h):
         # draw the chief of police panel inside the rectangle given to us
 
@@ -67,8 +90,8 @@ class ChiefOfPoliceHint:
         accent_bar = pygame.Rect(x + 10, y + 10, 3, 16)
         pygame.draw.rect(surface, COLOUR_TEXT_CHIEF, accent_bar)
 
-        # the title text "CHIEF OF POLICE"
-        title_surf = self.font_title.render("CHIEF OF POLICE", True, COLOUR_TEXT_CHIEF)
+        # the title text (changes based on current speaker)
+        title_surf = self.font_title.render(self.current_title, True, COLOUR_TEXT_CHIEF)
         surface.blit(title_surf, (x + 20, y + 9))
 
         # divider line under the title
@@ -174,3 +197,5 @@ class ChiefOfPoliceHint:
     def show_default(self):
         # reset to the default starting message
         self.current_hint = self.default_hint
+        # reset the title back to chief of police
+        self.current_title = self.default_title

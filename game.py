@@ -15,8 +15,12 @@ from classes.hud import HUD
 from classes.chief_of_police_hint import ChiefOfPoliceHint
 from classes.map import Map
 from classes.laptop import Laptop
+from classes.dialogue import load_dialogue_from_json, make_dialogue_key
 from settings import *
 
+
+# names of npc objects we can show evidence to
+NPC_NAMES = ["marcus", "victor", "waiter"]
 
 
 class Game:
@@ -67,6 +71,8 @@ class Game:
 
         self.evidence_bag: EvidenceBag = EvidenceBag()
         self.active_evidence = None
+        # the dialogue tree currently being shown, or None if no dialogue active
+        self.active_dialogue = None
         # create the chief panel and map, then pass it into the HUD
         self.chief_hint = ChiefOfPoliceHint()
         self.map: Map = Map()
@@ -123,6 +129,24 @@ class Game:
 ### Amir H Javadi B 5717292
 
         for event in pygame.event.get():
+            # if a dialogue is active, certain keys advance or close it
+            if event.type == pygame.KEYDOWN:
+                if self.active_dialogue is not None:
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_e or event.key == pygame.K_RETURN:
+                        # try to move to the next line in the dialogue
+                        has_next = self.active_dialogue.advance()
+                        if has_next:
+                            # show the next line
+                            next_node = self.active_dialogue.get_current()
+                            self.chief_hint.set_speaker(next_node.speaker)
+                            self.chief_hint.set_hint(next_node.text)
+                        else:
+                            # no more lines - close the dialogue
+                            self.active_dialogue = None
+                            self.chief_hint.show_default()
+                    # eat the keypress either way so it does not trigger anything else
+                    continue
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left mouse button
 
@@ -178,7 +202,10 @@ class Game:
                             item = self.evidence_bag.items[self.active_evidence]
                             self.evidence_bag.remove_evidence(item)
                             item.collected = False
-                            item.rect = item.original_rect.copy() 
+                            item.rect = item.original_rect.copy()
+                        else:
+                            # check if the player dropped the evidence on an npc
+                            self.try_start_dialogue(event.pos)
 
                         self.active_evidence = None
             
@@ -230,10 +257,54 @@ class Game:
                     msg = "You examined the " + obj.name.lower() + ". (pickup/interaction logic coming from team)"
                     self.hud.set_hint(msg)
                 return
-            
-    
+
+    # try to start a dialogue when evidence was dropped at a screen position
+    def try_start_dialogue(self, drop_pos):
+        # only meaningful if there is a current room with objects
+        if self.current_room is None:
+            return
+
+        # which evidence was being dragged
+        item = self.evidence_bag.items[self.active_evidence]
+        evidence_name = item.name
+
+        # check every object in the room
+        for obj_name in self.current_room.objects:
+            obj = self.current_room.objects[obj_name]
+
+            # only npcs trigger a dialogue
+            if obj.name not in NPC_NAMES:
+                continue
+
+            # did the player drop the evidence on this npc?
+            if not obj.rect.collidepoint(drop_pos):
+                continue
+
+            # build the lookup key and try to load the tree
+            key = make_dialogue_key(evidence_name, obj.name)
+            tree = load_dialogue_from_json(key)
+            if tree is None:
+                # no dialogue defined for this evidence + npc combo
+                # let the player know with a chief line
+                self.chief_hint.set_hint(
+                    "They have nothing useful to say about this.")
+                return
+
+            # store the tree and show the first line
+            self.active_dialogue = tree
+            first_node = tree.get_current()
+            # set the panel title to the speaker and show their text
+            self.chief_hint.set_speaker(first_node.speaker)
+            self.chief_hint.set_hint(first_node.text)
+
+            # stop at the first matching npc
+            return
+
     def _update(self) -> None:
         '''handle player movement and update hud hints'''
+        # if a dialogue is active, freeze the rest of the update
+        if self.active_dialogue is not None:
+            return
 
         ### Amir H Javadi B 5717292
 
