@@ -73,6 +73,9 @@ class Game:
         self.active_evidence = None
         # the dialogue tree currently being shown, or None if no dialogue active
         self.active_dialogue = None
+        # rooms whose unlock hint has already been shown
+        # so it does not spam the chief panel every frame
+        self.shown_unlock_hints = set()
         # create the chief panel and map, then pass it into the HUD
         self.chief_hint = ChiefOfPoliceHint()
         self.map: Map = Map()
@@ -368,13 +371,28 @@ class Game:
                 self.error_time = pygame.time.get_ticks()
             return
         
-        # unlocking the rooms if the player has the required evidence in the bag 
+        # unlocking the rooms if the player has the required evidence in the bag
+        # also show a chief hint the first time each room becomes unlocked
         if self.evidence_bag.evidence_exists("dinner_invitation"):
             self.room_graph.unlock_room(self.rooms[3])
+            room_name = self.rooms[3].name
+            if room_name not in self.shown_unlock_hints:
+                self.chief_hint.show_room_unlocks_hint(room_name)
+                self.shown_unlock_hints.add(room_name)
+
         if self.evidence_bag.evidence_exists("research_paper"):
             self.room_graph.unlock_room(self.rooms[4])
+            room_name = self.rooms[4].name
+            if room_name not in self.shown_unlock_hints:
+                self.chief_hint.show_room_unlocks_hint(room_name)
+                self.shown_unlock_hints.add(room_name)
+
         if self.evidence_bag.evidence_exists("master_key_log"):
             self.room_graph.unlock_room(self.rooms[6])
+            room_name = self.rooms[6].name
+            if room_name not in self.shown_unlock_hints:
+                self.chief_hint.show_room_unlocks_hint(room_name)
+                self.shown_unlock_hints.add(room_name)
         
         ### Amir H Javadi B 5717292
 

@@ -86,7 +86,7 @@
     "room_unlocks_hint": {
         "victors_house": "Looks like you have unlocked Victors house!\n You can now interrogate him.",
         "faculty_dining_hall": "Looks like you have unlocked the Faculty Dining hall!\n You might want to interrogate a waiter there.",
-        "lenas_house": "Looks like you have unlocked Lena's Apartment! You can now interrogate her."
+        "lenas_apartment": "Looks like you have unlocked Lena's Apartment! You can now interrogate her."
     },
     "ending": {
         "justice_served": "Victor is arrested. Confronted with the thread, the key log, and the dinner lie, he confesses. Elena's family gets closure. Case closed.",
