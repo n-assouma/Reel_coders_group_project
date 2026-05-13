@@ -250,6 +250,10 @@ class Game:
                     self.map.is_open = True
                 if obj.name == "laptop":
                     self.laptop.is_open = True
+                # talking to the waiter starts a dialogue with his testimony
+                if obj.name == "waiter":
+                    self.start_waiter_dialogue()
+                    return
                 if isinstance(obj, Evidence) and not obj.collected:
                     obj.collected = True
                     self.evidence_bag.add_evidence(obj)
@@ -309,6 +313,27 @@ class Game:
 
             # stop at the first matching npc
             return
+
+    # start the waiter's testimony dialogue when player presses E near him
+    def start_waiter_dialogue(self):
+        # load the waiter dialogue tree from chief_hints.json
+        tree = load_dialogue_from_json("waiter_testimony")
+        if tree is None:
+            # safety net - should never happen since we wrote the json entry
+            self.chief_hint.set_hint("The waiter has nothing to say right now.")
+            self.chief_hint.set_dialogue_active(False)
+            return
+
+        # store the tree and show the first line
+        self.active_dialogue = tree
+        first_node = tree.get_current()
+        # set the panel title to the speaker and show their text
+        self.chief_hint.set_speaker(first_node.speaker)
+        self.chief_hint.set_hint(first_node.text)
+        # tell the panel a dialogue is now active so it shows the SPACE hint
+        self.chief_hint.set_dialogue_active(True)
+        # tell the panel whether we are already at the last node
+        self.chief_hint.set_finished_hint(tree.is_finished())
 
     def _update(self) -> None:
         '''handle player movement and update hud hints'''

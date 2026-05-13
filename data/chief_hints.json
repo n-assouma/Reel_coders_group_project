@@ -77,6 +77,10 @@
         "case_file_to_victor": [
             {"speaker": "victor", "text": "A tragic case. Elena was a brilliant researcher. Terrible loss for the university."},
             {"speaker": "chief", "text": "This just has the basic facts. It won't provoke much of a reaction. Try showing something more specific."}
+        ],
+        "waiter_testimony": [
+            {"speaker": "waiter", "text": "The faculty dinner? Finished around quarter to eleven. The dean in the tweed jacket left right away."},
+            {"speaker": "chief", "text": "Victor told us 11:30. It actually ended at 10:45. He has a 45-minute gap. The murder was at 11:20. This is critical."}
         ]
     },
     "room_unlocks_hint": {

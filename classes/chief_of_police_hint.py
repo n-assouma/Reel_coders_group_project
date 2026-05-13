@@ -60,6 +60,8 @@ class ChiefOfPoliceHint:
         # chief lines loaded from json
         self.object_hints = {}
         self.room_unlocks_hints = {}
+        # chief greeting lines for npcs (marcus, victor, waiter)
+        self.npc_greetings = {}
         self.load_hints()
 
         # load the officer sprite shown on the left of the panel
@@ -227,15 +229,21 @@ class ChiefOfPoliceHint:
             print("chief_hints.json is not valid JSON")
             return
 
-        # copy the two sections we care about (skip _meta)
+        # copy the sections we care about (skip _meta)
         if "object_hint" in data:
             self.object_hints = data["object_hint"]
         if "room_unlocks_hint" in data:
             self.room_unlocks_hints = data["room_unlocks_hint"]
+        # copy npc greetings (marcus, victor, waiter)
+        if "npc_greeting" in data:
+            self.npc_greetings = data["npc_greeting"]
 
     def show_object_hint(self, object_name):
         # show chief's line, fallback if unknown
-        if object_name in self.object_hints:
+        # check npc greetings first - these describe the suspect / witness
+        if object_name in self.npc_greetings:
+            self.current_hint = self.npc_greetings[object_name]
+        elif object_name in self.object_hints:
             self.current_hint = self.object_hints[object_name]
         else:
             # fallback so unknown objects still show something
