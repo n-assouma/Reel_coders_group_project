@@ -14,6 +14,7 @@ from classes.room import Room
 from classes.hud import HUD
 from classes.chief_of_police_hint import ChiefOfPoliceHint
 from classes.map import Map
+from classes.laptop import Laptop
 from settings import *
 
 
@@ -69,6 +70,7 @@ class Game:
         # create the chief panel and map, then pass it into the HUD
         self.chief_hint = ChiefOfPoliceHint()
         self.map: Map = Map()
+        self.laptop: Laptop = Laptop()
         self.hud: HUD = HUD(self.evidence_bag, self.chief_hint, self.map.hud_map)
           
         self.running: bool = True
@@ -77,6 +79,9 @@ class Game:
         # error handling for map navigation
         self.error_message = None
         self.error_time = None
+        self.add_error_size = 0
+        self.add_error_y = 0
+        self.error_color = (255, 80, 80)
 
     def run(self) -> None:
         '''game loop'''
@@ -90,19 +95,19 @@ class Game:
         sys.exit()
     
     ### Amir H Javadi B 5717292
-    def _draw_error(self, surface, message: str = None) -> None:
+    def _draw_error(self, surface, message: str = None, add_size: int = 0, add_y: int = 0, color: tuple = (255, 80, 80)) -> None:
         """Displaying error if any ahppened
             especially for the map navicgation,
             if the user wants to reach a room that there is a locked room in the middle of the path."""
 
         if message is not None:
-            font = pygame.font.SysFont("Segoe UI,Arial", 22, bold=True)
+            font = pygame.font.SysFont("Segoe UI,Arial", 22 + add_size, bold=True)
             padding  = 20
-            text_surface = font.render(message, True, (255, 80, 80))
+            text_surface = font.render(message, True, color)
             w = text_surface.get_width() + padding * 2
             h = text_surface.get_height() + padding * 2
             x = (SCREEN_WIDTH - w) // 2
-            y = (MAIN_SCREEN_HEIGHT - h) // 2
+            y = (MAIN_SCREEN_HEIGHT - h) // 2 - add_y
 
             box = pygame.Surface((w, h), pygame.SRCALPHA)
             box.fill((20, 0, 0, 200))
@@ -124,16 +129,31 @@ class Game:
                     for num, evidence in enumerate(self.evidence_bag.items):
                         if evidence.rect.collidepoint(event.pos):
                             self.active_evidence = num
-                             
+                    
+                    #oppening and closing the evidence bag 
+
                     if self.evidence_bag.rect.collidepoint(event.pos):
                         if self.evidence_bag.is_open:
                             self.evidence_bag.is_open = False
                         else:
                             self.evidence_bag.is_open = True
                     
+                    # closing the laptop by pressing the cross
+
+                    if self.laptop.is_open:
+                        if self.laptop.cross_bottom_rect.collidepoint(event.pos):
+                            self.laptop.is_open = False
+                            self.laptop.password_entered = ""
+
+                    # oppening the map
+                    
                     if self.hud.map_rect.collidepoint(event.pos):
                         self.map.is_open = True
                     
+                    # hovering the room on the map --> shoeing the name of the room
+                    # pressing on a room --> traveling to the room if it was available
+                    # and displaying the error if not
+
                     if self.map.is_open:
                         hovered_room = self.map.get_hovered_room(event.pos)
                         if hovered_room:
@@ -148,6 +168,9 @@ class Game:
                             else:
                                 self.error_message = f"You need to unlock {self.map.name_maker(self.room_graph.route_with_blocker(self.current_room, distination_room).name)} first."
                                 self.error_time = pygame.time.get_ticks()
+
+            # removing an evidence from the evidence bag
+
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  # Left mouse button
                     if self.active_evidence is not None:
@@ -158,9 +181,22 @@ class Game:
                             item.rect = item.original_rect.copy() 
 
                         self.active_evidence = None
+            
+            # grabing and moving the evidences from the evidence bag 
+
             if event.type == pygame.MOUSEMOTION:
                 if self.active_evidence is not None:
                     self.evidence_bag.items[self.active_evidence].rect.move_ip(event.rel)
+
+            # typing the password on the laptop
+            if event.type == pygame.KEYDOWN:
+                if self.laptop.is_open and not self.laptop.password_found:
+                    if event.unicode.isdigit():
+                        if len(self.laptop.password_entered) < self.laptop.PASSWORD_SIZE:
+                            self.laptop.password_entered += event.unicode
+                    
+                    elif event.key == pygame.K_BACKSPACE:
+                        self.laptop.password_entered = self.laptop.password_entered[:-1]
 
 ### Amir H Javadi B 5717292
 
@@ -181,6 +217,8 @@ class Game:
             if obj.is_player_near(player_center):
                 if obj.name == "map_board":
                     self.map.is_open = True
+                if obj.name == "laptop":
+                    self.laptop.is_open = True
                 if isinstance(obj, Evidence) and not obj.collected:
                     obj.collected = True
                     self.evidence_bag.add_evidence(obj)
@@ -197,12 +235,32 @@ class Game:
     def _update(self) -> None:
         '''handle player movement and update hud hints'''
 
+        ### Amir H Javadi B 5717292
+
         if self.error_message and pygame.time.get_ticks() - self.error_time > 3000: # shoeing the error message for 3 seconds
             self.error_message = None
             self.error_time = None
+            self.add_error_size = 0
+            self.add_error_y = 0
+            self.error_color = (255, 80, 80)
         
         if self.map.is_open:
             return 
+        if self.laptop.is_open and not self.laptop.password_found:
+            if len(self.laptop.password_entered) == self.laptop.PASSWORD_SIZE:
+                if self.laptop.password_entered == self.laptop.PASSWORD:
+                    self.error_message = "Password is correct!"
+                    self.error_color = (0, 255, 0)
+                    self.laptop.password_found = True
+                else:
+                    self.error_message = "Wrong password!"
+                    self.laptop.password_entered = ""
+
+                self.add_error_size = 20
+                self.add_error_y = 175
+
+                self.error_time = pygame.time.get_ticks()
+            return
         
         # unlocking the rooms if the player has the required evidence in the bag 
         if self.evidence_bag.evidence_exists("dinner_invitation"):
@@ -211,6 +269,8 @@ class Game:
             self.room_graph.unlock_room(self.rooms[4])
         if self.evidence_bag.evidence_exists("master_key_log"):
             self.room_graph.unlock_room(self.rooms[6])
+        
+        ### Amir H Javadi B 5717292
 
         keys = pygame.key.get_pressed()
         self.current_room.player.handle_movement(keys, self.current_room.collision_rects)
@@ -234,7 +294,9 @@ class Game:
         self.current_room.draw_room_objects(self.screen)
         self.hud.draw(self.screen, self.active_evidence)
         self.map.draw(self.screen, self.current_room, self.current_room.player.front1_sprite)
-        self._draw_error(self.screen, self.error_message)
+        self.laptop.draw(self.screen)
+        self._draw_error(self.screen, self.error_message, self.add_error_size, self.add_error_y, self.error_color)
+        
         pygame.display.flip()
 
     def _update_room_connections_to_room_objects(self) -> None:
