@@ -125,8 +125,6 @@ class Game:
         for event in pygame.event.get():
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left mouse button
-                    x, y = event.pos
-                    print([x, y])
 
                     for num, evidence in enumerate(self.evidence_bag.items):
                         if evidence.rect.collidepoint(event.pos):
