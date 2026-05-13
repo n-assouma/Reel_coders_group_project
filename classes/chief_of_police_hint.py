@@ -18,6 +18,17 @@ SPEAKER_TITLES = {
 }
 
 
+# colour shown for the panel title depending on who is speaking
+SPEAKER_COLOURS = {
+    "chief": (120, 180, 230),       # blue (same as before)
+    "detective": (230, 200, 100),   # warm yellow
+    "marcus": (220, 110, 90),       # warm red
+    "lena": (140, 200, 140),        # green
+    "victor": (220, 180, 100),      # gold
+    "waiter": (180, 170, 160)       # grey
+}
+
+
 class ChiefOfPoliceHint:
 
     def __init__(self):
@@ -29,6 +40,16 @@ class ChiefOfPoliceHint:
         # default panel title (changes when an npc speaks)
         self.default_title = "CHIEF OF POLICE"
         self.current_title = self.default_title
+
+        # colour the title is drawn in (changes per speaker)
+        self.default_title_colour = COLOUR_TEXT_CHIEF
+        self.current_title_colour = self.default_title_colour
+
+        # true while a dialogue tree is active, so draw() shows the SPACE hint
+        self.is_dialogue_active = False
+
+        # whether the current dialogue node is the last one (changes hint text)
+        self.is_dialogue_finished = False
 
         # font for the title at the top of the panel
         self.font_title = pygame.font.SysFont("Segoe UI,Arial", 15, bold=True)
@@ -74,6 +95,23 @@ class ChiefOfPoliceHint:
             # unknown speaker - just use the name in caps as fallback
             self.current_title = speaker_name.upper()
 
+        # change the title colour to match the speaker
+        if speaker_name in SPEAKER_COLOURS:
+            self.current_title_colour = SPEAKER_COLOURS[speaker_name]
+        else:
+            # unknown speaker - fall back to the default chief colour
+            self.current_title_colour = self.default_title_colour
+
+    def set_dialogue_active(self, active):
+        # tell the panel whether a dialogue is currently being shown
+        # so it can draw the [SPACE] hint when needed
+        self.is_dialogue_active = active
+
+    def set_finished_hint(self, finished):
+        # store whether the current dialogue node is the last one
+        # so the hint reads "to close" instead of "to continue"
+        self.is_dialogue_finished = finished
+
     def draw(self, surface, x, y, w, h):
         # draw the chief of police panel inside the rectangle given to us
 
@@ -88,10 +126,10 @@ class ChiefOfPoliceHint:
 
         # small coloured bar next to the title
         accent_bar = pygame.Rect(x + 10, y + 10, 3, 16)
-        pygame.draw.rect(surface, COLOUR_TEXT_CHIEF, accent_bar)
+        pygame.draw.rect(surface, self.current_title_colour, accent_bar)
 
         # the title text (changes based on current speaker)
-        title_surf = self.font_title.render(self.current_title, True, COLOUR_TEXT_CHIEF)
+        title_surf = self.font_title.render(self.current_title, True, self.current_title_colour)
         surface.blit(title_surf, (x + 20, y + 9))
 
         # divider line under the title
@@ -112,8 +150,22 @@ class ChiefOfPoliceHint:
             text_x = x + 12
 
         text_y = y + 42
-        text_max_w = (x + w) - text_x - 12
+        # leave room on the right edge for the map button drawn by the HUD
+        map_button_reserved = 110
+        text_max_w = (x + w) - text_x - 12 - map_button_reserved
         self.draw_wrapped(surface, self.current_hint, text_x, text_y, text_max_w, COLOUR_TEXT)
+
+        # show a small [SPACE] hint at the bottom-right when a dialogue is active
+        if self.is_dialogue_active:
+            if self.is_dialogue_finished:
+                hint_text = "[SPACE] to close"
+            else:
+                hint_text = "[SPACE] to continue"
+            hint_surf = self.font_body.render(hint_text, True, COLOUR_TEXT_DIM)
+            # offset the hint left of the map button so it stays visible
+            hint_x = x + w - hint_surf.get_width() - 12 - 110
+            hint_y = y + h - hint_surf.get_height() - 8
+            surface.blit(hint_surf, (hint_x, hint_y))
 
     def draw_wrapped(self, surface, text, x, y, max_w, colour):
         # wrap text to fit, keep newlines
@@ -199,3 +251,5 @@ class ChiefOfPoliceHint:
         self.current_hint = self.default_hint
         # reset the title back to chief of police
         self.current_title = self.default_title
+        # reset the title colour back to chief blue
+        self.current_title_colour = self.default_title_colour

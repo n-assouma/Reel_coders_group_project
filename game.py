@@ -140,10 +140,14 @@ class Game:
                             next_node = self.active_dialogue.get_current()
                             self.chief_hint.set_speaker(next_node.speaker)
                             self.chief_hint.set_hint(next_node.text)
+                            # update the hint depending on whether we just hit the last node
+                            self.chief_hint.set_finished_hint(self.active_dialogue.is_finished())
                         else:
                             # no more lines - close the dialogue
                             self.active_dialogue = None
                             self.chief_hint.show_default()
+                            # turn off the SPACE hint since dialogue is over
+                            self.chief_hint.set_dialogue_active(False)
                     # eat the keypress either way so it does not trigger anything else
                     continue
 
@@ -288,6 +292,8 @@ class Game:
                 # let the player know with a chief line
                 self.chief_hint.set_hint(
                     "They have nothing useful to say about this.")
+                # explicitly mark no dialogue active in case it was previously
+                self.chief_hint.set_dialogue_active(False)
                 return
 
             # store the tree and show the first line
@@ -296,6 +302,10 @@ class Game:
             # set the panel title to the speaker and show their text
             self.chief_hint.set_speaker(first_node.speaker)
             self.chief_hint.set_hint(first_node.text)
+            # tell the panel a dialogue is now active so it shows the SPACE hint
+            self.chief_hint.set_dialogue_active(True)
+            # tell the panel whether we are already at the last node
+            self.chief_hint.set_finished_hint(tree.is_finished())
 
             # stop at the first matching npc
             return
