@@ -26,18 +26,58 @@
         "waiter": "The waiter cleaning up. He was here all evening — he'd know exactly when the dinner ended."
     },
     "suspect_reaction": {
-        "tweed_thread_to_marcus": "Two suspects down, both pointing to Victor.",
-        "tweed_thread_to_lena": "Two independent identifications. This thread is Victor's.",
-        "tweed_thread_to_victor": "He didn't deny it's his. And he just touched his left sleeve.",
-        "master_key_log_to_marcus": "Marcus is genuinely surprised.",
-        "master_key_log_to_lena": "Lena's keycard couldn't open Elena's office. A master key could.",
-        "master_key_log_to_victor": "He's shutting down. He can't explain the key log. Strongest evidence.",
-        "computer_to_marcus": "Marcus seems unaware. Focus shifts to Victor.",
-        "computer_to_lena": "Lena corroborates. Elena genuinely found something. Victor had every reason to stop her.",
-        "computer_to_victor": "He didn't deny it. Deflected again.",
-        "case_file_to_marcus": "This just has the basic facts. It won't provoke much of a reaction. Try showing something more specific.",
-        "case_file_to_lena": "This just has the basic facts. It won't provoke much of a reaction. Try showing something more specific.",
-        "case_file_to_victor": "This just has the basic facts. It won't provoke much of a reaction. Try showing something more specific."
+        "tweed_thread_to_marcus": [
+            {"speaker": "marcus", "text": "Tweed? I don't own anything tweed. That's more Victor's style — he wears that jacket everywhere."},
+            {"speaker": "chief", "text": "Two suspects down, both pointing to Victor."}
+        ],
+        "tweed_thread_to_lena": [
+            {"speaker": "lena", "text": "That looks like the dean's jacket. Victor always wears that tweed. Elena used to joke about it."},
+            {"speaker": "chief", "text": "Two independent identifications. This thread is Victor's."}
+        ],
+        "tweed_thread_to_victor": [
+            {"speaker": "victor", "text": "A thread? Could be from anyone. The university dry-cleans dozens of jackets."},
+            {"speaker": "chief", "text": "He didn't deny it's his. And he just touched his left sleeve."}
+        ],
+        "master_key_log_to_marcus": [
+            {"speaker": "marcus", "text": "The master key was used during the murder? You should be talking to Victor, not me."},
+            {"speaker": "chief", "text": "Marcus is genuinely surprised."}
+        ],
+        "master_key_log_to_lena": [
+            {"speaker": "lena", "text": "Only Victor and security have master keys. I always thought it was strange the dean had one."},
+            {"speaker": "chief", "text": "Lena's keycard couldn't open Elena's office. A master key could."}
+        ],
+        "master_key_log_to_victor": [
+            {"speaker": "victor", "text": "The head of security must have done a routine check."},
+            {"speaker": "detective", "text": "The head of security was off duty. I checked."},
+            {"speaker": "victor", "text": "I… think I should speak with my solicitor."},
+            {"speaker": "chief", "text": "He's shutting down. He can't explain the key log. Strongest evidence."}
+        ],
+        "computer_to_marcus": [
+            {"speaker": "marcus", "text": "Financial irregularities? She never told me. But she always said Victor was dodgy."},
+            {"speaker": "chief", "text": "Marcus seems unaware. Focus shifts to Victor."}
+        ],
+        "computer_to_lena": [
+            {"speaker": "lena", "text": "She told me she found something in the grant accounts. She said people could go to prison."},
+            {"speaker": "chief", "text": "Lena corroborates. Elena genuinely found something. Victor had every reason to stop her."}
+        ],
+        "computer_to_victor": [
+            {"speaker": "victor", "text": "Elena had strong opinions about budget allocation."},
+            {"speaker": "detective", "text": "Fake vendor invoices are hard to misunderstand."},
+            {"speaker": "victor", "text": "I'm not commenting without my solicitor."},
+            {"speaker": "chief", "text": "He didn't deny it. Deflected again."}
+        ],
+        "case_file_to_marcus": [
+            {"speaker": "marcus", "text": "I already gave my statement. What more do you want?"},
+            {"speaker": "chief", "text": "This just has the basic facts. It won't provoke much of a reaction. Try showing something more specific."}
+        ],
+        "case_file_to_lena": [
+            {"speaker": "lena", "text": "I've read this already. It doesn't tell me anything I don't know."},
+            {"speaker": "chief", "text": "This just has the basic facts. It won't provoke much of a reaction. Try showing something more specific."}
+        ],
+        "case_file_to_victor": [
+            {"speaker": "victor", "text": "A tragic case. Elena was a brilliant researcher. Terrible loss for the university."},
+            {"speaker": "chief", "text": "This just has the basic facts. It won't provoke much of a reaction. Try showing something more specific."}
+        ]
     },
     "room_unlocks_hint": {
         "victors_house": "Looks like you have unlocked Victors house!\n You can now interrogate him.",
