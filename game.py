@@ -1,4 +1,4 @@
-### Nael Karimou - 5734316
+### Nael Karimou - 5734316 - start
 
 import json
 import os
@@ -15,8 +15,12 @@ from classes.hud import HUD
 from classes.chief_of_police_hint import ChiefOfPoliceHint
 from classes.map import Map
 from classes.laptop import Laptop
+from classes.dialogue import load_dialogue_from_json, make_dialogue_key
 from settings import *
 
+
+# names of npc objects we can show evidence to
+NPC_NAMES = ["marcus", "victor", "waiter"]
 
 
 class Game:
@@ -67,6 +71,11 @@ class Game:
 
         self.evidence_bag: EvidenceBag = EvidenceBag()
         self.active_evidence = None
+        # the dialogue tree currently being shown, or None if no dialogue active
+        self.active_dialogue = None
+        # rooms whose unlock hint has already been shown
+        # so it does not spam the chief panel every frame
+        self.shown_unlock_hints = set()
         # create the chief panel and map, then pass it into the HUD
         self.chief_hint = ChiefOfPoliceHint()
         self.map: Map = Map()
@@ -93,8 +102,10 @@ class Game:
 
         pygame.quit()
         sys.exit()
+
+### Nael Karimou - 5734316 - end
     
-    ### Amir H Javadi B 5717292
+### Amir H Javadi B 5717292 - start
     def _draw_error(self, surface, message: str = None, add_size: int = 0, add_y: int = 0, color: tuple = (255, 80, 80)) -> None:
         """Displaying error if any ahppened
             especially for the map navicgation,
@@ -114,15 +125,37 @@ class Game:
             surface.blit(box, (x, y))
             surface.blit(text_surface, (x + padding, y + padding))
 
-    ### Amir H Javadi B 5717292
 
     def _handle_events(self) -> None:
         '''
         handle window events and keyboard input
         '''
-### Amir H Javadi B 5717292
+### Amir H Javadi B 5717292 - end
 
+### Andrei Sidorenko 5750779 - start
         for event in pygame.event.get():
+            # if a dialogue is active, certain keys advance or close it
+            if event.type == pygame.KEYDOWN:
+                if self.active_dialogue is not None:
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_e or event.key == pygame.K_RETURN:
+                        # try to move to the next line in the dialogue
+                        has_next = self.active_dialogue.advance()
+                        if has_next:
+                            # show the next line
+                            next_node = self.active_dialogue.get_current()
+                            self.chief_hint.set_speaker(next_node.speaker)
+                            self.chief_hint.set_hint(next_node.text)
+                            # update the hint depending on whether we just hit the last node
+                            self.chief_hint.set_finished_hint(self.active_dialogue.is_finished())
+                        else:
+                            # no more lines - close the dialogue
+                            self.active_dialogue = None
+                            self.chief_hint.show_default()
+                            # turn off the SPACE hint since dialogue is over
+                            self.chief_hint.set_dialogue_active(False)
+                    # eat the keypress either way so it does not trigger anything else
+                    continue
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left mouse button
 
@@ -178,7 +211,10 @@ class Game:
                             item = self.evidence_bag.items[self.active_evidence]
                             self.evidence_bag.remove_evidence(item)
                             item.collected = False
-                            item.rect = item.original_rect.copy() 
+                            item.rect = item.original_rect.copy()
+                        else:
+                            # check if the player dropped the evidence on an npc
+                            self.try_start_dialogue(event.pos)
 
                         self.active_evidence = None
             
@@ -198,7 +234,9 @@ class Game:
                     elif event.key == pygame.K_BACKSPACE:
                         self.laptop.password_entered = self.laptop.password_entered[:-1]
 
-### Amir H Javadi B 5717292
+### Amir H Javadi B 5717292 - end 
+
+### Nael Karimou - 5734316 - start
 
             if event.type == pygame.QUIT:
                 self.running = False
@@ -219,6 +257,10 @@ class Game:
                     self.map.is_open = True
                 if obj.name == "laptop":
                     self.laptop.is_open = True
+                # talking to the waiter starts a dialogue with his testimony
+                if obj.name == "waiter":
+                    self.start_waiter_dialogue()
+                    return
                 if isinstance(obj, Evidence) and not obj.collected:
                     obj.collected = True
                     self.evidence_bag.add_evidence(obj)
@@ -231,11 +273,88 @@ class Game:
                     self.hud.set_hint(msg)
                 return
             
-    
+### Nael Karimou - 5734316 - end
+
+### Andrei Sidorenko 5750779 - start
+
+    # try to start a dialogue when evidence was dropped at a screen position
+    def try_start_dialogue(self, drop_pos):
+        # only meaningful if there is a current room with objects
+        if self.current_room is None:
+            return
+
+        # which evidence was being dragged
+        item = self.evidence_bag.items[self.active_evidence]
+        evidence_name = item.name
+
+        # check every object in the room
+        for obj_name in self.current_room.objects:
+            obj = self.current_room.objects[obj_name]
+
+            # only npcs trigger a dialogue
+            if obj.name not in NPC_NAMES:
+                continue
+
+            # did the player drop the evidence on this npc?
+            if not obj.rect.collidepoint(drop_pos):
+                continue
+
+            # build the lookup key and try to load the tree
+            key = make_dialogue_key(evidence_name, obj.name)
+            tree = load_dialogue_from_json(key)
+            if tree is None:
+                # no dialogue defined for this evidence + npc combo
+                # let the player know with a chief line
+                self.chief_hint.set_hint(
+                    "They have nothing useful to say about this.")
+                # explicitly mark no dialogue active in case it was previously
+                self.chief_hint.set_dialogue_active(False)
+                return
+
+            # store the tree and show the first line
+            self.active_dialogue = tree
+            first_node = tree.get_current()
+            # set the panel title to the speaker and show their text
+            self.chief_hint.set_speaker(first_node.speaker)
+            self.chief_hint.set_hint(first_node.text)
+            # tell the panel a dialogue is now active so it shows the SPACE hint
+            self.chief_hint.set_dialogue_active(True)
+            # tell the panel whether we are already at the last node
+            self.chief_hint.set_finished_hint(tree.is_finished())
+
+            # stop at the first matching npc
+            return
+
+    # start the waiter's testimony dialogue when player presses E near him
+    def start_waiter_dialogue(self):
+        # load the waiter dialogue tree from chief_hints.json
+        tree = load_dialogue_from_json("waiter_testimony")
+        if tree is None:
+            # safety net - should never happen since we wrote the json entry
+            self.chief_hint.set_hint("The waiter has nothing to say right now.")
+            self.chief_hint.set_dialogue_active(False)
+            return
+
+        # store the tree and show the first line
+        self.active_dialogue = tree
+        first_node = tree.get_current()
+        # set the panel title to the speaker and show their text
+        self.chief_hint.set_speaker(first_node.speaker)
+        self.chief_hint.set_hint(first_node.text)
+        # tell the panel a dialogue is now active so it shows the SPACE hint
+        self.chief_hint.set_dialogue_active(True)
+        # tell the panel whether we are already at the last node
+        self.chief_hint.set_finished_hint(tree.is_finished())
+
+### Andrei Sidorenko 5750779 - end
+
     def _update(self) -> None:
         '''handle player movement and update hud hints'''
+        # if a dialogue is active, freeze the rest of the update
+        if self.active_dialogue is not None:
+            return
 
-        ### Amir H Javadi B 5717292
+### Amir H Javadi B 5717292 - start
 
         if self.error_message and pygame.time.get_ticks() - self.error_time > 3000: # shoeing the error message for 3 seconds
             self.error_message = None
@@ -262,16 +381,33 @@ class Game:
                 self.error_time = pygame.time.get_ticks()
             return
         
-        # unlocking the rooms if the player has the required evidence in the bag 
+        # unlocking the rooms if the player has the required evidence in the bag
+        # also show a chief hint the first time each room becomes unlocked
         if self.evidence_bag.evidence_exists("dinner_invitation"):
             self.room_graph.unlock_room(self.rooms[3])
+            room_name = self.rooms[3].name
+            if room_name not in self.shown_unlock_hints:
+                self.chief_hint.show_room_unlocks_hint(room_name)
+                self.shown_unlock_hints.add(room_name)
+
         if self.evidence_bag.evidence_exists("research_paper"):
             self.room_graph.unlock_room(self.rooms[4])
+            room_name = self.rooms[4].name
+            if room_name not in self.shown_unlock_hints:
+                self.chief_hint.show_room_unlocks_hint(room_name)
+                self.shown_unlock_hints.add(room_name)
+
         if self.evidence_bag.evidence_exists("master_key_log"):
             self.room_graph.unlock_room(self.rooms[6])
+            room_name = self.rooms[6].name
+            if room_name not in self.shown_unlock_hints:
+                self.chief_hint.show_room_unlocks_hint(room_name)
+                self.shown_unlock_hints.add(room_name)
         
-        ### Amir H Javadi B 5717292
+### Amir H Javadi B 5717292 - end 
 
+
+        ### Nael Karimou - 5734316 - start
         keys = pygame.key.get_pressed()
         self.current_room.player.handle_movement(keys, self.current_room.collision_rects)
 
@@ -309,4 +445,4 @@ class Game:
                         break
             room.connections = actual_room_connections 
     
-### Nael Karimou - 5734316
+### Nael Karimou - 5734316 -end
