@@ -293,7 +293,7 @@ class Game:
         self.current_room.draw_background(self.screen)
         self.current_room.draw_room_objects(self.screen)
         self.hud.draw(self.screen, self.active_evidence)
-        self.map.draw(self.screen, self.current_room, self.current_room.player.front1_sprite)
+        self.map.draw(self.screen, self.room_graph, self.rooms, self.current_room, self.current_room.player.front1_sprite)
         self.laptop.draw(self.screen)
         self._draw_error(self.screen, self.error_message, self.add_error_size, self.add_error_y, self.error_color)
         
