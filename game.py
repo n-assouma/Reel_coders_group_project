@@ -220,10 +220,14 @@ class Game:
                 if obj.name == "laptop":
                     self.laptop.is_open = True
                 if isinstance(obj, Evidence) and not obj.collected:
-                    obj.collected = True
-                    self.evidence_bag.add_evidence(obj)
-                    self.evidence_bag.sort_by_priority()
-                    self.hud.set_hint("You picked up: " + obj.name) 
+                    if self.evidence_bag.__len__() < self.evidence_bag.MAX_SIZE:
+                        obj.collected = True
+                        self.evidence_bag.add_evidence(obj)
+                        self.evidence_bag.sort_by_priority()
+                        self.hud.set_hint("You picked up: " + obj.name) 
+                    else:
+                        self.error_message = "Your bag is full!"
+                        self.error_time = pygame.time.get_ticks()
 
                 else:
                     print("[INTERACT] examined:", obj.name)
