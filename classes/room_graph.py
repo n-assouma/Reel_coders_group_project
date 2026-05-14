@@ -149,7 +149,7 @@ class RoomGraph:
         if path is None:
             return None 
         for i in range(len(path) - 1):
-            if self.is_locked(path[i], path[i+1]):
+            if self._is_locked(path[i], path[i+1]):
                 return path[i+1]
 
     def _room_validate(self, *rooms: rm.Room) -> None:
