@@ -227,7 +227,7 @@
     },
     "faculty_dining_hall": {
         "connections": ["security_booth", "elenas_office"],
-        "objects": ["dining_table", "clock", "waiter", "chair_back1", "chair_back2", "chair_back3", "chair_back4", "chair_front1", "chair_front2", "chair_front3", "chair_front4"], 
+        "objects": ["clock", "chair_front1", "chair_front2", "chair_front3", "chair_front4", "dining_table",  "waiter", "chair_back1", "chair_back2", "chair_back3", "chair_back4"], 
         "detective_rowe": {
             "position": [0.5, 0.4],
             "scale": 0.85
