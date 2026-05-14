@@ -1,4 +1,4 @@
-### Nael Karimou - 5734316
+### Nael Karimou - 5734316 - start
 
 import json
 import os
@@ -102,8 +102,10 @@ class Game:
 
         pygame.quit()
         sys.exit()
+
+### Nael Karimou - 5734316 - end
     
-    ### Amir H Javadi B 5717292
+### Amir H Javadi B 5717292 - start
     def _draw_error(self, surface, message: str = None, add_size: int = 0, add_y: int = 0, color: tuple = (255, 80, 80)) -> None:
         """Displaying error if any ahppened
             especially for the map navicgation,
@@ -123,14 +125,14 @@ class Game:
             surface.blit(box, (x, y))
             surface.blit(text_surface, (x + padding, y + padding))
 
-    ### Amir H Javadi B 5717292
 
     def _handle_events(self) -> None:
         '''
         handle window events and keyboard input
         '''
-### Amir H Javadi B 5717292
+### Amir H Javadi B 5717292 - end
 
+### Andrei Sidorenko 5750779 - start
         for event in pygame.event.get():
             # if a dialogue is active, certain keys advance or close it
             if event.type == pygame.KEYDOWN:
@@ -232,7 +234,9 @@ class Game:
                     elif event.key == pygame.K_BACKSPACE:
                         self.laptop.password_entered = self.laptop.password_entered[:-1]
 
-### Amir H Javadi B 5717292
+### Amir H Javadi B 5717292 - end 
+
+### Nael Karimou - 5734316 - start
 
             if event.type == pygame.QUIT:
                 self.running = False
@@ -268,6 +272,10 @@ class Game:
                     msg = "You examined the " + obj.name.lower() + ". (pickup/interaction logic coming from team)"
                     self.hud.set_hint(msg)
                 return
+            
+### Nael Karimou - 5734316 - end
+
+### Andrei Sidorenko 5750779 - start
 
     # try to start a dialogue when evidence was dropped at a screen position
     def try_start_dialogue(self, drop_pos):
@@ -338,13 +346,15 @@ class Game:
         # tell the panel whether we are already at the last node
         self.chief_hint.set_finished_hint(tree.is_finished())
 
+### Andrei Sidorenko 5750779 - end
+
     def _update(self) -> None:
         '''handle player movement and update hud hints'''
         # if a dialogue is active, freeze the rest of the update
         if self.active_dialogue is not None:
             return
 
-        ### Amir H Javadi B 5717292
+### Amir H Javadi B 5717292 - start
 
         if self.error_message and pygame.time.get_ticks() - self.error_time > 3000: # shoeing the error message for 3 seconds
             self.error_message = None
@@ -394,8 +404,10 @@ class Game:
                 self.chief_hint.show_room_unlocks_hint(room_name)
                 self.shown_unlock_hints.add(room_name)
         
-        ### Amir H Javadi B 5717292
+### Amir H Javadi B 5717292 - end 
 
+
+        ### Nael Karimou - 5734316 - start
         keys = pygame.key.get_pressed()
         self.current_room.player.handle_movement(keys, self.current_room.collision_rects)
 
@@ -433,4 +445,4 @@ class Game:
                         break
             room.connections = actual_room_connections 
     
-### Nael Karimou - 5734316
+### Nael Karimou - 5734316 -end
