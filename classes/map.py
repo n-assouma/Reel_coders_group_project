@@ -4,6 +4,7 @@ import json
 import pygame
 
 from .room import Room
+from .room_graph import RoomGraph
 from .player import Player
 
 
@@ -27,6 +28,9 @@ class Map:
         self.background = pygame.image.load(os.path.join('assets', 'map', 'map.png')).convert_alpha()
         self.background = pygame.transform.scale(self.background, (1200, 700))
 
+        self.lock_sprit = pygame.image.load(os.path.join('assets', 'map', 'lock.png')).convert_alpha()
+        self.lock_sprit = pygame.transform.scale(self.lock_sprit, (60, 70))
+
     def name_maker(self, name):
         return name.replace("_", " ").upper()
     
@@ -36,9 +40,14 @@ class Map:
                 return name
         return None
     
-    def draw(self, surface, current_room: Room, player_sprite=None):
+    def draw(self, surface, room_graph: RoomGraph, rooms_list: list[Room], current_room: Room, player_sprite=None):
         if self.is_open:
             surface.blit(self.background, (0, 0))
+
+            for room in rooms_list:
+                if room_graph.is_room_locked(room):
+                    surface.blit(self.lock_sprit, (self.rooms_rect[room.name]["player_position"][0]- self.lock_sprit.get_width() // 2 + 15,self.rooms_rect[room.name]["player_position"][1]))
+
             mouse_posision = pygame.mouse.get_pos()
             hovered_room = self.get_hovered_room(mouse_posision)
 
