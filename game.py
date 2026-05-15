@@ -132,7 +132,7 @@ class Game:
         '''
 ### Amir H Javadi B 5717292 - end
 
- ### Amir H Javadi B 5717292 - start
+ ### Andrei Sidorenko 5750779 - start
         for event in pygame.event.get():
             # if a dialogue is active, certain keys advance or close it
             if event.type == pygame.KEYDOWN:
@@ -155,6 +155,8 @@ class Game:
                             self.chief_hint.set_dialogue_active(False)
                     # eat the keypress either way so it does not trigger anything else
                     continue
+ ### Andrei Sidorenko 5750779 - end
+ ### Amir H Javadi B 5717292 - start
 
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left mouse button
@@ -416,6 +418,9 @@ class Game:
                 self.error_time = pygame.time.get_ticks()
             return
         
+### Amir H Javadi B 5717292 - end 
+### Andrei Sidorenko 5750779 - start
+
         # unlocking the rooms if the player has the required evidence in the bag
         # also show a chief hint the first time each room becomes unlocked
         if self.evidence_bag.evidence_exists("dinner_invitation"):
@@ -445,8 +450,7 @@ class Game:
                 self.chief_hint.set_sticky_hint(hint_text, 180)
                 self.shown_unlock_hints.add(room_name)
         
-### Amir H Javadi B 5717292 - end 
-
+### Andrei Sidorenko 5750779 - end
 
         ### Nael Karimou - 5734316 - start
         keys = pygame.key.get_pressed()
