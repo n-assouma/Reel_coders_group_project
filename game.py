@@ -15,6 +15,7 @@ from classes.hud import HUD
 from classes.chief_of_police_hint import ChiefOfPoliceHint
 from classes.map import Map
 from classes.laptop import Laptop
+from classes.loading_screen import LoadingScreen
 from settings import *
 
 
@@ -29,6 +30,10 @@ class Game:
         self.clock: pygame.time.Clock = pygame.time.Clock()
         print("pygame started")
 
+        # load loading screen - Aryan Naranath 5758224
+        loader = LoadingScreen(self.screen)
+        loader.update(0)
+
         # Check if we really use it, if not we can remove it 
         self.font_title: pygame.font.Font = pygame.font.SysFont("Segoe UI,Arial", 18, bold=True)
         self.font_prompt: pygame.font.Font = pygame.font.SysFont("Segoe UI,Arial", 13, bold=True)
@@ -38,6 +43,9 @@ class Game:
             room_data = json.load(f)
             # get rid of metadata
             room_data.pop('_meta', None)
+
+        #update loading screen - Aryan Naranath 5758224
+        loader.update(10)
 
         # create the rooms
         self.rooms = []
@@ -49,6 +57,9 @@ class Game:
         self.rooms.append(Room('lenas_apartment', room_data['lenas_apartment']))
         self.rooms.append(Room('marcus_house', room_data['marcus_house']))
         self.rooms.append(Room('victors_house', room_data['victors_house']))
+
+        #update loading screen - Aryan Naranath 5758224
+        loader.update(50)
 
 
         # update the room connections to be actual room objects instead of strings. This is necessary for room graph to work
@@ -64,6 +75,9 @@ class Game:
 
         # set current room
         self.current_room: Room = self.rooms[0]
+
+        # update loading screen - Aryan Naranath 5758224
+        loader.update(75)
 
         self.evidence_bag: EvidenceBag = EvidenceBag()
         self.active_evidence = None
@@ -82,6 +96,9 @@ class Game:
         self.add_error_size = 0
         self.add_error_y = 0
         self.error_color = (255, 80, 80)
+
+        #update loading screen - Aryan Naranath 5758224
+        loader.update(100)
 
     def run(self) -> None:
         '''game loop'''
