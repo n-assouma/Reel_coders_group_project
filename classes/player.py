@@ -22,58 +22,82 @@ class Player:
         PLAYER_HEIGHT = self.front1_sprite.get_height() * player_data['scale']
         self.front1_sprite = pygame.transform.scale(self.front1_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT)) 
         
-        ###Amir H Javadi B - 5717292
+        ### Amir H Javadi B - 5717292 - start
 
-        ###TODO: adjusting the scales
-
-        front2_path = os.path.join('assets','sprites/detective_rowe', "front2.png")
+        # Front-facing animation frames (moving down)
+        front2_path = os.path.join('assets', 'sprites/detective_rowe', "front2.png")
         self.front2_sprite = pygame.image.load(front2_path).convert_alpha()
-        self.front2_sprite = pygame.transform.scale(self.front2_sprite, (PLAYER_WIDTH  , PLAYER_HEIGHT))
+        self.front2_sprite = pygame.transform.scale(
+            self.front2_sprite, (PLAYER_WIDTH, PLAYER_HEIGHT)
+        )
 
-        front3_path = os.path.join('assets','sprites/detective_rowe', "front3.png")
+        front3_path = os.path.join('assets', 'sprites/detective_rowe', "front3.png")
         self.front3_sprite = pygame.image.load(front3_path).convert_alpha()
-        self.front3_sprite = pygame.transform.scale(self.front3_sprite, (PLAYER_WIDTH  , PLAYER_HEIGHT))
+        self.front3_sprite = pygame.transform.scale(
+            self.front3_sprite, (PLAYER_WIDTH, PLAYER_HEIGHT)
+        )
 
-        back1_path = os.path.join('assets','sprites/detective_rowe', "back1.png")
+        # Back-facing animation frames (moving up)
+        # back2 and back3 are scaled +5px taller to avoid clipping at the top
+        back1_path = os.path.join('assets', 'sprites/detective_rowe', "back1.png")
         self.back1_sprite = pygame.image.load(back1_path).convert_alpha()
-        self.back1_sprite = pygame.transform.scale(self.back1_sprite, (PLAYER_WIDTH   , PLAYER_HEIGHT)) 
+        self.back1_sprite = pygame.transform.scale(
+            self.back1_sprite, (PLAYER_WIDTH, PLAYER_HEIGHT)
+        )
 
-        back2_path = os.path.join('assets','sprites/detective_rowe', "back2.png")
+        back2_path = os.path.join('assets', 'sprites/detective_rowe', "back2.png")
         self.back2_sprite = pygame.image.load(back2_path).convert_alpha()
-        self.back2_sprite = pygame.transform.scale(self.back2_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT +5))
+        self.back2_sprite = pygame.transform.scale(
+            self.back2_sprite, (PLAYER_WIDTH, PLAYER_HEIGHT + 5)
+        )
 
-        back3_path = os.path.join('assets','sprites/detective_rowe', "back3.png")
+        back3_path = os.path.join('assets', 'sprites/detective_rowe', "back3.png")
         self.back3_sprite = pygame.image.load(back3_path).convert_alpha()
-        self.back3_sprite = pygame.transform.scale(self.back3_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT + 5))
+        self.back3_sprite = pygame.transform.scale(
+            self.back3_sprite, (PLAYER_WIDTH, PLAYER_HEIGHT + 5)
+        )
 
-        left1_path = os.path.join('assets','sprites/detective_rowe', "left1.png")
+        # Left-facing animation frames (moving left)
+        left1_path = os.path.join('assets', 'sprites/detective_rowe', "left1.png")
         self.left1_sprite = pygame.image.load(left1_path).convert_alpha()
-        self.left1_sprite = pygame.transform.scale(self.left1_sprite, (PLAYER_WIDTH   , PLAYER_HEIGHT)) 
+        self.left1_sprite = pygame.transform.scale(
+            self.left1_sprite, (PLAYER_WIDTH, PLAYER_HEIGHT)
+        )
 
-        left2_path = os.path.join('assets','sprites/detective_rowe', "left2.png")
+        left2_path = os.path.join('assets', 'sprites/detective_rowe', "left2.png")
         self.left2_sprite = pygame.image.load(left2_path).convert_alpha()
-        self.left2_sprite = pygame.transform.scale(self.left2_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT))
+        self.left2_sprite = pygame.transform.scale(
+            self.left2_sprite, (PLAYER_WIDTH, PLAYER_HEIGHT)
+        )
 
-        left3_path = os.path.join('assets','sprites/detective_rowe', "left3.png")
+        left3_path = os.path.join('assets', 'sprites/detective_rowe', "left3.png")
         self.left3_sprite = pygame.image.load(left3_path).convert_alpha()
-        self.left3_sprite = pygame.transform.scale(self.left3_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT))
+        self.left3_sprite = pygame.transform.scale(
+            self.left3_sprite, (PLAYER_WIDTH, PLAYER_HEIGHT)
+        )
 
-        left4_path = os.path.join('assets','sprites/detective_rowe', "left4.png")
+        left4_path = os.path.join('assets', 'sprites/detective_rowe', "left4.png")
         self.left4_sprite = pygame.image.load(left4_path).convert_alpha()
-        self.left4_sprite = pygame.transform.scale(self.left4_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT))
+        self.left4_sprite = pygame.transform.scale(
+            self.left4_sprite, (PLAYER_WIDTH, PLAYER_HEIGHT)
+        )
 
+        # Right-facing sprites are mirrored horizontally from the left sprites
         self.right1_sprite = pygame.transform.flip(self.left1_sprite, True, False)
         self.right2_sprite = pygame.transform.flip(self.left2_sprite, True, False)
         self.right3_sprite = pygame.transform.flip(self.left3_sprite, True, False)
         self.right4_sprite = pygame.transform.flip(self.left4_sprite, True, False)
 
-        # loading the walking sound effect
+        # Load and configure the walking sound effect
         pygame.mixer.init()
-        self.walk_sound = pygame.mixer.Sound(os.path.join("assets", "sprites", "detective_rowe", "walking_sound.mp3"))
+        walk_sound_path = os.path.join(
+            "assets", "sprites", "detective_rowe", "walking_sound.mp3"
+        )
+        self.walk_sound = pygame.mixer.Sound(walk_sound_path)
         self.walk_sound.set_volume(0.1)
         self.is_walking = False
 
-        ###Amir H Javadi B - 5717292
+        ### Amir H Javadi B - 5717292 - end
 
         # get the position rectangle for the sprite 
         self.rect = self.front1_sprite.get_rect(topleft=(self._pos_x, self._pos_y))
@@ -122,18 +146,18 @@ class Player:
         if pressed_keys[pygame.K_d]:
             dx = self._speed
 
-        ### Amir H Javadi B - 5717292
+        ### Amir H Javadi B - 5717292 - start
 
-        #playing the walking sound effect if the player is moving, and stopping it if the player is not moving.
+        # Start looping the walk sound when movement begins, stop it when idle
         if dx != 0 or dy != 0:
             if not self.is_walking:
-                self.walk_sound.play(-1)  # -1 means loop
+                self.walk_sound.play(-1)  # -1 means loop indefinitely
                 self.is_walking = True
         else:
             self.walk_sound.stop()
             self.is_walking = False
-        
-        ### Amir H Javadi B - 5717292
+
+        ### Amir H Javadi B - 5717292 - end
 
         # define next position fror collision rectangle
         self._next_pos_x += dx
@@ -173,37 +197,48 @@ class Player:
         self.x_direction = dx
         
     def draw(self, surface: pygame.Surface) -> None:
-        '''draw the player onto the given surface. and showing the walking animation.'''
+        """Draw the player onto the given surface with walking animation.
 
-        ###Amir H Javadi B - 5717292
+        Selects the correct sprite frame based on movement direction and
+        an animation counter. Vertical movement cycles every 10 frames,
+        horizontal movement every 5 frames. When idle, shows the idle
+        frame matching the last movement direction.
 
+        Args:
+            surface: The pygame surface to draw onto.
+        """
+        ### Amir H Javadi B - 5717292 - start
+
+        # Moving down — cycle between front2 and front3 every 10 frames
         if self.y_direction > 0:
             self.last_movement = "d"
             self.animation_counter += 1
-            if self.animation_counter < 10: # change sprite every 10 frames
+            if self.animation_counter < 10:
                 frame = self.front2_sprite
             elif self.animation_counter < 20:
                 frame = self.front3_sprite
             else:
                 frame = self.front2_sprite
                 self.animation_counter = 0
-        
+
+        # Moving up — cycle between back2 and back3 every 10 frames
         elif self.y_direction < 0:
             self.last_movement = "u"
             self.animation_counter += 1
-            if self.animation_counter < 10: # change sprite every 10 frames
-                 frame = self.back2_sprite
+            if self.animation_counter < 10:
+                frame = self.back2_sprite
             elif self.animation_counter < 20:
                 frame = self.back3_sprite
             else:
                 frame = self.back2_sprite
                 self.animation_counter = 0
-        
+
+        # Moving right — cycle through right1-4 every 5 frames
         elif self.x_direction > 0:
             self.last_movement = "r"
             self.animation_counter += 1
-            if self.animation_counter < 5: # change sprite every 5 frames
-                 frame = self.right1_sprite
+            if self.animation_counter < 5:
+                frame = self.right1_sprite
             elif self.animation_counter < 10:
                 frame = self.right2_sprite
             elif self.animation_counter < 15:
@@ -213,11 +248,13 @@ class Player:
             else:
                 frame = self.right1_sprite
                 self.animation_counter = 0
+
+        # Moving left — cycle through left1-4 every 5 frames
         elif self.x_direction < 0:
             self.last_movement = "l"
             self.animation_counter += 1
-            if self.animation_counter < 5: # change sprite every 5 frames
-                 frame = self.left1_sprite
+            if self.animation_counter < 5:
+                frame = self.left1_sprite
             elif self.animation_counter < 10:
                 frame = self.left2_sprite
             elif self.animation_counter < 15:
@@ -227,15 +264,17 @@ class Player:
             else:
                 frame = self.left1_sprite
                 self.animation_counter = 0
-        else:        
+
+        # Idle — show the idle frame matching the last direction moved
+        else:
             if self.last_movement == "u":
                 frame = self.back1_sprite
-            else: 
-                frame = self.front1_sprite 
+            else:
+                frame = self.front1_sprite
 
         rect = frame.get_rect(center=self.rect.center)
         surface.blit(frame, rect)
-        ### Amir H Javadi B - 5717292
+        ### Amir H Javadi B - 5717292 - end
 
     def get_center(self) -> tuple[int, int]:
         '''get the center point of the player's rectangle. used for calculating distance to interactable objects.'''
