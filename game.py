@@ -20,7 +20,7 @@ from settings import *
 
 
 # names of npc objects we can show evidence to
-NPC_NAMES = ["marcus", "victor", "waiter"]
+NPC_NAMES = ["marcus", "victor", "waiter", "lena"]
 
 
 class Game:
@@ -257,10 +257,31 @@ class Game:
                     self.map.is_open = True
                 if obj.name == "laptop":
                     self.laptop.is_open = True
+
+    ### Andrei Sidorenko 5750779 - start
                 # talking to the waiter starts a dialogue with his testimony
                 if obj.name == "waiter":
-                    self.start_waiter_dialogue()
+                    self.start_npc_dialogue("waiter_testimony")
                     return
+                # talking to marcus starts his introduction dialogue
+                if obj.name == "marcus":
+                    self.start_npc_dialogue("marcus_introduction")
+                    return
+                # talking to victor starts his introduction dialogue
+                if obj.name == "victor":
+                    self.start_npc_dialogue("victor_introduction")
+                    return
+                # talking to lena starts her introduction dialogue
+                if obj.name == "lena":
+                    self.start_npc_dialogue("lena_introduction")
+                    return
+                # pressing E on the keyboard tries to pull up the CCTV - which is dead
+                if obj.name == "keyboard":
+                    self.chief_hint.set_sticky_hint(
+                        "Damn it. The cameras are dead. The recordings from last night were 'under maintenance'. Convenient.",
+                        180)
+                    return
+    ### Andrei Sidorenko 5750779 - end
                 if isinstance(obj, Evidence) and not obj.collected:
                     if self.evidence_bag.__len__() < self.evidence_bag.MAX_SIZE:
                         obj.collected = True
@@ -317,6 +338,9 @@ class Game:
 
             # store the tree and show the first line
             self.active_dialogue = tree
+            # clear leftover sticky countdown so the panel does not
+            # freeze on a stale message after the dialogue closes
+            self.chief_hint.sticky_frames_left = 0
             first_node = tree.get_current()
             # set the panel title to the speaker and show their text
             self.chief_hint.set_speaker(first_node.speaker)
@@ -329,18 +353,22 @@ class Game:
             # stop at the first matching npc
             return
 
-    # start the waiter's testimony dialogue when player presses E near him
-    def start_waiter_dialogue(self):
-        # load the waiter dialogue tree from chief_hints.json
-        tree = load_dialogue_from_json("waiter_testimony")
+    # start a dialogue tree from chief_hints.json by its key name
+    # used when the player presses E next to an NPC
+    def start_npc_dialogue(self, dialogue_key):
+        # load the dialogue tree
+        tree = load_dialogue_from_json(dialogue_key)
         if tree is None:
-            # safety net - should never happen since we wrote the json entry
-            self.chief_hint.set_hint("The waiter has nothing to say right now.")
+            # safety net - should never happen if json key matches
+            self.chief_hint.set_hint("They have nothing to say right now.")
             self.chief_hint.set_dialogue_active(False)
             return
 
         # store the tree and show the first line
         self.active_dialogue = tree
+        # clear leftover sticky countdown so the panel does not
+        # freeze on a stale message after the dialogue closes
+        self.chief_hint.sticky_frames_left = 0
         first_node = tree.get_current()
         # set the panel title to the speaker and show their text
         self.chief_hint.set_speaker(first_node.speaker)
@@ -357,6 +385,9 @@ class Game:
         # if a dialogue is active, freeze the rest of the update
         if self.active_dialogue is not None:
             return
+
+        # tick the chief panel sticky countdown each frame
+        self.chief_hint.tick_sticky()
 
 ### Amir H Javadi B 5717292 - start
 
@@ -391,21 +422,27 @@ class Game:
             self.room_graph.unlock_room(self.rooms[3])
             room_name = self.rooms[3].name
             if room_name not in self.shown_unlock_hints:
-                self.chief_hint.show_room_unlocks_hint(room_name)
+                hint_text = self.chief_hint.get_room_unlocks_hint(room_name)
+                # show for about 3 seconds at 60 fps
+                self.chief_hint.set_sticky_hint(hint_text, 180)
                 self.shown_unlock_hints.add(room_name)
 
         if self.evidence_bag.evidence_exists("research_paper"):
             self.room_graph.unlock_room(self.rooms[4])
             room_name = self.rooms[4].name
             if room_name not in self.shown_unlock_hints:
-                self.chief_hint.show_room_unlocks_hint(room_name)
+                hint_text = self.chief_hint.get_room_unlocks_hint(room_name)
+                # show for about 3 seconds at 60 fps
+                self.chief_hint.set_sticky_hint(hint_text, 180)
                 self.shown_unlock_hints.add(room_name)
 
         if self.evidence_bag.evidence_exists("master_key_log"):
             self.room_graph.unlock_room(self.rooms[6])
             room_name = self.rooms[6].name
             if room_name not in self.shown_unlock_hints:
-                self.chief_hint.show_room_unlocks_hint(room_name)
+                hint_text = self.chief_hint.get_room_unlocks_hint(room_name)
+                # show for about 3 seconds at 60 fps
+                self.chief_hint.set_sticky_hint(hint_text, 180)
                 self.shown_unlock_hints.add(room_name)
         
 ### Amir H Javadi B 5717292 - end 
@@ -415,18 +452,20 @@ class Game:
         keys = pygame.key.get_pressed()
         self.current_room.player.handle_movement(keys, self.current_room.collision_rects)
 
-        # update the chief panel based on what (if anything) the player is near
-        player_center = self.current_room.player.get_center()
-        found = False
-        for obj_name in self.current_room.objects:
-            obj = self.current_room.objects[obj_name]
-            if type(obj) != Furniture:
-                if obj.is_player_near(player_center):
-                    self.chief_hint.show_object_hint(obj.name)
-                    found = True
-                    break
-        if not found:
-            self.chief_hint.show_default()
+        # only update the chief panel from proximity if no sticky hint is showing
+        if not self.chief_hint.is_sticky():
+            # update the chief panel based on what (if anything) the player is near
+            player_center = self.current_room.player.get_center()
+            found = False
+            for obj_name in self.current_room.objects:
+                obj = self.current_room.objects[obj_name]
+                if type(obj) != Furniture:
+                    if obj.is_player_near(player_center):
+                        self.chief_hint.show_object_hint(obj.name)
+                        found = True
+                        break
+            if not found:
+                self.chief_hint.show_default()
 
     def _draw(self) -> None:
         '''draw the current room, the player and the hud'''
