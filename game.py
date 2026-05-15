@@ -1,4 +1,4 @@
-### Nael Karimou - 5734316
+### Nael Karimou - 5734316 - start
 
 import json
 import os
@@ -6,22 +6,35 @@ import pygame
 import sys
 
 
-from classes.interactable_object import Furniture, InteractableObject
-from classes.room_graph import RoomGraph
-from classes.evidence_bag import EvidenceBag
-from classes.evidence import Evidence
-from classes.room import Room
-from classes.hud import HUD
 from classes.chief_of_police_hint import ChiefOfPoliceHint
-from classes.map import Map
+from classes.dialogue import load_dialogue_from_json, make_dialogue_key
+from classes.evidence import Evidence
+from classes.evidence_bag import EvidenceBag
+from classes.ending import EndingScreen, EndingTracker
+from classes.hud import HUD
+from classes.interactable_object import Furniture, InteractableObject
 from classes.laptop import Laptop
 from classes.loading_screen import LoadingScreen
+from classes.map import Map
+from classes.room import Room
+from classes.room_graph import RoomGraph
 from settings import *
 
 
+# names of npc objects we can show evidence to
+NPC_NAMES = ["marcus", "victor", "waiter", "lena"]
+
 
 class Game:
-    ''''''
+    '''
+    Main game controller for The Hollow Witness.
+
+    Manages the game loop, all rooms, the player, evidence collection,
+    NPC dialogues, the HUD, map navigation, and the laptop puzzle.
+    Rooms are connected via a RoomGraph; some are locked until the player
+    collects the required evidence. The game ends when the player interacts
+    with the accusation board to trigger the ending screen.
+    '''
     def __init__(self) -> None:
         '''initialize pygame, create the window, load the player and the room.'''
         pygame.init()
@@ -77,19 +90,24 @@ class Game:
         self.current_room: Room = self.rooms[0]
 
         # update loading screen - Aryan Naranath 5758224
-        loader.update(75)
+        loader.update(65)
 
         self.evidence_bag: EvidenceBag = EvidenceBag()
         self.active_evidence = None
+        # the dialogue tree currently being shown, or None if no dialogue active
+        self.active_dialogue = None
+        # rooms whose unlock hint has already been shown
+        # so it does not spam the chief panel every frame
+        self.shown_unlock_hints = set()
         # create the chief panel and map, then pass it into the HUD
         self.chief_hint = ChiefOfPoliceHint()
         self.map: Map = Map()
         self.laptop: Laptop = Laptop()
         self.hud: HUD = HUD(self.evidence_bag, self.chief_hint, self.map.hud_map)
+        
+        # update loading screen - Aryan Naranath 5758224
+        loader.update(85)
           
-        self.running: bool = True
-        print("game started")
-
         # error handling for map navigation
         self.error_message = None
         self.error_time = None
@@ -97,8 +115,18 @@ class Game:
         self.add_error_y = 0
         self.error_color = (255, 80, 80)
 
+        # set ending tracker to track key events accomplished
+        self.tracker =  EndingTracker()
+
+        # set ending  screen for when the player want to choose the murderer
+        self.ending = EndingScreen(self.screen)
+        
         #update loading screen - Aryan Naranath 5758224
         loader.update(100)
+        
+        self.running: bool = True
+        print("game started")
+        
 
     def run(self) -> None:
         '''game loop'''
@@ -110,112 +138,160 @@ class Game:
 
         pygame.quit()
         sys.exit()
-    
-    ### Amir H Javadi B 5717292
-    def _draw_error(self, surface, message: str = None, add_size: int = 0, add_y: int = 0, color: tuple = (255, 80, 80)) -> None:
-        """Displaying error if any ahppened
-            especially for the map navicgation,
-            if the user wants to reach a room that there is a locked room in the middle of the path."""
 
+### Nael Karimou - 5734316 - end
+    
+### Amir H Javadi B 5717292 - start
+    def _draw_error(
+        self,
+        surface,
+        message: str = None,
+        add_size: int = 0,
+        add_y: int = 0,
+        color: tuple = (255, 80, 80)
+    ) -> None:
+        """Display a semi-transparent error box on screen if a message is set.
+
+        Used for map navigation errors when a locked room blocks the path,
+        and for laptop password feedback.
+
+        Args:
+            surface: The pygame surface to draw onto.
+            message: The error text to display, or None to draw nothing.
+            add_size: Extra font size added to the default 22pt.
+            add_y: Extra upward offset from the vertical center of the screen.
+            color: RGB tuple for the text color.
+        """
         if message is not None:
             font = pygame.font.SysFont("Segoe UI,Arial", 22 + add_size, bold=True)
-            padding  = 20
+            padding = 20
             text_surface = font.render(message, True, color)
             w = text_surface.get_width() + padding * 2
             h = text_surface.get_height() + padding * 2
             x = (SCREEN_WIDTH - w) // 2
             y = (MAIN_SCREEN_HEIGHT - h) // 2 - add_y
 
+            # Semi-transparent dark red background behind the error text
             box = pygame.Surface((w, h), pygame.SRCALPHA)
             box.fill((20, 0, 0, 200))
             surface.blit(box, (x, y))
             surface.blit(text_surface, (x + padding, y + padding))
 
-    ### Amir H Javadi B 5717292
-
     def _handle_events(self) -> None:
-        '''
-        handle window events and keyboard input
-        '''
-### Amir H Javadi B 5717292
+        """Handle window events, keyboard input, and mouse interactions."""
+### Amir H Javadi B 5717292 - end
 
+ ### Andrei Sidorenko 5750779 - start
         for event in pygame.event.get():
+            # if a dialogue is active, certain keys advance or close it
+            if event.type == pygame.KEYDOWN:
+                if self.active_dialogue is not None:
+                    if event.key == pygame.K_SPACE or event.key == pygame.K_e or event.key == pygame.K_RETURN:
+                        # try to move to the next line in the dialogue
+                        has_next = self.active_dialogue.advance()
+                        if has_next:
+                            # show the next line
+                            next_node = self.active_dialogue.get_current()
+                            self.chief_hint.set_speaker(next_node.speaker)
+                            self.chief_hint.set_hint(next_node.text)
+                            # update the hint depending on whether we just hit the last node
+                            self.chief_hint.set_finished_hint(self.active_dialogue.is_finished())
+                        else:
+                            # no more lines - close the dialogue
+                            self.active_dialogue = None
+                            self.chief_hint.show_default()
+                            # turn off the SPACE hint since dialogue is over
+                            self.chief_hint.set_dialogue_active(False)
+                    # eat the keypress either way so it does not trigger anything else
+                    continue
+ ### Andrei Sidorenko 5750779 - end
+ ### Amir H Javadi B 5717292 - start
+
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left mouse button
 
+                    # Pick up an evidence item if the bag is open and item is clicked
                     for num, evidence in enumerate(self.evidence_bag.items):
-                        if evidence.rect.collidepoint(event.pos):
+                        is_clicked = evidence.rect.collidepoint(event.pos)
+                        if is_clicked and self.evidence_bag.is_open:
                             self.active_evidence = num
-                    
-                    #oppening and closing the evidence bag 
 
+                    # Toggle the evidence bag open or closed
                     if self.evidence_bag.rect.collidepoint(event.pos):
-                        if self.evidence_bag.is_open:
-                            self.evidence_bag.is_open = False
-                        else:
-                            self.evidence_bag.is_open = True
-                    
-                    # closing the laptop by pressing the cross
+                        self.evidence_bag.is_open = not self.evidence_bag.is_open
 
+                    # Close the laptop when the X button is clicked
                     if self.laptop.is_open:
                         if self.laptop.cross_bottom_rect.collidepoint(event.pos):
                             self.laptop.is_open = False
                             self.laptop.password_entered = ""
 
-                    # oppening the map
-                    
+                    # Open the map when the map icon in the HUD is clicked
                     if self.hud.map_rect.collidepoint(event.pos):
                         self.map.is_open = True
-                    
-                    # hovering the room on the map --> shoeing the name of the room
-                    # pressing on a room --> traveling to the room if it was available
-                    # and displaying the error if not
 
+                    # Navigate to a room when clicked on the map
+                    # Shows an error if a locked room blocks the path
                     if self.map.is_open:
                         hovered_room = self.map.get_hovered_room(event.pos)
                         if hovered_room:
-                            distination_room = None
+                            destination_room = None
                             for room in self.rooms:
                                 if room.name == hovered_room:
-                                    distination_room = room
+                                    destination_room = room
                                     break
-                            if self.room_graph.is_reachable(self.current_room, distination_room):
-                                self.current_room = distination_room
+                            if self.room_graph.is_reachable(
+                                self.current_room, destination_room
+                            ):
+                                self.current_room = destination_room
                                 self.map.is_open = False
                             else:
-                                self.error_message = f"You need to unlock {self.map.name_maker(self.room_graph.route_with_blocker(self.current_room, distination_room).name)} first."
+                                blocker = self.room_graph.route_with_blocker(
+                                    self.current_room, destination_room
+                                )
+                                blocker_name = self.map.name_maker(blocker.name)
+                                self.error_message = (
+                                    f"You need to unlock {blocker_name} first."
+                                )
                                 self.error_time = pygame.time.get_ticks()
 
-            # removing an evidence from the evidence bag
-
+            # Drop evidence: remove it if dropped on trash can, or show dialogue
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  # Left mouse button
                     if self.active_evidence is not None:
-                        if self.evidence_bag.trash_can_image.get_rect(topleft=self.evidence_bag.trash_can_rect.topleft).collidepoint(event.pos):
+                        trash_rect = self.evidence_bag.trash_can_image.get_rect(
+                            topleft=self.evidence_bag.trash_can_rect.topleft
+                        )
+                        if trash_rect.collidepoint(event.pos):
                             item = self.evidence_bag.items[self.active_evidence]
                             self.evidence_bag.remove_evidence(item)
                             item.collected = False
-                            item.rect = item.original_rect.copy() 
+                            item.rect = item.original_rect.copy()
+                        else:
+                            # Check if the player dropped the evidence on an NPC
+                            self.try_start_dialogue(event.pos)
 
                         self.active_evidence = None
-            
-            # grabing and moving the evidences from the evidence bag 
 
+            # Drag the active evidence item with the mouse
             if event.type == pygame.MOUSEMOTION:
                 if self.active_evidence is not None:
-                    self.evidence_bag.items[self.active_evidence].rect.move_ip(event.rel)
+                    self.evidence_bag.items[self.active_evidence].rect.move_ip(
+                        event.rel
+                    )
 
-            # typing the password on the laptop
+            # Handle laptop password typing (digits and backspace)
             if event.type == pygame.KEYDOWN:
                 if self.laptop.is_open and not self.laptop.password_found:
                     if event.unicode.isdigit():
                         if len(self.laptop.password_entered) < self.laptop.PASSWORD_SIZE:
                             self.laptop.password_entered += event.unicode
-                    
                     elif event.key == pygame.K_BACKSPACE:
                         self.laptop.password_entered = self.laptop.password_entered[:-1]
 
-### Amir H Javadi B 5717292
+### Amir H Javadi B 5717292 - end 
+
+### Nael Karimou - 5734316 - start
 
             if event.type == pygame.QUIT:
                 self.running = False
@@ -236,11 +312,44 @@ class Game:
                     self.map.is_open = True
                 if obj.name == "laptop":
                     self.laptop.is_open = True
+
+                # if the player examine the accusation board
+                if obj.name == 'accusation_board':
+                    self.ending.run(self._update_tracker)
+
+    ### Andrei Sidorenko 5750779 - start
+                # talking to the waiter starts a dialogue with his testimony
+                if obj.name == "waiter":
+                    self.start_npc_dialogue("waiter_testimony")
+                    return
+                # talking to marcus starts his introduction dialogue
+                if obj.name == "marcus":
+                    self.start_npc_dialogue("marcus_introduction")
+                    return
+                # talking to victor starts his introduction dialogue
+                if obj.name == "victor":
+                    self.start_npc_dialogue("victor_introduction")
+                    return
+                # talking to lena starts her introduction dialogue
+                if obj.name == "lena":
+                    self.start_npc_dialogue("lena_introduction")
+                    return
+                # pressing E on the keyboard tries to pull up the CCTV - which is dead
+                if obj.name == "keyboard":
+                    self.chief_hint.set_sticky_hint(
+                        "Damn it. The cameras are dead. The recordings from last night were 'under maintenance'. Convenient.",
+                        180)
+                    return
+    ### Andrei Sidorenko 5750779 - end
                 if isinstance(obj, Evidence) and not obj.collected:
-                    obj.collected = True
-                    self.evidence_bag.add_evidence(obj)
-                    self.evidence_bag.sort_by_priority()
-                    self.hud.set_hint("You picked up: " + obj.name) 
+                    if self.evidence_bag.__len__() < self.evidence_bag.MAX_SIZE:
+                        obj.collected = True
+                        self.evidence_bag.add_evidence(obj)
+                        self.evidence_bag.sort_by_priority()
+                        self.hud.set_hint("You picked up: " + obj.name) 
+                    else:
+                        self.error_message = "Your bag is full!"
+                        self.error_time = pygame.time.get_ticks()
 
                 else:
                     print("[INTERACT] examined:", obj.name)
@@ -248,21 +357,113 @@ class Game:
                     self.hud.set_hint(msg)
                 return
             
-    
+### Nael Karimou - 5734316 - end
+
+### Andrei Sidorenko 5750779 - start
+
+    # try to start a dialogue when evidence was dropped at a screen position
+    def try_start_dialogue(self, drop_pos):
+        # only meaningful if there is a current room with objects
+        if self.current_room is None:
+            return
+
+        # which evidence was being dragged
+        item = self.evidence_bag.items[self.active_evidence]
+        evidence_name = item.name
+
+        # check every object in the room
+        for obj_name in self.current_room.objects:
+            obj = self.current_room.objects[obj_name]
+
+            # only npcs trigger a dialogue
+            if obj.name not in NPC_NAMES:
+                continue
+
+            # did the player drop the evidence on this npc?
+            if not obj.rect.collidepoint(drop_pos):
+                continue
+
+            # build the lookup key and try to load the tree
+            key = make_dialogue_key(evidence_name, obj.name)
+            tree = load_dialogue_from_json(key)
+            if tree is None:
+                # no dialogue defined for this evidence + npc combo
+                # let the player know with a chief line
+                self.chief_hint.set_hint(
+                    "They have nothing useful to say about this.")
+                # explicitly mark no dialogue active in case it was previously
+                self.chief_hint.set_dialogue_active(False)
+                return
+
+            # store the tree and show the first line
+            self.active_dialogue = tree
+            # clear leftover sticky countdown so the panel does not
+            # freeze on a stale message after the dialogue closes
+            self.chief_hint.sticky_frames_left = 0
+            first_node = tree.get_current()
+            # set the panel title to the speaker and show their text
+            self.chief_hint.set_speaker(first_node.speaker)
+            self.chief_hint.set_hint(first_node.text)
+            # tell the panel a dialogue is now active so it shows the SPACE hint
+            self.chief_hint.set_dialogue_active(True)
+            # tell the panel whether we are already at the last node
+            self.chief_hint.set_finished_hint(tree.is_finished())
+
+            # stop at the first matching npc
+            return
+
+    # start a dialogue tree from chief_hints.json by its key name
+    # used when the player presses E next to an NPC
+    def start_npc_dialogue(self, dialogue_key):
+        # load the dialogue tree
+        tree = load_dialogue_from_json(dialogue_key)
+        if tree is None:
+            # safety net - should never happen if json key matches
+            self.chief_hint.set_hint("They have nothing to say right now.")
+            self.chief_hint.set_dialogue_active(False)
+            return
+
+        # store the tree and show the first line
+        self.active_dialogue = tree
+        # clear leftover sticky countdown so the panel does not
+        # freeze on a stale message after the dialogue closes
+        self.chief_hint.sticky_frames_left = 0
+        first_node = tree.get_current()
+        # set the panel title to the speaker and show their text
+        self.chief_hint.set_speaker(first_node.speaker)
+        self.chief_hint.set_hint(first_node.text)
+        # tell the panel a dialogue is now active so it shows the SPACE hint
+        self.chief_hint.set_dialogue_active(True)
+        # tell the panel whether we are already at the last node
+        self.chief_hint.set_finished_hint(tree.is_finished())
+
+### Andrei Sidorenko 5750779 - end
+
     def _update(self) -> None:
         '''handle player movement and update hud hints'''
+        # if a dialogue is active, freeze the rest of the update
+        if self.active_dialogue is not None:
+            return
 
-        ### Amir H Javadi B 5717292
+        # tick the chief panel sticky countdown each frame
+        self.chief_hint.tick_sticky()
 
-        if self.error_message and pygame.time.get_ticks() - self.error_time > 3000: # shoeing the error message for 3 seconds
+### Amir H Javadi B 5717292 - start
+
+        # Clear the error message after 3 seconds
+        elapsed = pygame.time.get_ticks() - self.error_time if self.error_time else 0
+        if self.error_message and elapsed > 3000:
             self.error_message = None
             self.error_time = None
             self.add_error_size = 0
             self.add_error_y = 0
             self.error_color = (255, 80, 80)
-        
+
+        # Freeze game updates while the map is open
         if self.map.is_open:
-            return 
+            return
+
+        # Handle laptop password validation when all digits are entered
         if self.laptop.is_open and not self.laptop.password_found:
             if len(self.laptop.password_entered) == self.laptop.PASSWORD_SIZE:
                 if self.laptop.password_entered == self.laptop.PASSWORD:
@@ -273,44 +474,71 @@ class Game:
                     self.error_message = "Wrong password!"
                     self.laptop.password_entered = ""
 
+                # Display feedback in the center of the laptop screen
                 self.add_error_size = 20
                 self.add_error_y = 175
-
                 self.error_time = pygame.time.get_ticks()
             return
-        
-        # unlocking the rooms if the player has the required evidence in the bag 
+
+### Amir H Javadi B 5717292 - end 
+### Andrei Sidorenko 5750779 - start
+
+        # unlocking the rooms if the player has the required evidence in the bag
+        # also show a chief hint the first time each room becomes unlocked
         if self.evidence_bag.evidence_exists("dinner_invitation"):
             self.room_graph.unlock_room(self.rooms[3])
+            room_name = self.rooms[3].name
+            if room_name not in self.shown_unlock_hints:
+                hint_text = self.chief_hint.get_room_unlocks_hint(room_name)
+                # show for about 3 seconds at 60 fps
+                self.chief_hint.set_sticky_hint(hint_text, 180)
+                self.shown_unlock_hints.add(room_name)
+
         if self.evidence_bag.evidence_exists("research_paper"):
             self.room_graph.unlock_room(self.rooms[4])
+            room_name = self.rooms[4].name
+            if room_name not in self.shown_unlock_hints:
+                hint_text = self.chief_hint.get_room_unlocks_hint(room_name)
+                # show for about 3 seconds at 60 fps
+                self.chief_hint.set_sticky_hint(hint_text, 180)
+                self.shown_unlock_hints.add(room_name)
+
         if self.evidence_bag.evidence_exists("master_key_log"):
             self.room_graph.unlock_room(self.rooms[6])
+            room_name = self.rooms[6].name
+            if room_name not in self.shown_unlock_hints:
+                hint_text = self.chief_hint.get_room_unlocks_hint(room_name)
+                # show for about 3 seconds at 60 fps
+                self.chief_hint.set_sticky_hint(hint_text, 180)
+                self.shown_unlock_hints.add(room_name)
         
-        ### Amir H Javadi B 5717292
+### Andrei Sidorenko 5750779 - end
 
+        ### Nael Karimou - 5734316 - start
         keys = pygame.key.get_pressed()
         self.current_room.player.handle_movement(keys, self.current_room.collision_rects)
 
-        # update the chief panel based on what (if anything) the player is near
-        player_center = self.current_room.player.get_center()
-        found = False
-        for obj_name in self.current_room.objects:
-            obj = self.current_room.objects[obj_name]
-            if type(obj) != Furniture:
-                if obj.is_player_near(player_center):
-                    self.chief_hint.show_object_hint(obj.name)
-                    found = True
-                    break
-        if not found:
-            self.chief_hint.show_default()
+        # only update the chief panel from proximity if no sticky hint is showing
+        if not self.chief_hint.is_sticky():
+            # update the chief panel based on what (if anything) the player is near
+            player_center = self.current_room.player.get_center()
+            found = False
+            for obj_name in self.current_room.objects:
+                obj = self.current_room.objects[obj_name]
+                if type(obj) != Furniture:
+                    if obj.is_player_near(player_center):
+                        self.chief_hint.show_object_hint(obj.name)
+                        found = True
+                        break
+            if not found:
+                self.chief_hint.show_default()
 
     def _draw(self) -> None:
         '''draw the current room, the player and the hud'''
         self.current_room.draw_background(self.screen)
         self.current_room.draw_room_objects(self.screen)
         self.hud.draw(self.screen, self.active_evidence)
-        self.map.draw(self.screen, self.current_room, self.current_room.player.front1_sprite)
+        self.map.draw(self.screen, self.room_graph, self.rooms, self.current_room, self.current_room.player.front1_sprite)
         self.laptop.draw(self.screen)
         self._draw_error(self.screen, self.error_message, self.add_error_size, self.add_error_y, self.error_color)
         
@@ -325,5 +553,22 @@ class Game:
                         actual_room_connections.append(room_obj)
                         break
             room.connections = actual_room_connections 
-    
-### Nael Karimou - 5734316
+
+    def _update_tracker(self):
+        '''
+        This function update the state of the game tracker. It decide whether or not the 
+        tracker should be incremented.
+        Returns the number of key evidence and event found/completed by the player
+        '''
+        # Unlocking Victor computer is a key event
+        if self.laptop.password_found:
+            self.tracker.increment()
+
+        # check how many key evidences are in the bag and update the tracker accordingly
+        for evidence in self.evidence_bag.items:
+            if evidence.is_key:
+                self.tracker.increment()
+
+        return self.tracker.key_count()
+     
+### Nael Karimou - 5734316 -end

@@ -157,6 +157,7 @@
             "scale": 2.025,
             "class": "Evidence",
             "priority": 2,
+            "is_key": true,
             "collision": false,
             "dropped_on": "desk"
         }
@@ -212,7 +213,8 @@
             "position": [0.6, 0.2450],
             "scale": 0.205,
             "class": "Evidence",
-            "priority": 3, 
+            "priority": 3,
+            "is_key": true,
             "collision": false,
             "dropped_on": "desk"
         },
@@ -227,7 +229,7 @@
     },
     "faculty_dining_hall": {
         "connections": ["security_booth", "elenas_office"],
-        "objects": ["dining_table", "clock", "waiter", "chair_back1", "chair_back2", "chair_back3", "chair_back4", "chair_front1", "chair_front2", "chair_front3", "chair_front4"], 
+        "objects": ["clock", "chair_front1", "chair_front2", "chair_front3", "chair_front4", "dining_table",  "waiter", "chair_back1", "chair_back2", "chair_back3", "chair_back4"], 
         "detective_rowe": {
             "position": [0.5, 0.4],
             "scale": 0.85
@@ -331,7 +333,7 @@
     },
     "lenas_apartment": {
         "connections": ["police_station", "marcus_house"],
-        "objects": ["balcony", "carpet", "desk_and_chair", "elena", "phone"],
+        "objects": ["balcony", "carpet", "desk_and_chair", "lena", "phone"],
         "detective_rowe": {
             "position": [0.5, 0.35],
             "scale": 1.05
@@ -368,8 +370,8 @@
             "collision": true,
             "collision_height_scale": 0.3
         },
-        "elena": {
-            "path": "elena.png",
+        "lena": {
+            "path": "lena.png",
             "position": [0.4304, 0.1536],
             "scale": 0.55,
             "class": "InteractableObject",
