@@ -331,7 +331,7 @@
     },
     "lenas_apartment": {
         "connections": ["police_station", "marcus_house"],
-        "objects": ["balcony", "carpet", "desk_and_chair", "elena", "phone"],
+        "objects": ["balcony", "carpet", "desk_and_chair", "lena", "phone"],
         "detective_rowe": {
             "position": [0.5, 0.35],
             "scale": 1.05
@@ -368,8 +368,8 @@
             "collision": true,
             "collision_height_scale": 0.3
         },
-        "elena": {
-            "path": "elena.png",
+        "lena": {
+            "path": "lena.png",
             "position": [0.4304, 0.1536],
             "scale": 0.55,
             "class": "InteractableObject",

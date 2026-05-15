@@ -51,6 +51,10 @@ class ChiefOfPoliceHint:
         # whether the current dialogue node is the last one (changes hint text)
         self.is_dialogue_finished = False
 
+        # countdown of frames during which the sticky hint stays visible
+        # the proximity loop in game.py will skip overwriting while this > 0
+        self.sticky_frames_left = 0
+
         # font for the title at the top of the panel
         self.font_title = pygame.font.SysFont("Segoe UI,Arial", 15, bold=True)
 
@@ -64,26 +68,42 @@ class ChiefOfPoliceHint:
         self.npc_greetings = {}
         self.load_hints()
 
-        # load the officer sprite shown on the left of the panel
-        self.officer_sprite = None
-        self.officer_height = 140
-        self.officer_width = 140
-        try:
-            path = os.path.join("assets", "hud", "Hud_officer.png")
-            raw = pygame.image.load(path).convert_alpha()
-            # keep the original aspect ratio - scale by height
-            original_w = raw.get_width()
-            original_h = raw.get_height()
-            ratio = self.officer_height / original_h
-            new_w = int(original_w * ratio)
-            self.officer_width = new_w
-            self.officer_sprite = pygame.transform.smoothscale(
-                raw, (new_w, self.officer_height)
-            )
-        except FileNotFoundError:
-            print("Hud_officer.png not found, panel will show text only")
-        except pygame.error as err:
-            print("could not load officer sprite: " + str(err))
+        # load all portraits used by the chief panel
+        # the dictionary maps speaker key -> a loaded pygame surface
+        # officer is the fallback used for chief, detective, and unknowns
+        self.portrait_height = 140
+        self.portraits = {}
+        # table of files to try - speaker key, filename
+        portrait_files = [
+            ("officer", "Hud_officer.png"),
+            ("marcus", "Hud_marcus.png"),
+            ("victor", "Hud_victor.png"),
+            ("lena", "Hud_lena.png"),
+            ("waiter", "Hud_waiter.png"),
+        ]
+        # try to load each one - missing files are skipped
+        for key, filename in portrait_files:
+            path = os.path.join("assets", "hud", filename)
+            try:
+                raw = pygame.image.load(path).convert_alpha()
+                # keep aspect ratio - scale by height
+                original_w = raw.get_width()
+                original_h = raw.get_height()
+                ratio = self.portrait_height / original_h
+                new_w = int(original_w * ratio)
+                scaled = pygame.transform.smoothscale(raw, (new_w, self.portrait_height))
+                self.portraits[key] = scaled
+            except FileNotFoundError:
+                print(filename + " not found, will use officer fallback")
+            except pygame.error as err:
+                print("could not load " + filename + ": " + str(err))
+
+        # the sprite shown in the panel right now
+        # starts as the officer (chief default)
+        if "officer" in self.portraits:
+            self.current_portrait = self.portraits["officer"]
+        else:
+            self.current_portrait = None
 
     def set_hint(self, text):
         # change the hint that the panel shows
@@ -104,6 +124,18 @@ class ChiefOfPoliceHint:
             # unknown speaker - fall back to the default chief colour
             self.current_title_colour = self.default_title_colour
 
+        # change the portrait shown on the left of the panel
+        # chief and detective both use the officer sprite
+        # marcus, victor, lena, waiter use their own portraits if loaded
+        if speaker_name in self.portraits:
+            self.current_portrait = self.portraits[speaker_name]
+        elif "officer" in self.portraits:
+            # chief, detective, or any unknown speaker falls back to officer
+            self.current_portrait = self.portraits["officer"]
+        else:
+            # nothing loaded at all
+            self.current_portrait = None
+
     def set_dialogue_active(self, active):
         # tell the panel whether a dialogue is currently being shown
         # so it can draw the [SPACE] hint when needed
@@ -113,6 +145,27 @@ class ChiefOfPoliceHint:
         # store whether the current dialogue node is the last one
         # so the hint reads "to close" instead of "to continue"
         self.is_dialogue_finished = finished
+
+    def set_sticky_hint(self, text, frames):
+        # show this hint and prevent it being overwritten for N frames
+        self.current_hint = text
+        self.sticky_frames_left = frames
+
+    def tick_sticky(self):
+        # called once per frame by Game._update
+        # ticks the sticky countdown down by one
+        if self.sticky_frames_left > 0:
+            self.sticky_frames_left = self.sticky_frames_left - 1
+
+    def is_sticky(self):
+        # true if the panel is currently locked on a sticky message
+        return self.sticky_frames_left > 0
+
+    def get_room_unlocks_hint(self, room_name):
+        # return the unlock hint string for a room or empty if missing
+        if room_name in self.room_unlocks_hints:
+            return self.room_unlocks_hints[room_name]
+        return ""
 
     def draw(self, surface, x, y, w, h):
         # draw the chief of police panel inside the rectangle given to us
@@ -142,11 +195,12 @@ class ChiefOfPoliceHint:
         sprite_x = x + sprite_padding
         sprite_y = y + 25  # sits just under the divider line
 
-        # only draw the sprite if it loaded successfully
-        if self.officer_sprite is not None:
-            surface.blit(self.officer_sprite, (sprite_x, sprite_y))
+        # only draw the sprite if one is set
+        if self.current_portrait is not None:
+            surface.blit(self.current_portrait, (sprite_x, sprite_y))
             # text starts to the right of the sprite, with a bit of space
-            text_x = sprite_x + self.officer_width + sprite_padding
+            portrait_w = self.current_portrait.get_width()
+            text_x = sprite_x + portrait_w + sprite_padding
         else:
             # no sprite — text uses the full panel width like before
             text_x = x + 12
@@ -261,3 +315,8 @@ class ChiefOfPoliceHint:
         self.current_title = self.default_title
         # reset the title colour back to chief blue
         self.current_title_colour = self.default_title_colour
+        # reset the portrait back to the officer
+        if "officer" in self.portraits:
+            self.current_portrait = self.portraits["officer"]
+        else:
+            self.current_portrait = None
