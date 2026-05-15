@@ -1,5 +1,4 @@
 ### Nael Karimou - 5734316
-### TODO: change doscstrings to ''' ''' and not """ """ for consistency sakes
 import os
 import sys
 
@@ -37,20 +36,23 @@ ENDINGS = {
     },
 }
 
+FONT = 'Segoe UI,Arial'
+
 
 class EndingScreen:
     '''Displays the ending screen.'''
 
     def __init__(self, screen: pygame.Surface) -> None:
         self.screen = screen
-        self.font_title = pygame.font.SysFont("Segoe UI,Arial", 48, bold=True)
-        self.font_body = pygame.font.SysFont("Segoe UI,Arial", 22)
-        self.font_prompt = pygame.font.SysFont("Segoe UI,Arial", 16)
+        # setting up the fontes to use
+        self.font_title = pygame.font.SysFont(FONT, 48, bold=True)
+        self.font_body = pygame.font.SysFont(FONT, 22)
+        self.font_prompt = pygame.font.SysFont(FONT, 16)
 
     def show(self, ending: str) -> None:
-        '''Render the ending screen for the given ending key ('A', 'B', or 'C').
-
-        Blocks until the player closes the window or presses any key.
+        '''
+        Render the ending screen for the given ending key ('A', 'B', or 'C').
+        The player should closes the window or press any key.
         '''
         data = ENDINGS[ending]
         self._draw(data['title'], data['body'])
@@ -59,38 +61,36 @@ class EndingScreen:
     def _draw(self, title: str, body: str) -> None:
         self.screen.fill(COLOUR_HUD_BG)
 
+        # draw title of the ending
         title_surf = self.font_title.render(title, True, COLOUR_HIGHLIGHT)
-        self.screen.blit(
-            title_surf,
-            (
+        title_pos = (
                 SCREEN_WIDTH // 2 - title_surf.get_width() // 2,
-                int(SCREEN_HEIGHT * 0.25),
-            ),
+                int(SCREEN_HEIGHT * 0.25)
         )
+        self.screen.blit(title_surf, title_pos)
 
-        y = int(SCREEN_HEIGHT * 0.45)
+        # draw body text
+        current_line_pos = int(SCREEN_HEIGHT * 0.45)
+        space = 8
         for line in body.split('\n'):
             line_surf = self.font_body.render(line, True, COLOUR_TEXT)
-            self.screen.blit(
-                line_surf,
-                (SCREEN_WIDTH // 2 - line_surf.get_width() // 2, y),
-            )
-            y += line_surf.get_height() + 8
+            line_pos = (SCREEN_WIDTH // 2 - line_surf.get_width() // 2, current_line_pos)
+            self.screen.blit(line_surf, line_pos)
+            current_line_pos += line_surf.get_height() + space
 
-        prompt = self.font_prompt.render(
-            "Press any key to exit", True, COLOUR_TEXT_DIM
-        )
-        self.screen.blit(
-            prompt,
-            (
+        # draw small prompt to close the window
+        prompt = self.font_prompt.render("Press any key to exit", True, COLOUR_TEXT_DIM)
+        prompt_pos = (
                 SCREEN_WIDTH // 2 - prompt.get_width() // 2,
                 int(SCREEN_HEIGHT * 0.85),
-            ),
-        )
+            )
+        self.screen.blit( prompt, prompt_pos)
 
+        #update diplay
         pygame.display.flip()
 
     def _wait_for_input(self) -> None:
+        # handle events will the Ending screen is on
         while True:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -111,9 +111,9 @@ class AccusationMenu:
 
     def __init__(self, screen: pygame.Surface) -> None:
         self.screen = screen
-        self.font_title = pygame.font.SysFont("Segoe UI,Arial", 32, bold=True)
-        self.font_name = pygame.font.SysFont("Segoe UI,Arial", 20, bold=True)
-        self.font_prompt = pygame.font.SysFont("Segoe UI,Arial", 16)
+        self.font_title = pygame.font.SysFont(FONT, 32, bold=True)
+        self.font_name = pygame.font.SysFont(FONT, 20, bold=True)
+        self.font_prompt = pygame.font.SysFont(FONT, 16)
         self._portraits = self._load_portraits()
 
     def _load_portraits(self) -> list[dict]:
@@ -174,9 +174,7 @@ class AccusationMenu:
     def _draw(self, hovered: str | None) -> None:
         self.screen.fill(COLOUR_HUD_BG)
 
-        title = self.font_title.render(
-            "WHO DO YOU ACCUSE?", True, COLOUR_HIGHLIGHT
-        )
+        title = self.font_title.render("WHO DO YOU ACCUSE?", True, COLOUR_HIGHLIGHT)
         self.screen.blit(
             title,
             (SCREEN_WIDTH // 2 - title.get_width() // 2, int(SCREEN_HEIGHT * 0.1)),
