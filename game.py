@@ -160,7 +160,7 @@ class Game:
                 if event.button == 1:  # Left mouse button
 
                     for num, evidence in enumerate(self.evidence_bag.items):
-                        if evidence.rect.collidepoint(event.pos):
+                        if evidence.rect.collidepoint(event.pos) and self.evidence_bag.is_open:
                             self.active_evidence = num
                     
                     #oppening and closing the evidence bag 
