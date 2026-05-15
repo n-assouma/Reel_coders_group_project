@@ -14,6 +14,7 @@ from classes.ending import EndingScreen, EndingTracker
 from classes.hud import HUD
 from classes.interactable_object import Furniture, InteractableObject
 from classes.laptop import Laptop
+from classes.loading_screen import LoadingScreen
 from classes.map import Map
 from classes.room import Room
 from classes.room_graph import RoomGraph
@@ -42,6 +43,10 @@ class Game:
         self.clock: pygame.time.Clock = pygame.time.Clock()
         print("pygame started")
 
+        # load loading screen - Aryan Naranath 5758224
+        loader = LoadingScreen(self.screen)
+        loader.update(0)
+
         # Check if we really use it, if not we can remove it 
         self.font_title: pygame.font.Font = pygame.font.SysFont("Segoe UI,Arial", 18, bold=True)
         self.font_prompt: pygame.font.Font = pygame.font.SysFont("Segoe UI,Arial", 13, bold=True)
@@ -51,6 +56,9 @@ class Game:
             room_data = json.load(f)
             # get rid of metadata
             room_data.pop('_meta', None)
+
+        #update loading screen - Aryan Naranath 5758224
+        loader.update(10)
 
         # create the rooms
         self.rooms = []
@@ -62,6 +70,9 @@ class Game:
         self.rooms.append(Room('lenas_apartment', room_data['lenas_apartment']))
         self.rooms.append(Room('marcus_house', room_data['marcus_house']))
         self.rooms.append(Room('victors_house', room_data['victors_house']))
+
+        #update loading screen - Aryan Naranath 5758224
+        loader.update(50)
 
 
         # update the room connections to be actual room objects instead of strings. This is necessary for room graph to work
@@ -78,6 +89,9 @@ class Game:
         # set current room
         self.current_room: Room = self.rooms[0]
 
+        # update loading screen - Aryan Naranath 5758224
+        loader.update(65)
+
         self.evidence_bag: EvidenceBag = EvidenceBag()
         self.active_evidence = None
         # the dialogue tree currently being shown, or None if no dialogue active
@@ -90,10 +104,10 @@ class Game:
         self.map: Map = Map()
         self.laptop: Laptop = Laptop()
         self.hud: HUD = HUD(self.evidence_bag, self.chief_hint, self.map.hud_map)
+        
+        # update loading screen - Aryan Naranath 5758224
+        loader.update(85)
           
-        self.running: bool = True
-        print("game started")
-
         # error handling for map navigation
         self.error_message = None
         self.error_time = None
@@ -106,6 +120,13 @@ class Game:
 
         # set ending  screen for when the player want to choose the murderer
         self.ending = EndingScreen(self.screen)
+        
+        #update loading screen - Aryan Naranath 5758224
+        loader.update(100)
+        
+        self.running: bool = True
+        print("game started")
+        
 
     def run(self) -> None:
         '''game loop'''
