@@ -132,7 +132,7 @@ class Game:
         '''
 ### Amir H Javadi B 5717292 - end
 
-### Andrei Sidorenko 5750779 - start
+ ### Amir H Javadi B 5717292 - start
         for event in pygame.event.get():
             # if a dialogue is active, certain keys advance or close it
             if event.type == pygame.KEYDOWN:
