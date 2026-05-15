@@ -6,16 +6,16 @@ import pygame
 import sys
 
 
-from classes.interactable_object import Furniture, InteractableObject
-from classes.room_graph import RoomGraph
-from classes.evidence_bag import EvidenceBag
-from classes.evidence import Evidence
-from classes.room import Room
-from classes.hud import HUD
 from classes.chief_of_police_hint import ChiefOfPoliceHint
-from classes.map import Map
-from classes.laptop import Laptop
 from classes.dialogue import load_dialogue_from_json, make_dialogue_key
+from classes.evidence import Evidence
+from classes.evidence_bag import EvidenceBag
+from classes.hud import HUD
+from classes.interactable_object import Furniture, InteractableObject
+from classes.laptop import Laptop
+from classes.map import Map
+from classes.room import Room
+from classes.room_graph import RoomGraph
 from settings import *
 
 
@@ -24,7 +24,15 @@ NPC_NAMES = ["marcus", "victor", "waiter", "lena"]
 
 
 class Game:
-    ''''''
+    '''
+    Main game controller for The Hollow Witness.
+
+    Manages the game loop, all rooms, the player, evidence collection,
+    NPC dialogues, the HUD, map navigation, and the laptop puzzle.
+    Rooms are connected via a RoomGraph; some are locked until the player
+    collects the required evidence. The game ends when the player interacts
+    with the accusation board to trigger the ending screen.
+    '''
     def __init__(self) -> None:
         '''initialize pygame, create the window, load the player and the room.'''
         pygame.init()

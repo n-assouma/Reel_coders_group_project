@@ -66,7 +66,7 @@ class RoomGraph:
         for adjacent in room.connections:
             self._unlock_edge(room, adjacent)
 
-    def is_locked(self, room_a: rm.Room, room_b: rm.Room) -> bool:
+    def _is_locked(self, room_a: rm.Room, room_b: rm.Room) -> bool:
         """returning True if the edge between two rooms is currently locked."""
         self._room_validate(room_a, room_b)
         self._edge_validate((room_a, room_b))
@@ -113,7 +113,7 @@ class RoomGraph:
                 is_found = True
                 break
             for room in self.__graph[current_room]:
-                if room not in child_parent and not(respect_locks and self.is_locked(current_room, room)):
+                if room not in child_parent and not(respect_locks and self._is_locked(current_room, room)):
                     queue.append(room)
                     child_parent[room] = current_room
 
@@ -149,7 +149,7 @@ class RoomGraph:
         if path is None:
             return None 
         for i in range(len(path) - 1):
-            if self.is_locked(path[i], path[i+1]):
+            if self._is_locked(path[i], path[i+1]):
                 return path[i+1]
 
     def _room_validate(self, *rooms: rm.Room) -> None:
