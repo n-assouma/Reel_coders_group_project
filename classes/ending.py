@@ -121,11 +121,10 @@ class EndingScreen:
         # handle events when the Ending screen is on
         while True:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT:
+                if event.type == pygame.QUIT and event.type == pygame.KEYDOWN:
                     pygame.quit()
                     sys.exit()
-                if event.type == pygame.KEYDOWN:
-                    return
+ 
 
 
 class AccusationMenu:
