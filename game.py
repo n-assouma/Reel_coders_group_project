@@ -257,6 +257,8 @@ class Game:
                     self.map.is_open = True
                 if obj.name == "laptop":
                     self.laptop.is_open = True
+
+    ### Andrei Sidorenko 5750779 - start
                 # talking to the waiter starts a dialogue with his testimony
                 if obj.name == "waiter":
                     self.start_npc_dialogue("waiter_testimony")
@@ -279,6 +281,7 @@ class Game:
                         "Damn it. The cameras are dead. The recordings from last night were 'under maintenance'. Convenient.",
                         180)
                     return
+    ### Andrei Sidorenko 5750779 - end
                 if isinstance(obj, Evidence) and not obj.collected:
                     if self.evidence_bag.__len__() < self.evidence_bag.MAX_SIZE:
                         obj.collected = True
