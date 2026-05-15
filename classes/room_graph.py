@@ -76,7 +76,7 @@ class RoomGraph:
         """returning True if all the edges of a room is currently locked."""
         self._room_validate(room)
         for adjacent in room.connections:
-            if not self._is_locked(room , adjacent):
+            if not self.is_locked(room , adjacent):
                 return False
         return True
 
