@@ -121,30 +121,43 @@ class Game:
 ### Nael Karimou - 5734316 - end
     
 ### Amir H Javadi B 5717292 - start
-    def _draw_error(self, surface, message: str = None, add_size: int = 0, add_y: int = 0, color: tuple = (255, 80, 80)) -> None:
-        """Displaying error if any ahppened
-            especially for the map navicgation,
-            if the user wants to reach a room that there is a locked room in the middle of the path."""
+    def _draw_error(
+        self,
+        surface,
+        message: str = None,
+        add_size: int = 0,
+        add_y: int = 0,
+        color: tuple = (255, 80, 80)
+    ) -> None:
+        """Display a semi-transparent error box on screen if a message is set.
 
+        Used for map navigation errors when a locked room blocks the path,
+        and for laptop password feedback.
+
+        Args:
+            surface: The pygame surface to draw onto.
+            message: The error text to display, or None to draw nothing.
+            add_size: Extra font size added to the default 22pt.
+            add_y: Extra upward offset from the vertical center of the screen.
+            color: RGB tuple for the text color.
+        """
         if message is not None:
             font = pygame.font.SysFont("Segoe UI,Arial", 22 + add_size, bold=True)
-            padding  = 20
+            padding = 20
             text_surface = font.render(message, True, color)
             w = text_surface.get_width() + padding * 2
             h = text_surface.get_height() + padding * 2
             x = (SCREEN_WIDTH - w) // 2
             y = (MAIN_SCREEN_HEIGHT - h) // 2 - add_y
 
+            # Semi-transparent dark red background behind the error text
             box = pygame.Surface((w, h), pygame.SRCALPHA)
             box.fill((20, 0, 0, 200))
             surface.blit(box, (x, y))
             surface.blit(text_surface, (x + padding, y + padding))
 
-
     def _handle_events(self) -> None:
-        '''
-        handle window events and keyboard input
-        '''
+        """Handle window events, keyboard input, and mouse interactions."""
 ### Amir H Javadi B 5717292 - end
 
  ### Andrei Sidorenko 5750779 - start
@@ -176,78 +189,82 @@ class Game:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left mouse button
 
+                    # Pick up an evidence item if the bag is open and item is clicked
                     for num, evidence in enumerate(self.evidence_bag.items):
-                        if evidence.rect.collidepoint(event.pos) and self.evidence_bag.is_open:
+                        is_clicked = evidence.rect.collidepoint(event.pos)
+                        if is_clicked and self.evidence_bag.is_open:
                             self.active_evidence = num
-                    
-                    #oppening and closing the evidence bag 
 
+                    # Toggle the evidence bag open or closed
                     if self.evidence_bag.rect.collidepoint(event.pos):
-                        if self.evidence_bag.is_open:
-                            self.evidence_bag.is_open = False
-                        else:
-                            self.evidence_bag.is_open = True
-                    
-                    # closing the laptop by pressing the cross
+                        self.evidence_bag.is_open = not self.evidence_bag.is_open
 
+                    # Close the laptop when the X button is clicked
                     if self.laptop.is_open:
                         if self.laptop.cross_bottom_rect.collidepoint(event.pos):
                             self.laptop.is_open = False
                             self.laptop.password_entered = ""
 
-                    # oppening the map
-                    
+                    # Open the map when the map icon in the HUD is clicked
                     if self.hud.map_rect.collidepoint(event.pos):
                         self.map.is_open = True
-                    
-                    # hovering the room on the map --> shoeing the name of the room
-                    # pressing on a room --> traveling to the room if it was available
-                    # and displaying the error if not
 
+                    # Navigate to a room when clicked on the map
+                    # Shows an error if a locked room blocks the path
                     if self.map.is_open:
                         hovered_room = self.map.get_hovered_room(event.pos)
                         if hovered_room:
-                            distination_room = None
+                            destination_room = None
                             for room in self.rooms:
                                 if room.name == hovered_room:
-                                    distination_room = room
+                                    destination_room = room
                                     break
-                            if self.room_graph.is_reachable(self.current_room, distination_room):
-                                self.current_room = distination_room
+                            if self.room_graph.is_reachable(
+                                self.current_room, destination_room
+                            ):
+                                self.current_room = destination_room
                                 self.map.is_open = False
                             else:
-                                self.error_message = f"You need to unlock {self.map.name_maker(self.room_graph.route_with_blocker(self.current_room, distination_room).name)} first."
+                                blocker = self.room_graph.route_with_blocker(
+                                    self.current_room, destination_room
+                                )
+                                blocker_name = self.map.name_maker(blocker.name)
+                                self.error_message = (
+                                    f"You need to unlock {blocker_name} first."
+                                )
                                 self.error_time = pygame.time.get_ticks()
 
-            # removing an evidence from the evidence bag
-
+            # Drop evidence: remove it if dropped on trash can, or show dialogue
             if event.type == pygame.MOUSEBUTTONUP:
                 if event.button == 1:  # Left mouse button
                     if self.active_evidence is not None:
-                        if self.evidence_bag.trash_can_image.get_rect(topleft=self.evidence_bag.trash_can_rect.topleft).collidepoint(event.pos):
+                        trash_rect = self.evidence_bag.trash_can_image.get_rect(
+                            topleft=self.evidence_bag.trash_can_rect.topleft
+                        )
+                        if trash_rect.collidepoint(event.pos):
                             item = self.evidence_bag.items[self.active_evidence]
                             self.evidence_bag.remove_evidence(item)
                             item.collected = False
                             item.rect = item.original_rect.copy()
                         else:
-                            # check if the player dropped the evidence on an npc
+                            # Check if the player dropped the evidence on an NPC
                             self.try_start_dialogue(event.pos)
 
                         self.active_evidence = None
-            
-            # grabing and moving the evidences from the evidence bag 
 
+            # Drag the active evidence item with the mouse
             if event.type == pygame.MOUSEMOTION:
                 if self.active_evidence is not None:
-                    self.evidence_bag.items[self.active_evidence].rect.move_ip(event.rel)
+                    self.evidence_bag.items[self.active_evidence].rect.move_ip(
+                        event.rel
+                    )
 
-            # typing the password on the laptop
+            # Handle laptop password typing (digits and backspace)
             if event.type == pygame.KEYDOWN:
                 if self.laptop.is_open and not self.laptop.password_found:
                     if event.unicode.isdigit():
                         if len(self.laptop.password_entered) < self.laptop.PASSWORD_SIZE:
                             self.laptop.password_entered += event.unicode
-                    
                     elif event.key == pygame.K_BACKSPACE:
                         self.laptop.password_entered = self.laptop.password_entered[:-1]
 
@@ -412,15 +429,20 @@ class Game:
 
 ### Amir H Javadi B 5717292 - start
 
-        if self.error_message and pygame.time.get_ticks() - self.error_time > 3000: # shoeing the error message for 3 seconds
+        # Clear the error message after 3 seconds
+        elapsed = pygame.time.get_ticks() - self.error_time if self.error_time else 0
+        if self.error_message and elapsed > 3000:
             self.error_message = None
             self.error_time = None
             self.add_error_size = 0
             self.add_error_y = 0
             self.error_color = (255, 80, 80)
-        
+
+        # Freeze game updates while the map is open
         if self.map.is_open:
-            return 
+            return
+
+        # Handle laptop password validation when all digits are entered
         if self.laptop.is_open and not self.laptop.password_found:
             if len(self.laptop.password_entered) == self.laptop.PASSWORD_SIZE:
                 if self.laptop.password_entered == self.laptop.PASSWORD:
@@ -431,12 +453,12 @@ class Game:
                     self.error_message = "Wrong password!"
                     self.laptop.password_entered = ""
 
+                # Display feedback in the center of the laptop screen
                 self.add_error_size = 20
                 self.add_error_y = 175
-
                 self.error_time = pygame.time.get_ticks()
             return
-        
+
 ### Amir H Javadi B 5717292 - end 
 ### Andrei Sidorenko 5750779 - start
 
