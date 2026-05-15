@@ -37,8 +37,8 @@ class Laptop:
         self.cross_bottom_rect = pygame.Rect(1095, 35, 56, 47)
 
         self.email_font = pygame.font.SysFont("Segoe UI,Arial", 20, bold=False)
-        self.sender_text = self.email_font.render("From: victor.lockwood@gmail.com", True, (0, 0, 0))
-        self.reciever_text = self.email_font.render("To: victor.lockwood@gmail.com", True, (0, 0, 0))
+        self.sender_text = self.email_font.render("From: victor.osei@gmail.com", True, (0, 0, 0))
+        self.reciever_text = self.email_font.render("To: victor.osei@gmail.com", True, (0, 0, 0))
         self.subject_text = self.email_font.render("Subject: Reminder", True, (0, 0, 0))
         self.email_text = self.email_font.render("Elena knows about the grants....\n" \
         "She's threatening to go to the board\n" \
