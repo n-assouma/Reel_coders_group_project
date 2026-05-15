@@ -67,10 +67,10 @@ class Laptop:
         # Font and pre-rendered text surfaces for the email screen
         self.email_font = pygame.font.SysFont("Segoe UI,Arial", 20, bold=False)
         self.sender_text = self.email_font.render(
-            "From: victor.lockwood@gmail.com", True, (0, 0, 0)
+            "From: victor.osei@gmail.com", True, (0, 0, 0)
         )
         self.reciever_text = self.email_font.render(
-            "To: victor.lockwood@gmail.com", True, (0, 0, 0)
+            "To: victor.osei@gmail.com", True, (0, 0, 0)
         )
         self.subject_text = self.email_font.render(
             "Subject: Reminder", True, (0, 0, 0)

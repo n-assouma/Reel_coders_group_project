@@ -6,16 +6,17 @@ import pygame
 import sys
 
 
-from classes.interactable_object import Furniture, InteractableObject
-from classes.room_graph import RoomGraph
-from classes.evidence_bag import EvidenceBag
-from classes.evidence import Evidence
-from classes.room import Room
-from classes.hud import HUD
 from classes.chief_of_police_hint import ChiefOfPoliceHint
-from classes.map import Map
-from classes.laptop import Laptop
 from classes.dialogue import load_dialogue_from_json, make_dialogue_key
+from classes.evidence import Evidence
+from classes.evidence_bag import EvidenceBag
+from classes.ending import EndingScreen, EndingTracker
+from classes.hud import HUD
+from classes.interactable_object import Furniture, InteractableObject
+from classes.laptop import Laptop
+from classes.map import Map
+from classes.room import Room
+from classes.room_graph import RoomGraph
 from settings import *
 
 
@@ -24,7 +25,15 @@ NPC_NAMES = ["marcus", "victor", "waiter", "lena"]
 
 
 class Game:
-    ''''''
+    '''
+    Main game controller for The Hollow Witness.
+
+    Manages the game loop, all rooms, the player, evidence collection,
+    NPC dialogues, the HUD, map navigation, and the laptop puzzle.
+    Rooms are connected via a RoomGraph; some are locked until the player
+    collects the required evidence. The game ends when the player interacts
+    with the accusation board to trigger the ending screen.
+    '''
     def __init__(self) -> None:
         '''initialize pygame, create the window, load the player and the room.'''
         pygame.init()
@@ -91,6 +100,12 @@ class Game:
         self.add_error_size = 0
         self.add_error_y = 0
         self.error_color = (255, 80, 80)
+
+        # set ending tracker to track key events accomplished
+        self.tracker =  EndingTracker()
+
+        # set ending  screen for when the player want to choose the murderer
+        self.ending = EndingScreen(self.screen)
 
     def run(self) -> None:
         '''game loop'''
@@ -276,6 +291,10 @@ class Game:
                     self.map.is_open = True
                 if obj.name == "laptop":
                     self.laptop.is_open = True
+
+                # if the player examine the accusation board
+                if obj.name == 'accusation_board':
+                    self.ending.run(self._update_tracker)
 
     ### Andrei Sidorenko 5750779 - start
                 # talking to the waiter starts a dialogue with his testimony
@@ -513,5 +532,22 @@ class Game:
                         actual_room_connections.append(room_obj)
                         break
             room.connections = actual_room_connections 
-    
+
+    def _update_tracker(self):
+        '''
+        This function update the state of the game tracker. It decide whether or not the 
+        tracker should be incremented.
+        Returns the number of key evidence and event found/completed by the player
+        '''
+        # Unlocking Victor computer is a key event
+        if self.laptop.password_found:
+            self.tracker.increment()
+
+        # check how many key evidences are in the bag and update the tracker accordingly
+        for evidence in self.evidence_bag.items:
+            if evidence.is_key:
+                self.tracker.increment()
+
+        return self.tracker.key_count()
+     
 ### Nael Karimou - 5734316 -end

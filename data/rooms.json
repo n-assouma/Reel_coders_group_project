@@ -157,6 +157,7 @@
             "scale": 2.025,
             "class": "Evidence",
             "priority": 2,
+            "is_key": true,
             "collision": false,
             "dropped_on": "desk"
         }
@@ -212,7 +213,8 @@
             "position": [0.6, 0.2450],
             "scale": 0.205,
             "class": "Evidence",
-            "priority": 3, 
+            "priority": 3,
+            "is_key": true,
             "collision": false,
             "dropped_on": "desk"
         },
