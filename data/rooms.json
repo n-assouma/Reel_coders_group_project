@@ -31,7 +31,7 @@
         },
         "case_file": {
             "path": "case_file.png",
-            "position": [0.48, 0.39],
+            "position": [0.48, 0.37],
             "scale": 0.92,
             "class": "Evidence",
             "priority": 7,
@@ -88,7 +88,7 @@
         },
         "desk": {
             "path": "desk.png",
-            "position": [0.061, 0.14],
+            "position": [0.025, 0.14],
             "scale": 0.8,
             "class": "Furniture",
             "collision": true,
@@ -127,7 +127,7 @@
         },
         "computer": {
             "path": "computer.png",
-            "position": [0.03, 0.05],
+            "position": [0.005, 0.06],
             "scale": 1.0,
             "class": "InteractableObject",
             "collision": false,
