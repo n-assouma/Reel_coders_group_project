@@ -55,7 +55,7 @@ class Map:
         }
 
         # Load room data and strip internal metadata before use
-        with open(os.path.join('data', 'rooms.json'), 'r') as f:
+        with open(os.path.join('data', 'rooms.json'), 'r', encoding='utf-8') as f:
             self.room_data = json.load(f)
             self.room_data.pop('_meta', None)
 

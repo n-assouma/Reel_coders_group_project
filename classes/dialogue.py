@@ -89,7 +89,7 @@ def load_dialogue_from_json(dialogue_key):
 
     # try to read the file
     try:
-        f = open(path, "r")
+        f = open(path, "r", encoding="utf-8")
         data = json.load(f)
         f.close()
     except FileNotFoundError:
