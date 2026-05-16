@@ -19,7 +19,7 @@ class Player:
         self.front1_sprite = pygame.image.load(front1_path).convert_alpha()
         PLAYER_WIDTH = self.front1_sprite.get_width() * player_data['scale'] 
         PLAYER_HEIGHT = self.front1_sprite.get_height() * player_data['scale']
-        self.front1_sprite = pygame.transform.scale(self.front1_sprite, (PLAYER_WIDTH , PLAYER_HEIGHT)) 
+        self.front1_sprite = pygame.transform.scale(self.front1_sprite, (PLAYER_WIDTH, PLAYER_HEIGHT)) 
         
         ### Amir H Javadi B - 5717292 - start
 
@@ -208,7 +208,7 @@ class Player:
         """
         ### Amir H Javadi B - 5717292 - start
 
-        # Moving down — cycle between front2 and front3 every 10 frames
+        # Moving down, cycle between front2 and front3 every 10 frames
         if self.y_direction > 0:
             self.last_movement = "d"
             self.animation_counter += 1
@@ -220,7 +220,7 @@ class Player:
                 frame = self.front2_sprite
                 self.animation_counter = 0
 
-        # Moving up — cycle between back2 and back3 every 10 frames
+        # Moving up, cycle between back2 and back3 every 10 frames
         elif self.y_direction < 0:
             self.last_movement = "u"
             self.animation_counter += 1
@@ -232,7 +232,7 @@ class Player:
                 frame = self.back2_sprite
                 self.animation_counter = 0
 
-        # Moving right — cycle through right1-4 every 5 frames
+        # Moving right, cycle through right1-4 every 5 frames
         elif self.x_direction > 0:
             self.last_movement = "r"
             self.animation_counter += 1
@@ -248,7 +248,7 @@ class Player:
                 frame = self.right1_sprite
                 self.animation_counter = 0
 
-        # Moving left — cycle through left1-4 every 5 frames
+        # Moving left, cycle through left1-4 every 5 frames
         elif self.x_direction < 0:
             self.last_movement = "l"
             self.animation_counter += 1

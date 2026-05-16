@@ -7,29 +7,29 @@
     },
     "object_hint": {
         "case_file": "This is the document of the case you're working on.\nElena, a married woman with kids, prominent researcher\nand professor at the city university, has been found dead\nin her office at 11:47 PM.",
-        "computer": "A draft email on the screen — addressed to a lawyer.\nThe subject line reads: 'Regarding financial irregularities\nin Dean Osei's department.' The draft is unfinished.",
-        "tweed_thread": "The lamp is smashed. There's a small thread caught on the broken edge — coarse, woven, looks like tweed.",
+        "computer": "A draft email on the screen, addressed to a lawyer.\nThe subject line reads: 'Regarding financial irregularities\nin Dean Osei's department.' The draft is unfinished.",
+        "tweed_thread": "The lamp is smashed. There's a small thread caught on the broken edge, coarse, woven, looks like tweed.",
         "dinner_invitation": "A faculty dinner invitation for last night.\nWe should check what time it actually ended.",
         "accusation_board": "The board's almost empty. We need solid evidence before we can put a name on it. Keep digging.",
         "map_board": "The case map. Every location and connection we know so far. Useful for tracking who was where.",
-        "research_paper": "A draft research paper. Elena is listed as the sole author. Another name has been crossed out in red — Lena Voss.",
-        "keyboard": "Security station keyboard. Could pull up the CCTV logs from here — if anyone bothered to keep them running.",
+        "research_paper": "A draft research paper. Elena is listed as the sole author. Another name has been crossed out in red, Lena Voss.",
+        "keyboard": "Security station keyboard. Could pull up the CCTV logs from here, if anyone bothered to keep them running.",
         "master_key_log": "Master key log from last night. Two people have keys: Dean Osei and the head of security. One of these keys was used at 11:18 PM.",
-        "phone": "Phone log on the screen. A call placed at 10:55 PM — 0 seconds, no answer. The receiving number is Elena's.",
+        "phone": "Phone log on the screen. A call placed at 10:55 PM, 0 seconds, no answer. The receiving number is Elena's.",
         "divorce_agreement": "Divorce paperwork. Custody hearing next month. Elena was applying to move Sophie to Switzerland.",
-        "laptop": "Victor's laptop on the desk. Locked — it wants a numeric password.",
+        "laptop": "Victor's laptop on the desk. Locked, it wants a numeric password.",
         "jacket": "A tweed jacket on the rack. There's a small tear on the left sleeve. The colour and weave look familiar."
     },
     "npc_greeting": {
         "marcus": "That's Marcus, Elena's ex-husband. Let's talk to him.",
         "victor": "That's Dean Osei. We should talk to him.",
-        "lena": "That's Lena Voss — Elena's research partner. Let's see what she has to say.",
+        "lena": "That's Lena Voss, Elena's research partner. Let's see what she has to say.",
         "waiter": "The waiter who worked the dinner that night. He'd know exactly when it ended."
     },
     "suspect_reaction": {
         "tweed_thread_to_marcus": [
-            {"speaker": "marcus", "text": "Tweed? I don't own anything tweed. That's more Victor's style — he wears that jacket everywhere."},
-            {"speaker": "chief", "text": "Notice who he's pointing the finger at. Doesn't mean he's right — but it's worth remembering."}
+            {"speaker": "marcus", "text": "Tweed? I don't own anything tweed. That's more Victor's style, he wears that jacket everywhere."},
+            {"speaker": "chief", "text": "Notice who he's pointing the finger at. Doesn't mean he's right, but it's worth remembering."}
         ],
         "tweed_thread_to_lena": [
             {"speaker": "lena", "text": "That looks like the dean's jacket. Victor always wears that tweed. Elena used to joke about it."},
@@ -59,7 +59,7 @@
         ],
         "computer_to_lena": [
             {"speaker": "lena", "text": "She told me she found something in the grant accounts. She said people could go to prison."},
-            {"speaker": "chief", "text": "Lena's heard about it. Elena was talking to her about something serious — serious enough to put people in prison."}
+            {"speaker": "chief", "text": "Lena's heard about it. Elena was talking to her about something serious, serious enough to put people in prison."}
         ],
         "computer_to_victor": [
             {"speaker": "victor", "text": "Elena had strong opinions about budget allocation."},
@@ -80,27 +80,69 @@
             {"speaker": "chief", "text": "This just has the basic facts. It won't provoke much of a reaction. Try showing something more specific."}
         ],
         "divorce_agreement_to_marcus": [
-            {"speaker": "marcus", "text": "That's right. She wanted everything. Sophie too — moving her to bloody Switzerland. But wanting someone gone isn't the same as killing them, detective."},
+            {"speaker": "marcus", "text": "That's right. She wanted everything. Sophie too, moving her to bloody Switzerland. But wanting someone gone isn't the same as killing them, detective."},
             {"speaker": "chief", "text": "He admits the resentment openly. Make of that what you will."}
         ],
         "waiter_testimony": [
             {"speaker": "waiter", "text": "The faculty dinner? Finished around quarter to eleven. The dean in the tweed jacket left right away."},
-            {"speaker": "chief", "text": "Quarter to eleven. Keep that in mind — it doesn't quite match what we were told earlier."}
+            {"speaker": "chief", "text": "Quarter to eleven. Keep that in mind, it doesn't quite match what we were told earlier."}
         ],
         "marcus_introduction": [
             {"speaker": "marcus", "text": "Detective. I already told the officers everything I know. I was home that night. Alone. I had nothing to do with what happened to Elena."},
-            {"speaker": "marcus", "text": "Look — yes, the divorce was ugly. Yes, the custody fight is ongoing. But whoever did this... it wasn't me. You should be looking at Victor. He never liked her either."},
+            {"speaker": "marcus", "text": "Look, yes, the divorce was ugly. Yes, the custody fight is ongoing. But whoever did this... it wasn't me. You should be looking at Victor. He never liked her either."},
             {"speaker": "chief", "text": "Bitter, defensive, points the finger elsewhere. Standard. But he hasn't given us anything we can verify or disprove."}
         ],
-        "victor_introduction": [
-            {"speaker": "victor", "text": "Detective Rowe. Terrible business about Elena. Please, sit. Can I offer you tea?"},
-            {"speaker": "victor", "text": "I was at the faculty dinner until quite late. After that, straight home. I'm happy to answer anything that might help your investigation."},
-            {"speaker": "chief", "text": "Composed, charming, helpful — almost rehearsed. Watch what he doesn't say."}
-        ],
+        "victor_introduction": {
+            "speaker": "victor",
+            "text": "Detective Rowe. Terrible business about Elena. Please, sit. Can I offer you tea?",
+            "branches": [
+                {
+                    "condition": true,
+                    "speaker": "chief",
+                    "text": "We had a look at your laptop, Victor. Found some interesting reading in there. Anything you'd like to get off your chest before we go any further?",
+                    "branches": [
+                        {
+                            "speaker": "victor",
+                            "text": "I have absolutely nothing to do with Elena's death. Nothing. I've already told your colleagues everything I know.",
+                            "branches": [
+                                {
+                                    "speaker": "victor",
+                                    "text": "And frankly, you had no right to access my personal property without a warrant. That is an unlawful search and you know it.",
+                                    "branches": [
+                                        {
+                                            "speaker": "victor",
+                                            "text": "I'll be filing a formal complaint. My solicitor will hear about this before the end of the day.",
+                                            "branches": [
+                                                {
+                                                    "speaker": "chief",
+                                                    "text": "His reaction was rough... but he didn't look scared. Not once. We better watch him carefully, a man like that could get us into serious trouble.",
+                                                    "branches": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "speaker": "victor",
+                    "text": "I was at the faculty dinner until quite late. After that, straight home. I'm happy to answer anything that might help your investigation.",
+                    "branches": [
+                        {
+                            "speaker": "chief",
+                            "text": "Composed, charming, helpful, almost rehearsed. Watch what he doesn't say.",
+                            "branches": []
+                        }
+                    ]
+                }
+            ]
+        },
         "lena_introduction": [
             {"speaker": "lena", "text": "Detective. I... I already gave my statement to the officers. I was in the lab until eleven, then home. My keycard will show it."},
             {"speaker": "lena", "text": "Elena and I had our disagreements about the research paper, yes. But she was my friend, before all that. I would never... I couldn't."},
-            {"speaker": "chief", "text": "Nervous, defensive, but she's not hiding her alibi — she's volunteering it. Either she's telling the truth or she's very prepared."}
+            {"speaker": "chief", "text": "Nervous, defensive, but she's not hiding her alibi, she's volunteering it. Either she's telling the truth or she's very prepared."}
         ],
         "tweed_thread_to_waiter": [
             {"speaker": "waiter", "text": "A piece of fabric? I'm just the waiter, sir. I clean tables. I wouldn't know anything about clothes."}
@@ -126,7 +168,7 @@
             {"speaker": "chief", "text": "Lena's uncomfortable but not surprised. She knew more than she lets on."}
         ],
         "divorce_agreement_to_victor": [
-            {"speaker": "victor", "text": "Ah yes — Marcus and Elena's divorce. Messy, even by academic standards. But I'd rather not gossip about a colleague's personal life."},
+            {"speaker": "victor", "text": "Ah yes, Marcus and Elena's divorce. Messy, even by academic standards. But I'd rather not gossip about a colleague's personal life."},
             {"speaker": "chief", "text": "Smooth deflection. He didn't say he doesn't know about it."}
         ],
         "dinner_invitation_to_marcus": [
@@ -150,18 +192,18 @@
             {"speaker": "chief", "text": "Praising the dead. Common deflection."}
         ],
         "research_paper_to_lena": [
-            {"speaker": "lena", "text": "I... already have my own copy. We were supposed to be co-authors."},
+            {"speaker": "lena", "text": "I... already have my own copy. We were supposed to be co-authors, but she decided to put me on the side and talk all the merit for OUR work! But I could never do such an atrocity..."},
             {"speaker": "chief", "text": "She still sounds hurt about it. But hurt isn't the same as guilty."}
         ]
     },
     "room_unlocks_hint": {
-        "victors_house": "Good — that's enough to bring in Dean Osei for questioning. Let's pay him a visit at his townhouse.",
+        "victors_house": "Good, that's enough to bring in Dean Osei for questioning. Let's pay him a visit at his townhouse.",
         "faculty_dining_hall": "The invitation tells us where the dinner was. Let's head over to the Faculty Dining Hall and see what the waiter remembers.",
         "lenas_apartment": "Looks like Lena had reasons to be upset with Elena. Let's go to her apartment and have a word."
     },
     "ending": {
         "justice_served": "Victor is arrested. Confronted with the thread, the key log, and the dinner lie, he confesses. Elena's family gets closure. Case closed.",
         "suspect_escapes": "Not enough evidence. Victor's solicitor blocks the charges. He shreds documents and flies out of the country. The case goes cold.",
-        "wrong_accusation": "An innocent person arrested. Victor walks free. Six months later, new evidence surfaces — but Victor has disappeared. Injustice."
+        "wrong_accusation": "An innocent person arrested. The killer walks free. Six months later, new evidence surfaces... but it is to late. Injustice."
     }
 }

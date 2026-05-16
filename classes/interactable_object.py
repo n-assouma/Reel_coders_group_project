@@ -2,98 +2,123 @@
 
 import math
 import os
+
 import pygame
-from settings import *
+from settings import (
+    COLOUR_HIGHLIGHT, COLOUR_TEXT,
+    INTERACTION_RADIUS, SCREEN_HEIGHT, SCREEN_WIDTH,
+)
+
 
 class Furniture:
-    '''a piece of furniture in the room that is not interactable, but still needs to be drawn with depth sorting.
     '''
-    def __init__(self,room_name: str, name: str, obj_data: dict) -> None:
+    A piece of furniture in the room that is not interactable,
+    but still needs to be drawn with depth sorting.
+    '''
+
+    def __init__(self, room_name: str, name: str, obj_data: dict) -> None:
         self.name = name
         self.room_name = room_name
-        
+
         # load the sprite
-        path = os.path.join('assets',room_name, obj_data['path'])
+        path = os.path.join('assets', room_name, obj_data['path'])
         self.sprite = pygame.image.load(path).convert_alpha()
 
         # scale the sprite based on the scale factor in the data
         scaled_width = int(self.sprite.get_width() * obj_data['scale'])
         scaled_height = int(self.sprite.get_height() * obj_data['scale'])
-        self.sprite = pygame.transform.scale(self.sprite,(scaled_width, scaled_height))
+        self.sprite = pygame.transform.scale(
+            self.sprite, (scaled_width, scaled_height)
+        )
 
-        # get the rectangle for the sprite, positioned at the x and y in the data
-        self.rect = self.sprite.get_rect(topleft=(obj_data['position'][0] * SCREEN_WIDTH,
-                                                  obj_data['position'][1] * SCREEN_HEIGHT))
+        # get the rectangle for the sprite, positioned at x and y from data
+        self.rect = self.sprite.get_rect(topleft=(
+            obj_data['position'][0] * SCREEN_WIDTH,
+            obj_data['position'][1] * SCREEN_HEIGHT,
+        ))
         self.original_rect = self.rect.copy()
-        
-        # define if object needs collision or not 
+
+        # define if object needs collision or not
         self.collision = obj_data['collision']
 
         # load collision detection rectangle if needed
-        if self.collision:  
+        if self.collision:
             # get data from json file about collision
-            collision_height_scale = obj_data.get('collision_height_scale', None)
+            collision_height_scale = obj_data.get('collision_height_scale')
             if collision_height_scale is None:
-                raise FurnitureCollisionError(f'Object {self.name} in room \
-                    {self.room_name} is missing collision height data in rooms.json.')
+                raise FurnitureCollisionError(
+                    f'Object {self.name} in room {self.room_name}'
+                    ' is missing collision height data in rooms.json.'
+                )
             else:
                 collision_rect_width = scaled_width
-                collision_rect_height = self.sprite.get_height() * collision_height_scale
+                collision_rect_height = (
+                    self.sprite.get_height() * collision_height_scale
+                )
                 collision_rect_pos = (
-                obj_data['position'][0] * SCREEN_WIDTH,
-                obj_data['position'][1] * SCREEN_HEIGHT +  (scaled_height - collision_rect_height)
-            )
-            self._collision_rect = pygame.Rect(collision_rect_pos, 
-                                              (collision_rect_width, collision_rect_height)
+                    obj_data['position'][0] * SCREEN_WIDTH,
+                    obj_data['position'][1] * SCREEN_HEIGHT
+                    + (scaled_height - collision_rect_height),
+                )
+            self._collision_rect = pygame.Rect(
+                collision_rect_pos,
+                (collision_rect_width, collision_rect_height),
             )
             '''
             collision_rect_width = scaled_width
-            collision_rect_height = self.sprite.get_height() // 5 # about 20% of object height
+            # about 20% of object height
+            collision_rect_height = self.sprite.get_height() // 5
 
             collision_rect_pos = (
                 obj_data['position'][0] * SCREEN_WIDTH,
-                obj_data['position'][1] * SCREEN_HEIGHT +  (scaled_height - collision_rect_height)
+                obj_data['position'][1] * SCREEN_HEIGHT
+                + (scaled_height - collision_rect_height),
             )
-            self._collision_rect = pygame.Rect(collision_rect_pos, 
-                                              (collision_rect_width, collision_rect_height)
+            self._collision_rect = pygame.Rect(
+                collision_rect_pos,
+                (collision_rect_width, collision_rect_height),
             )
             '''
 
-        # define position for vertical sorting as rect bottom  if object is not dropped
-        # on an other object, else the position should be initialised in the room the object is contained in.
+        # define position for vertical sorting as rect bottom if object is
+        # not dropped on another object; else position should be initialised
+        # in the room the object is contained in.
         self.y_sort_pos = self.rect.bottomleft[1]
 
     def draw(self, surface: pygame.Surface) -> None:
-        '''draw the furniture onto the given surface at the position of its rectangle'''
+        '''Draw the furniture onto the given surface at its rectangle.'''
         surface.blit(self.sprite, self.rect)
 
     @property
     def collision_rect(self):
-        '''
-        Return the collision rectangle of the object
-        '''
+        '''Return the collision rectangle of the object.'''
         if self.collision:
             return self._collision_rect
         else:
-            raise FurnitureCollisionError(f"Object '{self.name}'\
-            in room '{self.room_name}' does not have a collision rectangle.")
-    
-        
+            raise FurnitureCollisionError(
+                f"Object '{self.name}' in room '{self.room_name}'"
+                " does not have a collision rectangle."
+            )
+
     def __repr__(self) -> str:
         return f"Furniture(name={self.name}, room={self.room_name})"
+
 
 class InteractableObject(Furniture):
     '''
     An object the player can interact with by pressing E when nearby.
-    inherits from Furniture because it also needs a sprite and rectangle for drawing and collision.
-    Note that not all interactable objects need collision. Ex: cas file which seats on a desk.
+    Inherits from Furniture because it also needs a sprite and rectangle
+    for drawing and collision. Not all interactable objects need collision.
     '''
+
     def __init__(self, room_name: str, name: str, obj_data: dict) -> None:
         super().__init__(room_name, name, obj_data)
         self._font = pygame.font.SysFont('Arial', 20)
 
-    def draw(self, surface: pygame.Surface, player_center: tuple[int, int]) -> None:
-        '''draw the object onto the given surface. also draws the [E] prompt if the player is near.'''
+    def draw(
+        self, surface: pygame.Surface, player_center: tuple[int, int]
+    ) -> None:
+        '''Draw the object; also draws [E] prompt if the player is near.'''
         surface.blit(self.sprite, self.rect)
         if self.is_player_near(player_center):
             self._draw_prompt(surface)
@@ -101,19 +126,20 @@ class InteractableObject(Furniture):
     def is_player_near(self, player_center: tuple[int, int]) -> bool:
         '''
         Check if the player is within the interaction radius of the object.
-        Uses the center of the player's rectangle and the center of the object's rectangle to calculate distance.
+        Uses the center of the player's rectangle and the center of the
+        object's rectangle to calculate distance.
         '''
-        ox = self.rect.centerx
-        oy = self.rect.centery
-        px = player_center[0]
-        py = player_center[1]
-        dx = ox - px
-        dy = oy - py
+        obj_x = self.rect.centerx
+        obj_y = self.rect.centery
+        player_x = player_center[0]
+        player_y = player_center[1]
+        dx = obj_x - player_x
+        dy = obj_y - player_y
         distance = math.sqrt(dx ** 2 + dy ** 2)
         return distance <= (INTERACTION_RADIUS + self.rect.width // 2)
-    
+
     def _draw_prompt(self, surface):
-        '''show [E] + name above the object'''
+        '''Show [E] + name above the object.'''
         text = "[E] " + self.name
         label = self._font.render(text, True, COLOUR_TEXT)
         pad = 6
@@ -123,20 +149,23 @@ class InteractableObject(Furniture):
         bg_rect.inflate_ip(pad * 2, pad)
         # dark rounded box behind the text
         pygame.draw.rect(surface, (20, 18, 24), bg_rect, border_radius=4)
-        pygame.draw.rect(surface, COLOUR_HIGHLIGHT, bg_rect, 1, border_radius=4)
+        pygame.draw.rect(
+            surface, COLOUR_HIGHLIGHT, bg_rect, 1, border_radius=4
+        )
         # center the text inside the box
         label_rect = label.get_rect(center=bg_rect.center)
         surface.blit(label, label_rect)
 
     def __repr__(self) -> str:
         return f"InteractableObject(name={self.name}, room={self.room_name})"
-    
+
+
 class FurnitureCollisionError(Exception):
     '''
-    Raised when there is an error with the collision rectangle of a furniture object. 
-    This can be caused by a missing or incorrect collision rectangle in the room data.
+    Raised when there is an error with the collision rectangle of a
+    furniture object. This can be caused by a missing or incorrect
+    collision rectangle in the room data.
     '''
     pass
 
 ### Nael Karimou - 5734316 -end
-    

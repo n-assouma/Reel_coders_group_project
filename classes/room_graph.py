@@ -143,7 +143,7 @@ class RoomGraph:
         """Return the shortest path from origin to destination, or None.
 
         If respect_locks is True, locked edges are treated as impassable.
-        If False, locked edges are traversed as if unlocked — used by
+        If False, locked edges are traversed as if unlocked, used by
         route_with_blocker to find the structural path before identifying
         the first locked room along it.
 

@@ -1,4 +1,4 @@
-# Dialogue System — How It Works
+# Dialogue System, How It Works
 
 ## Overview
 
@@ -37,7 +37,7 @@ and are called directly by name: `marcus_introduction`, `victor_introduction`,
 
 ---
 
-## Path 1 — Simple one-line hints (`ChiefOfPoliceHint`)
+## Path 1, Simple one-line hints (`ChiefOfPoliceHint`)
 
 **File:** `classes/chief_of_police_hint.py`
 
@@ -50,7 +50,7 @@ and stores three sections as plain `dict[str, str]`:
 | `self.npc_greetings` | `"npc_greeting"` | shown when player is near an NPC |
 | `self.room_unlocks_hints` | `"room_unlocks_hint"` | shown when a locked room opens |
 
-Lookup is a direct dict key access — e.g. `self.object_hints["master_key_log"]`
+Lookup is a direct dict key access, e.g. `self.object_hints["master_key_log"]`
 returns the hint string immediately. The `suspect_reaction` and `ending` sections
 are **not** loaded here.
 
@@ -60,7 +60,7 @@ HUD panel every frame, word-wrapping it to fit the panel width.
 
 ---
 
-## Path 2 — Multi-line conversations (`DialogueTree`)
+## Path 2, Multi-line conversations (`DialogueTree`)
 
 **Files:** `classes/dialogue.py`, `game.py`
 
@@ -79,7 +79,7 @@ DialogueNode  (speaker, text, children=[next])
 Although `children` is a list (allowing branching in theory), `build_linear_tree`
 always adds exactly one child per node. `advance()` always follows `children[0]`.
 In practice this is a linked list, not a tree. The `required_evidence` field on
-each node is also unused — it is a stub for future branching that was never
+each node is also unused, it is a stub for future branching that was never
 implemented.
 
 ### Loading
@@ -95,7 +95,7 @@ The file is re-opened from disk on every call (no caching).
 
 ### Two triggers in `game.py`
 
-**1. Player drops evidence on an NPC** — `try_start_dialogue(drop_pos)`
+**1. Player drops evidence on an NPC**, `try_start_dialogue(drop_pos)`
 
 ```
 player drags evidence → drops on NPC rect
@@ -105,7 +105,7 @@ player drags evidence → drops on NPC rect
   → show first node in HUD panel
 ```
 
-**2. Player presses E next to an NPC** — `start_npc_dialogue(dialogue_key)`
+**2. Player presses E next to an NPC**, `start_npc_dialogue(dialogue_key)`
 
 Calls `load_dialogue_from_json` directly with a hardcoded key
 (`"marcus_introduction"`, `"victor_introduction"`, etc.).

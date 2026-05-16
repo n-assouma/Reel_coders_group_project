@@ -6,10 +6,11 @@ import time
 
 import pygame
 
-# debugging: neccesary for settings imports to work when running this file directly
+# debugging: neccesary for settings imports to work
+# when running this file directly
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), '..'))
 
-from settings import (
+from settings import (  
     COLOUR_HUD_BG,
     COLOUR_HIGHLIGHT,
     COLOUR_TEXT,
@@ -23,15 +24,17 @@ class LoadingBar:
     """Renders a progress bar on the loading screen."""
 
     def __init__(self) -> None:
-        self.WIDTH = int(SCREEN_WIDTH * 0.5)   # bar cover half the screen width
+        self.WIDTH = int(SCREEN_WIDTH * 0.5)  # bar cover half the screen width
         self.HEIGHT = 22
-        self.X = (SCREEN_WIDTH - self.WIDTH) // 2   # centered horizontally
-        self.Y = int(SCREEN_HEIGHT * 0.62)           # positioned in 1/3 of screen width
-        self.FILL_COLOUR = (100, 160, 220)   # blue 
-        self.BG_COLOUR = (30, 26, 36)        # dark 
-        self.BORDER_COLOUR = (70, 55, 45)    # warm brown
+        self.X = (SCREEN_WIDTH - self.WIDTH) // 2  # centered horizontally
+        self.Y = int(SCREEN_HEIGHT * 0.62)  # positioned in 1/3 of screen width
+        self.FILL_COLOUR = (100, 160, 220)  # blue
+        self.BG_COLOUR = (30, 26, 36)  # dark
+        self.BORDER_COLOUR = (70, 55, 45)  # warm brown
 
-    def draw(self, screen: pygame.Surface, font: pygame.font.Font, progress: int) -> None:
+    def draw(
+        self, screen: pygame.Surface, font: pygame.font.Font, progress: int
+    ) -> None:
         """Draw the bar at the given progress percentage (0-100)."""
 
         # draw the empty background of the bar
@@ -53,19 +56,19 @@ class LoadingBar:
                 border_radius=6,
             )
 
-        # draw the border 
+        # draw the border
         pygame.draw.rect(
             screen,
             self.BORDER_COLOUR,
             (self.X, self.Y, self.WIDTH, self.HEIGHT),
-            2,            
+            2,
             border_radius=6,
         )
 
-        # compute the percentage  and center it below the bar
+        # compute the percentage and center it below the bar
         percentage = font.render(f"{progress}%", True, COLOUR_TEXT)
         label_x = SCREEN_WIDTH // 2 - percentage.get_width() // 2
-        label_y = self.Y + self.HEIGHT + 12   # 12px gap below the bar
+        label_y = self.Y + self.HEIGHT + 12  # 12px gap below the bar
         screen.blit(percentage, (label_x, label_y))
 
 
@@ -85,9 +88,9 @@ class LoadingScreen:
         """
         for event in pygame.event.get():
             # allow the user to close mid-load.
-            # This important because there is no other way to close 
+            # This important because there is no other way to close
             # the game window when tthe gam is loading
-            if event.type == pygame.QUIT:   
+            if event.type == pygame.QUIT:
                 pygame.quit()
                 sys.exit()
         self._draw(progress)
@@ -95,10 +98,12 @@ class LoadingScreen:
     def _draw(self, progress: int) -> None:
 
         # clear the screen each frame
-        self.screen.fill(COLOUR_HUD_BG)   
+        self.screen.fill(COLOUR_HUD_BG)
 
         # draw the game title centered near the upper-middle of the screen
-        title = self.font_title.render("THE HOLLOW WITNESS", True, COLOUR_HIGHLIGHT)
+        title = self.font_title.render(
+            "THE HOLLOW WITNESS", True, COLOUR_HIGHLIGHT
+        )
         title_x = SCREEN_WIDTH // 2 - title.get_width() // 2
         title_y = int(SCREEN_HEIGHT * 0.38)
         self.screen.blit(title, (title_x, title_y))
@@ -111,7 +116,7 @@ class LoadingScreen:
 
         self.bar.draw(self.screen, self.font_small, progress)
         # udpate the display after drawimg everything
-        pygame.display.flip()   
+        pygame.display.flip()
 
 
 # for debugging - should run this file directly to see how the screen loads

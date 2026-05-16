@@ -103,7 +103,7 @@ class HUD:
                 # Advance to the next item slot horizontally
                 img_x += 80
         else:
-            # Bag is closed — show the closed bag icon
+            # Bag is closed, show the closed bag icon
             bag_pos = (panel2_x + panel2_w - 150, panel_y + panel_h - 145)
             surface.blit(self.evidence_bag.closed_bag_image, bag_pos)
 
@@ -133,7 +133,7 @@ class HUD:
         # divider line under the title
         pygame.draw.line(surface, COLOUR_HUD_BORDER, (x + 10, y + 32), (x + w - 10, y + 32), 1)
 
-        # body text — wrap it so it fits in the panel
+        # body text, wrap it so it fits in the panel
         text_x = x + 12
         text_y = y + 42
         max_w = w - 24

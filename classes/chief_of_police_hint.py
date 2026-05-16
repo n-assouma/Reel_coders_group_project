@@ -202,7 +202,7 @@ class ChiefOfPoliceHint:
             portrait_w = self.current_portrait.get_width()
             text_x = sprite_x + portrait_w + sprite_padding
         else:
-            # no sprite — text uses the full panel width like before
+            # no sprite, text uses the full panel width like before
             text_x = x + 12
 
         text_y = y + 42

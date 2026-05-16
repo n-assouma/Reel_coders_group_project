@@ -29,7 +29,7 @@ class EvidenceBag:
 
     def __init__(self) -> None:
         """Create an empty evidence bag and load all required UI assets."""
-        # Private list — double underscore triggers name mangling to
+        # Private list, double underscore triggers name mangling to
         # prevent accidental access from outside the class
         self.__data: list[Evidence] = []
         self.is_open: bool = False
