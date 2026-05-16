@@ -52,7 +52,7 @@ class Game:
         self.font_prompt: pygame.font.Font = pygame.font.SysFont("Segoe UI,Arial", 13, bold=True)
 
         # load the room data from the json file
-        with open(os.path.join('data','rooms.json'), 'r') as f:
+        with open(os.path.join('data','rooms.json'), 'r', encoding='utf-8') as f:
             room_data = json.load(f)
             # get rid of metadata
             room_data.pop('_meta', None)
