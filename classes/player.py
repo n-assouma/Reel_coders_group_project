@@ -1,5 +1,4 @@
-# Author: Andrei Sidorenko - 5750779
-# Reviewer: Nael Karimou - 5734316
+### Nael Karimou - 5734316 -start
 
 import os
 import pygame
@@ -265,7 +264,7 @@ class Player:
                 frame = self.left1_sprite
                 self.animation_counter = 0
 
-        # Idle — show the idle frame matching the last direction moved
+        # Idle - show the idle frame matching the last direction moved
         else:
             if self.last_movement == "u":
                 frame = self.back1_sprite
@@ -282,3 +281,6 @@ class Player:
 
     def __repr__(self) -> str:
         return f"Player(pos=({self._pos_x}, {self._pos_y}))"
+
+
+### Nael Karimou - 5734316 - end

@@ -1,4 +1,5 @@
-### Nael Karimou - 5734316
+### Nael Karimou - 5734316 -start
+
 import os
 import sys
 
@@ -121,7 +122,7 @@ class EndingScreen:
         # handle events when the Ending screen is on
         while True:
             for event in pygame.event.get():
-                if event.type == pygame.QUIT and event.type == pygame.KEYDOWN:
+                if event.type == pygame.QUIT or event.type == pygame.KEYDOWN:
                     pygame.quit()
                     sys.exit()
  
@@ -302,4 +303,4 @@ if __name__ == "__main__":
     pygame.quit()
 
 
-### Nael Karimou - 5734316
+### Nael Karimou - 5734316 -end

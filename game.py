@@ -315,9 +315,10 @@ class Game:
 
                 # if the player examine the accusation board
                 if obj.name == 'accusation_board':
-                    self.ending.run(self._update_tracker)
+                    self.ending.run(self._update_tracker())
+### Nael Karimou - 5734316 - end
 
-    ### Andrei Sidorenko 5750779 - start
+### Andrei Sidorenko 5750779 - start
                 # talking to the waiter starts a dialogue with his testimony
                 if obj.name == "waiter":
                     self.start_npc_dialogue("waiter_testimony")
@@ -340,7 +341,9 @@ class Game:
                         "Damn it. The cameras are dead. The recordings from last night were 'under maintenance'. Convenient.",
                         180)
                     return
-    ### Andrei Sidorenko 5750779 - end
+### Andrei Sidorenko 5750779 - end
+
+### Andrei Sidorenko 5750779 and Amir H Javadi B 5717292 -start
                 if isinstance(obj, Evidence) and not obj.collected:
                     if self.evidence_bag.__len__() < self.evidence_bag.MAX_SIZE:
                         obj.collected = True
@@ -357,7 +360,7 @@ class Game:
                     self.hud.set_hint(msg)
                 return
             
-### Nael Karimou - 5734316 - end
+### Andrei Sidorenko 5750779 and Amir H Javadi B 5717292 -end
 
 ### Andrei Sidorenko 5750779 - start
 
@@ -437,7 +440,6 @@ class Game:
         # tell the panel whether we are already at the last node
         self.chief_hint.set_finished_hint(tree.is_finished())
 
-### Andrei Sidorenko 5750779 - end
 
     def _update(self) -> None:
         '''handle player movement and update hud hints'''
@@ -447,6 +449,8 @@ class Game:
 
         # tick the chief panel sticky countdown each frame
         self.chief_hint.tick_sticky()
+
+### Andrei Sidorenko 5750779 - end
 
 ### Amir H Javadi B 5717292 - start
 
@@ -481,7 +485,7 @@ class Game:
             return
 
 ### Amir H Javadi B 5717292 - end 
-### Andrei Sidorenko 5750779 - start
+### Andrei Sidorenko 5750779 and Amir H Javadi B 5717292 - start
 
         # unlocking the rooms if the player has the required evidence in the bag
         # also show a chief hint the first time each room becomes unlocked
@@ -512,9 +516,9 @@ class Game:
                 self.chief_hint.set_sticky_hint(hint_text, 180)
                 self.shown_unlock_hints.add(room_name)
         
-### Andrei Sidorenko 5750779 - end
+### Andrei Sidorenko 5750779 and Amir H Javadi B 5717292 - end
 
-        ### Nael Karimou - 5734316 - start
+### Andrei Sidorenko 5750779 and Amir H Javadi B 5717292 and Nael Karimou 5734316 -start
         keys = pygame.key.get_pressed()
         self.current_room.player.handle_movement(keys, self.current_room.collision_rects)
 
@@ -526,7 +530,8 @@ class Game:
             for obj_name in self.current_room.objects:
                 obj = self.current_room.objects[obj_name]
                 if type(obj) != Furniture:
-                    if obj.is_player_near(player_center):
+                    # skip collected evidence so they don't trigger a hint
+                    if obj.is_player_near(player_center) and not getattr(obj, 'collected', False):
                         self.chief_hint.show_object_hint(obj.name)
                         found = True
                         break
@@ -544,7 +549,18 @@ class Game:
         
         pygame.display.flip()
 
+### Andrei Sidorenko 5750779 and Amir H Javadi B 5717292 and Nael Karimou 5734316 -start
+
+### Nael Karimou - 5734316 - start
     def _update_room_connections_to_room_objects(self) -> None:
+        '''
+        Resolves room connections from name strings to Room object references.
+
+        After rooms are loaded, each room's connections list contains room name
+        strings. This method replaces those strings with the corresponding Room
+        objects from self.rooms, so rooms can directly reference their neighbours.
+        This is important for the room¬Graph to work
+        '''
         for room in self.rooms:
             actual_room_connections = []
             for room_name in room.connections:
@@ -554,7 +570,7 @@ class Game:
                         break
             room.connections = actual_room_connections 
 
-    def _update_tracker(self):
+    def _update_tracker(self) -> int:
         '''
         This function update the state of the game tracker. It decide whether or not the 
         tracker should be incremented.
@@ -569,6 +585,6 @@ class Game:
             if evidence.is_key:
                 self.tracker.increment()
 
-        return self.tracker.key_count()
+        return self.tracker.key_count
      
 ### Nael Karimou - 5734316 -end

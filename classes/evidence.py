@@ -1,4 +1,4 @@
-### Author: Nael Karimou 5734316
+### Author: Nael Karimou 5734316 start
 
 import pygame
 
@@ -22,4 +22,4 @@ class Evidence(InteractableObject):
         if self.visible and not self.collected:
             super().draw(surface, player_center)
 
-### Nael Karimou - 5734316
+### Nael Karimou - 5734316 -end 

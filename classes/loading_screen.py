@@ -1,3 +1,5 @@
+### Aryan Naranath 5758224
+
 import os
 import sys
 import time
@@ -121,3 +123,5 @@ if __name__ == "__main__":
         loader.update(step)
         time.sleep(2)
     pygame.quit()
+
+### Aryan Naranath 5758224 - end

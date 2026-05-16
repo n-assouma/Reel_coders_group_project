@@ -1,9 +1,9 @@
 {
     "_meta": {
-        "author": "Aryan Naranath 5758224",
-        "co_author": "Nael Karimou 5734316",
+        "author": "Nael Karimou 5734316",
+        "co_author": "Aryan Naranath 5758224",
         "description": "This file contains the data for the rooms in the game. It defines the sprites, their positions, and the walkable area for each room.",
-        "completed": "4/7 rooms"
+        "completed": "All"
 
     },
     "police_station": {

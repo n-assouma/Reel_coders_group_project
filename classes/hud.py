@@ -8,8 +8,6 @@ from .evidence_bag import EvidenceBag
 from .chief_of_police_hint import ChiefOfPoliceHint
 from settings import *
 
-# TODO: make the notepad actually work so the player can type in it
-
 
 class HUD:
     # the bottom strip with 3 panels
