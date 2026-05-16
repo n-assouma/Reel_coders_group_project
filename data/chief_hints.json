@@ -92,11 +92,53 @@
             {"speaker": "marcus", "text": "Look — yes, the divorce was ugly. Yes, the custody fight is ongoing. But whoever did this... it wasn't me. You should be looking at Victor. He never liked her either."},
             {"speaker": "chief", "text": "Bitter, defensive, points the finger elsewhere. Standard. But he hasn't given us anything we can verify or disprove."}
         ],
-        "victor_introduction": [
-            {"speaker": "victor", "text": "Detective Rowe. Terrible business about Elena. Please, sit. Can I offer you tea?"},
-            {"speaker": "victor", "text": "I was at the faculty dinner until quite late. After that, straight home. I'm happy to answer anything that might help your investigation."},
-            {"speaker": "chief", "text": "Composed, charming, helpful — almost rehearsed. Watch what he doesn't say."}
-        ],
+        "victor_introduction": {
+            "speaker": "victor",
+            "text": "Detective Rowe. Terrible business about Elena. Please, sit. Can I offer you tea?",
+            "branches": [
+                {
+                    "condition": true,
+                    "speaker": "chief",
+                    "text": "We had a look at your laptop, Victor. Found some interesting reading in there. Anything you'd like to get off your chest before we go any further?",
+                    "branches": [
+                        {
+                            "speaker": "victor",
+                            "text": "I have absolutely nothing to do with Elena's death. Nothing. I've already told your colleagues everything I know.",
+                            "branches": [
+                                {
+                                    "speaker": "victor",
+                                    "text": "And frankly — you had no right to access my personal property without a warrant. That is an unlawful search and you know it.",
+                                    "branches": [
+                                        {
+                                            "speaker": "victor",
+                                            "text": "I'll be filing a formal complaint. My solicitor will hear about this before the end of the day.",
+                                            "branches": [
+                                                {
+                                                    "speaker": "chief",
+                                                    "text": "His reaction was rough... but he didn't look scared. Not once. We better watch him carefully — a man like that could get us into serious trouble.",
+                                                    "branches": []
+                                                }
+                                            ]
+                                        }
+                                    ]
+                                }
+                            ]
+                        }
+                    ]
+                },
+                {
+                    "speaker": "victor",
+                    "text": "I was at the faculty dinner until quite late. After that, straight home. I'm happy to answer anything that might help your investigation.",
+                    "branches": [
+                        {
+                            "speaker": "chief",
+                            "text": "Composed, charming, helpful — almost rehearsed. Watch what he doesn't say.",
+                            "branches": []
+                        }
+                    ]
+                }
+            ]
+        },
         "lena_introduction": [
             {"speaker": "lena", "text": "Detective. I... I already gave my statement to the officers. I was in the lab until eleven, then home. My keycard will show it."},
             {"speaker": "lena", "text": "Elena and I had our disagreements about the research paper, yes. But she was my friend, before all that. I would never... I couldn't."},

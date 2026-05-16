@@ -120,7 +120,9 @@ class Game:
 
         # set ending  screen for when the player want to choose the murderer
         self.ending = EndingScreen(self.screen)
-        
+        # store all key conditions and wheter or not they are met to increment the EndingTracker
+        self.__key_conditions_met = {'unlock_victor_laptop': False}
+         
         #update loading screen - Aryan Naranath 5758224
         loader.update(100)
         
@@ -188,7 +190,7 @@ class Game:
                 if self.active_dialogue is not None:
                     if event.key == pygame.K_SPACE or event.key == pygame.K_e or event.key == pygame.K_RETURN:
                         # try to move to the next line in the dialogue
-                        has_next = self.active_dialogue.advance()
+                        has_next = self.active_dialogue.advance(self.laptop.password_found)
                         if has_next:
                             # show the next line
                             next_node = self.active_dialogue.get_current()
@@ -315,7 +317,7 @@ class Game:
 
                 # if the player examine the accusation board
                 if obj.name == 'accusation_board':
-                    self.ending.run(self._update_tracker())
+                    self.ending.run(self._update_tracker(ending=True))
 ### Nael Karimou - 5734316 - end
 
 ### Andrei Sidorenko 5750779 - start
@@ -570,20 +572,24 @@ class Game:
                         break
             room.connections = actual_room_connections 
 
-    def _update_tracker(self) -> int:
+    def _update_tracker(self, ending: bool = False) -> int:
         '''
         This function update the state of the game tracker. It decide whether or not the 
         tracker should be incremented.
         Returns the number of key evidence and event found/completed by the player
         '''
-        # Unlocking Victor computer is a key event
-        if self.laptop.password_found:
+        # Increment the tracker counter when victors laptop is unlocked 
+        # check if the tracker wasnt already incremented for this same event
+        if self.laptop.password_found and  not self.__key_conditions_met['unlock_victor_laptop']:
             self.tracker.increment()
+            self.self.__key_conditions_met['unlock_victor_laptop'] = True
 
-        # check how many key evidences are in the bag and update the tracker accordingly
-        for evidence in self.evidence_bag.items:
-            if evidence.is_key:
-                self.tracker.increment()
+        # When the ending is triggered, check how many key evidences 
+        # are in the bag and update the tracker accordingly
+        if ending:
+            for evidence in self.evidence_bag.items:
+                if evidence.is_key:
+                    self.tracker.increment()
 
         return self.tracker.key_count
      
