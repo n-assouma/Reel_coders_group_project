@@ -88,7 +88,7 @@
         },
         "desk": {
             "path": "desk.png",
-            "position": [0.0679, 0.14],
+            "position": [0.061, 0.14],
             "scale": 0.8,
             "class": "Furniture",
             "collision": true,
@@ -127,7 +127,7 @@
         },
         "computer": {
             "path": "computer.png",
-            "position": [0.0537, 0.05],
+            "position": [0.03, 0.05],
             "scale": 1.0,
             "class": "InteractableObject",
             "collision": false,
