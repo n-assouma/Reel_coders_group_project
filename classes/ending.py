@@ -89,7 +89,7 @@ class EndingScreen:
             if self.font_body.size(test)[0] <= max_width:
                 current = test
             else:
-                # current line is full — save it and start a new one
+                # current line is full, save it and start a new one
                 if current:
                     lines.append(current)
                 current = word
