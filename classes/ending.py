@@ -1,5 +1,6 @@
 ### Nael Karimou - 5734316 -start
 
+import json
 import os
 import sys
 
@@ -15,32 +16,21 @@ SUSPECTS = ['marcus', 'lena', 'victor']
 KILLER = 'victor'
 KEY_THRESHOLD = 3
 
-ENDINGS = {
-    'A': {
-        'title': 'CASE CLOSED',
-        'body': (
-            'Victor Osei found guilty. Confronted with the evidence,\n'
-            'he confessed. Elena\'s family gets closure.\n'
-            'Detective Rowe is commended.'
-        ),
-    },
-    'B': {
-        'title': 'CASE COLD',
-        'body': (
-            'Right suspect, insufficient evidence.\n'
-            'Victor\'s solicitor blocked all charges.\n'
-            'He shredded documents and fled the country.'
-        ),
-    },
-    'C': {
-        'title': 'INJUSTICE',
-        'body': (
-            'An innocent person was convicted.\n'
-            'The real killer walked free.\n'
-            'Six months later, new evidence surfaced — too late.'
-        ),
-    },
-}
+def _load_endings() -> dict:
+    '''
+    Load the ending from data/chief_hints.json
+    Return a formatted dictionnary with the 3 endings A, B and C
+    '''
+    path = os.path.join(os.path.dirname(__file__), '..', 'data', 'chief_hints.json')
+    with open(path, encoding='utf-8') as f:
+        endings = json.load(f)['ending']
+    return {
+        'A': {'title': 'CASE CLOSED', 'body': endings['justice_served']},
+        'B': {'title': 'CASE DISMISSED',   'body': endings['suspect_escapes']},
+        'C': {'title': 'INJUSTICE',   'body': endings['wrong_accusation']},
+    }
+
+ENDINGS = _load_endings()
 
 FONT = 'Segoe UI,Arial'
 
@@ -87,6 +77,29 @@ class EndingScreen:
         self._draw(data['title'], data['body'])
         self._wait_for_input()
 
+    def _wrap_text(self, text: str, max_width: int) -> list[str]:
+        """Split text into lines that fit within max_width pixels using the body font."""
+        words = text.split()
+        lines = []
+        current = ''
+
+        for word in words:
+            # test whether adding the next word still fits within max_width
+            test = (current + ' ' + word).strip()
+            if self.font_body.size(test)[0] <= max_width:
+                current = test
+            else:
+                # current line is full — save it and start a new one
+                if current:
+                    lines.append(current)
+                current = word
+
+        # append the last line
+        if current:
+            lines.append(current)
+
+        return lines
+
     def _draw(self, title: str, body: str) -> None:
         self.screen.fill(COLOUR_HUD_BG)
 
@@ -101,7 +114,8 @@ class EndingScreen:
         # draw body text
         current_line_pos = int(SCREEN_HEIGHT * 0.45)
         space = 8
-        for line in body.split('\n'):
+        max_width = int(SCREEN_WIDTH * 0.5)
+        for line in self._wrap_text(body, max_width):
             line_surf = self.font_body.render(line, True, COLOUR_TEXT)
             line_pos = (SCREEN_WIDTH // 2 - line_surf.get_width() // 2, current_line_pos)
             self.screen.blit(line_surf, line_pos)
@@ -206,7 +220,6 @@ class AccusationMenu:
                         return clicked
             # draw highlight around the portrait the mouse if on
             self._draw(hovered)
-
 
     def _get_hovered(self, pos: tuple[int, int]) -> str | None:
         '''Return the suspect name under the mouse position, or None.'''
