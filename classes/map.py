@@ -81,7 +81,7 @@ class Map:
         """Convert a snake_case room name to an uppercase display label.
 
         If the first word ends with 's', it is treated as a possessive name
-        (e.g. 'elenas_office' -> "ELENA'S OFFICE").
+        (e.g. 'elenas_office' -> "ELENA'S OFFICE") but Marcus is the especiall case.
 
         Args:
             name: The internal room name (e.g. 'elenas_office').
@@ -90,7 +90,9 @@ class Map:
             The formatted name in uppercase (e.g. "ELENA'S OFFICE").
         """
         name_parts = name.split("_")
-        if name_parts[0].endswith("s"):
+        if name_parts[0] == "marcus":
+            name_parts[0] += "'"
+        elif name_parts[0].endswith("s"):
             name_parts[0] = name_parts[0][:-1] + "'s"
         return " ".join(name_parts).upper()
 
