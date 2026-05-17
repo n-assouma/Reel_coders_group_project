@@ -599,7 +599,7 @@ class Game:
         # check if the tracker wasnt already incremented for this same event
         if self.laptop.password_found and  not self.__key_conditions_met['unlock_victor_laptop']:
             self.tracker.increment()
-            self.self.__key_conditions_met['unlock_victor_laptop'] = True
+            self.__key_conditions_met['unlock_victor_laptop'] = True
 
         # When the ending is triggered, check how many key evidences 
         # are in the bag and update the tracker accordingly
