@@ -273,8 +273,16 @@ class Player:
 
         rect = frame.get_rect(center=self.rect.center)
         surface.blit(frame, rect)
-        ### Amir H Javadi B - 5717292 - end
 
+    def stop(self) -> None:
+        '''Reset movement direction and stop walk sound. Called when the game freezes input (dialogue, map, laptop).'''
+        self.x_direction = 0
+        self.y_direction = 0
+        self.walk_sound.stop()
+        self.is_walking = False
+
+        ### Amir H Javadi B - 5717292 - end
+        
     def get_center(self) -> tuple[int, int]:
         '''get the center point of the player's rectangle. used for calculating distance to interactable objects.'''
         return self.rect.center
