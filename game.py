@@ -115,6 +115,9 @@ class Game:
         self.add_error_y = 0
         self.error_color = (255, 80, 80)
 
+        # its True if the screen is shoeing a room
+        self.is_room_screen: bool = True
+
         # set ending tracker to track key events accomplished
         self.tracker =  EndingTracker()
 
@@ -210,25 +213,28 @@ class Game:
             if event.type == pygame.MOUSEBUTTONDOWN:
                 if event.button == 1:  # Left mouse button
 
-                    # Pick up an evidence item if the bag is open and item is clicked
-                    for num, evidence in enumerate(self.evidence_bag.items):
-                        is_clicked = evidence.rect.collidepoint(event.pos)
-                        if is_clicked and self.evidence_bag.is_open:
-                            self.active_evidence = num
+                    if self.is_room_screen:
+                        # Pick up an evidence item if the bag is open and item is clicked
+                        for num, evidence in enumerate(self.evidence_bag.items):
+                            is_clicked = evidence.rect.collidepoint(event.pos)
+                            if is_clicked and self.evidence_bag.is_open:
+                                self.active_evidence = num
 
-                    # Toggle the evidence bag open or closed
-                    if self.evidence_bag.rect.collidepoint(event.pos):
-                        self.evidence_bag.is_open = not self.evidence_bag.is_open
+                        # Toggle the evidence bag open or closed
+                        if self.evidence_bag.rect.collidepoint(event.pos):
+                            self.evidence_bag.is_open = not self.evidence_bag.is_open
 
                     # Close the laptop when the X button is clicked
                     if self.laptop.is_open:
                         if self.laptop.cross_bottom_rect.collidepoint(event.pos):
                             self.laptop.is_open = False
                             self.laptop.password_entered = ""
+                            self.is_room_screen = True
 
                     # Open the map when the map icon in the HUD is clicked
-                    if self.hud.map_rect.collidepoint(event.pos):
+                    if self.hud.map_rect.collidepoint(event.pos) and self.is_room_screen:
                         self.map.is_open = True
+                        self.is_room_screen = False
 
                     # Navigate to a room when clicked on the map
                     # Shows an error if a locked room blocks the path
@@ -245,6 +251,7 @@ class Game:
                             ):
                                 self.current_room = destination_room
                                 self.map.is_open = False
+                                self.is_room_screen = True
                             else:
                                 blocker = self.room_graph.route_with_blocker(
                                     self.current_room, destination_room
@@ -310,8 +317,10 @@ class Game:
             if obj.is_player_near(player_center):
                 if obj.name == "map_board":
                     self.map.is_open = True
+                    self.is_room_screen = False
                 if obj.name == "laptop":
                     self.laptop.is_open = True
+                    self.is_room_screen = False
 
                 # if the player examine the accusation board
                 if obj.name == 'accusation_board':
@@ -445,6 +454,7 @@ class Game:
         '''handle player movement and update hud hints'''
         # if a dialogue is active, freeze the rest of the update
         if self.active_dialogue is not None:
+            self.current_room.player.stop()
             return
 
         # tick the chief panel sticky countdown each frame
@@ -465,6 +475,7 @@ class Game:
 
         # Freeze game updates while the map is open
         if self.map.is_open:
+            self.current_room.player.stop()
             return
 
         # Handle laptop password validation when all digits are entered
@@ -482,6 +493,8 @@ class Game:
                 self.add_error_size = 20
                 self.add_error_y = 175
                 self.error_time = pygame.time.get_ticks()
+        if self.laptop.is_open:
+            self.current_room.player.stop()
             return
 
 ### Amir H Javadi B 5717292 - end 
