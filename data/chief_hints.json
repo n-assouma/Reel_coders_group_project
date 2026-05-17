@@ -33,7 +33,7 @@
         ],
         "tweed_thread_to_lena": [
             {"speaker": "lena", "text": "That looks like the dean's jacket. Victor always wears that tweed. Elena used to joke about it."},
-            {"speaker": "chief", "text": "That's two people now placing this kind of jacket on the same person. Independent of each other."}
+            {"speaker": "chief", "text": "Another voice placing that tweed on the dean. Stack it with whatever else we hear."}
         ],
         "tweed_thread_to_victor": [
             {"speaker": "victor", "text": "A thread? Could be from anyone. The university dry-cleans dozens of jackets."},

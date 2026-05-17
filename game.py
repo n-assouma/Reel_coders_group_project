@@ -351,7 +351,9 @@ class Game:
                         obj.collected = True
                         self.evidence_bag.add_evidence(obj)
                         self.evidence_bag.sort_by_priority()
-                        self.hud.set_hint("You picked up: " + obj.name) 
+                        # show the pickup confirmation for about 3 seconds
+                        # so the player has time to read it
+                        self.chief_hint.set_sticky_hint("You picked up: " + obj.name, 180)
                     else:
                         self.error_message = "Your bag is full!"
                         self.error_time = pygame.time.get_ticks()
