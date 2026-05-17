@@ -56,10 +56,10 @@ class ChiefOfPoliceHint:
         self.sticky_frames_left = 0
 
         # font for the title at the top of the panel
-        self.font_title = pygame.font.SysFont("Segoe UI,Arial", 15, bold=True)
+        self.font_title = pygame.font.SysFont("Arial", 17, bold=True)
 
         # font for the hint text in the body of the panel
-        self.font_body = pygame.font.SysFont("Segoe UI,Arial", 14)
+        self.font_body = pygame.font.SysFont("Arial", 16)
 
         # chief lines loaded from json
         self.object_hints = {}
@@ -214,9 +214,9 @@ class ChiefOfPoliceHint:
         # show a small [SPACE] hint at the bottom-right when a dialogue is active
         if self.is_dialogue_active:
             if self.is_dialogue_finished:
-                hint_text = "[SPACE] to close"
+                hint_text = "[SPACE / E / ENTER] to close"
             else:
-                hint_text = "[SPACE] to continue"
+                hint_text = "[SPACE / E / ENTER] to continue"
             hint_surf = self.font_body.render(hint_text, True, COLOUR_TEXT_DIM)
             # offset the hint left of the map button so it stays visible
             hint_x = x + w - hint_surf.get_width() - 12 - 110
@@ -227,7 +227,7 @@ class ChiefOfPoliceHint:
         # wrap text to fit, keep newlines
 
         # how tall one line of text is
-        line_h = 19
+        line_h = 22
 
         # current draw y (moves down each line)
         text_y = y
@@ -273,7 +273,7 @@ class ChiefOfPoliceHint:
         # try to read the json file with all the chief hints
         path = os.path.join("data", "chief_hints.json")
         try:
-            f = open(path, "r")
+            f = open(path, "r", encoding="utf-8")
             data = json.load(f)
             f.close()
         except FileNotFoundError:
