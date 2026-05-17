@@ -326,6 +326,8 @@ class Game:
 
                 # if the player examine the accusation board
                 if obj.name == 'accusation_board':
+                    self.is_room_screen = False
+                    self.current_room.player.stop()
                     self.ending.run(self._update_tracker(ending=True))
 ### Nael Karimou - 5734316 - end
 
