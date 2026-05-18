@@ -143,8 +143,6 @@ class Room:
         Return: a dictonnary where the key is the object name and the value
         is the object itself
         '''
-        # TODO: Define seperate function to load different types of objects
-        # if needed
         return self._objects
 
     @property
@@ -171,6 +169,7 @@ class Room:
         for i in range(len(self._y_sort_lst) - 1):
             a = self._y_sort_lst[i]
             b = self._y_sort_lst[i + 1]
+            # if a and b are in the wrong order, swap them
             if a.y_sort_pos > b.y_sort_pos:
                 self._y_sort_lst[i] = b
                 self._y_sort_lst[i + 1] = a
@@ -183,7 +182,10 @@ class Room:
         so that objects are drawn in the correct order based on their
         y position.
         '''
+        # get object from depth sorting
         sorted_objects = self.depth_sorted()
+
+        # draw them according to their type
         for obj in sorted_objects:
             if type(obj) in (Player, Furniture):
                 obj.draw(surface)

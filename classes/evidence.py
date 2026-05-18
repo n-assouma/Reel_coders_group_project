@@ -15,6 +15,7 @@ class Evidence(InteractableObject):
         super().__init__(room_name, name, obj_data)
         self.collected = False
         self.visible = True
+        # load sorting priority order for evidence bag 
         self.priority: int = obj_data['priority']
         self.is_key: bool = obj_data.get('is_key', False)
 

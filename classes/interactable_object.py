@@ -129,12 +129,15 @@ class InteractableObject(Furniture):
         Uses the center of the player's rectangle and the center of the
         object's rectangle to calculate distance.
         '''
+        # get object position
         obj_x = self.rect.centerx
         obj_y = self.rect.centery
+        # get player position
         player_x = player_center[0]
         player_y = player_center[1]
         dx = obj_x - player_x
         dy = obj_y - player_y
+        # compute eucludien distance
         distance = math.sqrt(dx ** 2 + dy ** 2)
         return distance <= (INTERACTION_RADIUS + self.rect.width // 2)
 
