@@ -28,8 +28,17 @@ def _load_endings() -> dict:
     path = os.path.join(
         os.path.dirname(__file__), '..', 'data', 'chief_hints.json'
     )
-    with open(path, encoding='utf-8') as f:
-        endings = json.load(f)['ending']
+    try:
+        with open(path, encoding='utf-8') as f:
+            endings = json.load(f)['ending']
+    except FileNotFoundError:
+        print("Error: chief_hints.json not found.")
+        pygame.quit()
+        sys.exit(1)
+    except json.JSONDecodeError as e:
+        print(f"Error: chief_hints.json contains invalid JSON: {e}")
+        pygame.quit()
+        sys.exit(1)
     return {
         'A': {'title': 'CASE CLOSED',    'body': endings['justice_served']},
         'B': {'title': 'CASE DISMISSED', 'body': endings['suspect_escapes']},

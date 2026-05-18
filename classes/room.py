@@ -161,7 +161,7 @@ class Room:
         '''
         surface.blit(self.background, (0, 0))
 
-    def vert_sorted(self) -> list:
+    def depth_sorted(self) -> list:
         '''
         return a list of all objects (including player) in the room sorted
         by their bottom left position for vertical sorting.
@@ -183,7 +183,7 @@ class Room:
         so that objects are drawn in the correct order based on their
         y position.
         '''
-        sorted_objects = self.vert_sorted()
+        sorted_objects = self.depth_sorted()
         for obj in sorted_objects:
             if type(obj) in (Player, Furniture):
                 obj.draw(surface)
