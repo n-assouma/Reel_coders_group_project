@@ -368,15 +368,18 @@ class Game:
                 if obj.name == "map_board":
                     self.map.is_open = True
                     self.is_room_screen = False
+                    return
                 if obj.name == "laptop":
                     self.laptop.is_open = True
                     self.is_room_screen = False
+                    return
 
                 # if the player examine the accusation board
                 if obj.name == 'accusation_board':
                     self.is_room_screen = False
                     self.current_room.player.stop()
                     self.ending.run(self._update_tracker(ending=True))
+                    return
 ### Nael Karimou - 5734316 - end
 
 ### Andrei Sidorenko 5750779 - start
@@ -608,15 +611,24 @@ class Game:
             # update chief panel based on what (if anything) the player is near
             player_center = self.current_room.player.get_center()
             found = False
+            # check evidence first so their hints take priority over NPC greetings
             for obj_name in self.current_room.objects:
                 obj = self.current_room.objects[obj_name]
-                if not isinstance(obj, Furniture):
-                    # skip collected evidence so they don't trigger a hint
-                    if (obj.is_player_near(player_center)
-                            and not getattr(obj, 'collected', False)):
+                if isinstance(obj, Evidence) and not obj.collected:
+                    if obj.is_player_near(player_center):
                         self.chief_hint.show_object_hint(obj.name)
                         found = True
                         break
+            if not found:
+                # then check other interactable objects (NPCs, keyboard, etc.)
+                for obj_name in self.current_room.objects:
+                    obj = self.current_room.objects[obj_name]
+                    if (isinstance(obj, InteractableObject)
+                            and not isinstance(obj, Evidence)):
+                        if obj.is_player_near(player_center):
+                            self.chief_hint.show_object_hint(obj.name)
+                            found = True
+                            break
             if not found:
                 self.chief_hint.show_default()
 
